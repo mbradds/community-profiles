@@ -1,0 +1,29 @@
+{
+  "extends": ["airbnb-base", "prettier"],
+  "env": {
+    "browser": true
+  },
+  "globals": {
+    "Highcharts": true,
+    "L": true
+  },
+  "parserOptions": {
+    "ecmaVersion": 2020,
+    "sourceType": "module",
+    "allowImportExportEverywhere": true
+  },
+  "rules": {
+    "import/prefer-default-export": "off",
+    "no-nested-ternary": "off",
+    "no-underscore-dangle": "warn",
+    "new-cap": "warn",
+    "no-param-reassign": ["error", { "props": false }],
+    "import/extensions": [
+      "error",
+      {
+        "js": "always",
+        "json": "always"
+      }
+    ]
+  }
+}

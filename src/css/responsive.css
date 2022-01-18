@@ -1,0 +1,46 @@
+/* 
+responsive style options 
+*/
+
+/* extra small screen phones (col-xs) */
+@media only screen and (max-width: 767px) {
+  #map-panel-body {
+    height: 84% !important;
+  }
+
+  .header-footer-percent {
+    height: 8% !important;
+  }
+}
+
+/* small screen tablet (col-sm) */
+@media only screen and (min-width: 768px) {
+  #map-panel-body {
+    height: 86% !important;
+  }
+
+  .header-footer-percent {
+    height: 7% !important;
+  }
+}
+
+/* medium screen */
+@media only screen and (min-width: 1000px) {
+  #map-panel-body {
+    height: 84% !important;
+  }
+
+  .header-footer-percent {
+    height: 8% !important;
+  }
+}
+/* large screens */
+@media only screen and (min-width: 1600px) {
+  #map-panel-body {
+    height: 88% !important;
+  }
+
+  .header-footer-percent {
+    height: 6% !important;
+  }
+}

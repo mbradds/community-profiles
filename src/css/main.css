@@ -1,0 +1,108 @@
+/* shared css between iamc and pipeline-profiles */
+
+@import url("cer.css");
+
+html,
+body,
+.container-fluid {
+  height: 100%;
+}
+
+#map {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  width: 100%;
+}
+
+#map-panel {
+  margin-bottom: 0px;
+  height: 100%;
+}
+
+#map-panel-body {
+  height: 88%;
+  padding: 0px !important;
+  position: relative;
+}
+
+.center-vert {
+  margin: 0;
+  top: 50%;
+  position: absolute;
+  -ms-transform: translateY(-50%);
+  transform: translateY(-50%);
+}
+
+.region-click-text {
+  vertical-align: middle;
+  display: inline-block;
+  color: #fff;
+  opacity: 0.8;
+  padding: 0.01em 0.15em 0.01em 0.25em;
+  margin-right: 0.05em;
+  border-radius: 0.2em;
+  box-shadow: 0 0 10px 5px #ffbe4b;
+}
+
+.center-header {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 5px;
+  margin-bottom: 15px;
+}
+
+.center-footer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 5px;
+}
+
+.legend {
+  padding: 6px 8px;
+  font: 14px/16px Arial, Helvetica, sans-serif;
+  background: white;
+  background: rgba(255, 255, 255, 0.8);
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+  border-radius: 5px;
+}
+.legend h4 {
+  margin: 0 0 0px;
+  color: #777;
+  font-weight: bolder;
+  font-size: large;
+}
+
+.no-hover {
+  cursor: grab !important;
+}
+
+.map-tooltip tr {
+  border-bottom: 2px solid #dcdcdc;
+  overflow: visible;
+}
+.map-tooltip td {
+  padding-bottom: 1px;
+  padding-top: 1px;
+}
+
+.loader {
+  border: 16px solid #f3f3f3; /* Light grey */
+  border-top: 16px solid #3498db; /* Blue */
+  border-radius: 50%;
+  width: 120px;
+  height: 120px;
+  animation: spin 2s linear infinite;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}

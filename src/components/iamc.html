@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link href="../GCWeb/assets/favicon.ico" rel="icon" type="image/x-icon" />
+    <link rel="stylesheet" href="../GCWeb/css/theme.min.css" />
+    <!-- <link rel="stylesheet" href="../GCWeb/css/gcwu.custom.css" /> -->
+    <noscript>
+      <link rel="stylesheet" href="../GCWeb/wet-boew/css/noscript.min.css" />
+    </noscript>
+    <title>Community Profiles Prototype</title>
+  </head>
+  <body>
+    <div class="container-fluid mrgn-bttm-sm">
+      <div class="row mrgn-bttm-sm">
+        <div class="col-md-12">
+          <h1>Community Profiles Prototype</h1>
+          <p class="small">Updated January 2022</p>
+        </div>
+      </div>
+      <div class="row" id="summary-row">
+        <div class="col-md-4 col-sm-12 summary-point">
+          <div class="alert alert-warning">
+            <p id="overlap-meta-point"></p>
+          </div>
+        </div>
+        <div
+          class="col-md-4 col-sm-12 summary-point"
+          id="incident-meta-point-on"
+        ></div>
+        <div
+          class="col-md-4 col-sm-12 summary-point"
+          id="incident-meta-point-off"
+        ></div>
+      </div>
+      <div class="row mrgn-bttm-md map-row">
+        <div class="col-md-12 col-sm-12" style="height: 100%">
+          <section class="panel panel-default" id="map-panel">
+            <header
+              class="panel-heading header-footer-percent"
+              id="map-panel-heading"
+            >
+              <h5
+                class="panel-title header-text center-vert"
+                id="leaflet-map-title"
+              ></h5>
+              <button
+                type="button"
+                id="full-screen-btn"
+                class="btn btn-primary btn-xs pull-right center-vert header-btn"
+                onclick="openFullscreen();"
+              >
+                Enter Fullscreen
+              </button>
+            </header>
+            <div class="panel-body" id="map-panel-body">
+              <div id="map">
+                <div class="loader"></div>
+              </div>
+            </div>
+            <footer
+              class="panel-footer header-footer-percent"
+              id="map-panel-footing"
+            >
+              <h5 class="panel-title header-text" id="election-header">
+                Election Filter
+              </h5>
+              <input
+                class="header-btn"
+                name="html5shim-1"
+                id="election-range-slider"
+                type="range"
+                min="0"
+                max="366"
+                step="1"
+                value="366"
+              />
+              <div id="election-days-display"></div>
+            </footer>
+          </section>
+        </div>
+      </div>
+      <div class="row mrgn-tp-lg wb-eqht">
+        <div class="col-md-6">
+          <section class="alert alert-info hght-inhrt">
+            <h3>Tutorial</h3>
+            <a
+              href="/html/tutorial/tutorial.html"
+              target="_blank"
+              rel="noopener noreferrer"
+              >Open map tutorial in new tab.</a
+            >
+          </section>
+        </div>
+        <div class="col-md-6">
+          <section class="alert alert-info hght-inhrt">
+            <h3>Submit Issues</h3>
+            Please email
+            <a href="mailto:grant.moss@cer-rec.gc.ca"
+              >Grant Moss (grant.moss@cer-rec.gc.ca)</a
+            >
+            if you notice errors or have feedback on this application.
+          </section>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-12">
+          <details>
+            <summary>
+              <strong id="treaty-length-title"></strong>
+            </summary>
+            <div id="treaty-length"></div>
+          </details>
+        </div>
+      </div>
+    </div>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.js"></script>
+    <script src="../GCWeb/wet-boew/js/wet-boew.min.js"></script>
+    <script>
+      function openFullscreen() {
+        var elem = document.getElementById("map-panel");
+        elem.style.width = "100%";
+        elem.style.height = "100%";
+        if (elem.requestFullscreen) {
+          elem.requestFullscreen();
+        } else if (elem.webkitRequestFullscreen) {
+          /* Safari */
+          elem.webkitRequestFullscreen();
+        } else if (elem.msRequestFullscreen) {
+          /* IE11 */
+          elem.msRequestFullscreen();
+        }
+      }
+    </script>
+  </body>
+</html>
