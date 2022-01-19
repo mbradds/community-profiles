@@ -1,58 +1,18 @@
-<!DOCTYPE html>
 <html lang="en">
   <head>
-    <meta charset="UTF-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link
-      href="../../GCWeb/assets/favicon.ico"
-      rel="icon"
-      type="image/x-icon"
-    />
-    <link rel="stylesheet" href="../../GCWeb/css/theme.min.css" />
-    <noscript>
-      <link rel="stylesheet" href="../../GCWeb/wet-boew/css/noscript.min.css" />
-    </noscript>
-    <style>
-      .instruction-header {
-        font-size: x-large;
-        font-weight: bold;
-      }
-      .img-right {
-        float: right;
-      }
-      .center {
-        display: flex;
-        align-items: center;
-      }
-      img {
-        border-radius: 0.2em;
-        box-shadow: 0 0 10px 5px #559b37;
-      }
-      body {
-        font-size: 20px;
-        line-height: 1.65em;
-      }
-    </style>
-    <title>Community Profiles Tutorial</title>
+    {{> head title="Community Profiles Tutorial"}}
   </head>
   <body>
     <div class="container-fluid mrgn-bttm-sm">
-      <div class="row mrgn-bttm-sm">
-        <div class="col-md-12">
-          <h1>Community Profiles Tutorial</h1>
-          <p class="small">Updated January 2022</p>
-        </div>
-      </div>
+      {{> h1 h1Text="Community Profiles Tutorial" updated="Updated January 2022"}}
       <div class="row">
         <div class="col-md-12">
           <p>
             This tutorial will teach you how to use the interactive map features
             of the Community Profiles web app. For additional information, or to
             request a demo, please email
-            <a href="mailto:grant.moss@cer-rec.gc.ca"
-              >Grant Moss (grant.moss@cer-rec.gc.ca)</a
-            >.
+            <a href="mailto:grant.moss@cer-rec.gc.ca">Grant Moss
+              (grant.moss@cer-rec.gc.ca)</a>.
           </p>
           <section class="panel panel-default">
             <header class="panel-heading">
@@ -70,16 +30,12 @@
                   <a href="#communities">Map Feature - Communities</a>
                 </li>
                 <li>
-                  <a href="#tmx"
-                    >Map Feature - TMX Centerline, Kilometer Posts, and
-                    Spreads</a
-                  >
+                  <a href="#tmx">Map Feature - TMX Centerline, Kilometer Posts,
+                    and Spreads</a>
                 </li>
                 <li>
-                  <a href="#reserves"
-                    >Map Feature - First Nations Reserves and Pipeline
-                    Incidents</a
-                  >
+                  <a href="#reserves">Map Feature - First Nations Reserves and
+                    Pipeline Incidents</a>
                 </li>
                 <li>
                   <a href="#elections">Map Feature - Election Filter</a>
@@ -121,20 +77,26 @@
                 <div class="col-md-8">
                   <p>
                     In addition to using the zoom options above, the map has
-                    <strong>+</strong> and <strong>-</strong> buttons that can
-                    be clicked to zoom in and out.
+                    <strong>+</strong>
+                    and
+                    <strong>-</strong>
+                    buttons that can be clicked to zoom in and out.
                   </p>
                   <p>
-                    The <i>layer</i> button directly below the
-                    <strong>+</strong> and <strong>-</strong> buttons can be
-                    used to filter map layers to make it less cluttered if
-                    certain map layers are not required.
+                    The
+                    <i>layer</i>
+                    button directly below the
+                    <strong>+</strong>
+                    and
+                    <strong>-</strong>
+                    buttons can be used to filter map layers to make it less
+                    cluttered if certain map layers are not required.
                   </p>
                 </div>
                 <div class="col-md-4">
                   <img
                     class="img-right"
-                    src="/html/tutorial/images/map-navigation.png"
+                    src="/images/tutorial/map-navigation.png"
                     alt="alternatetext"
                     width="318"
                     height="204"
@@ -153,7 +115,7 @@
                 <div class="col-md-4">
                   <img
                     class="img-right"
-                    src="/html/tutorial/images/fullscreen.png"
+                    src="/images/tutorial/fullscreen.png"
                     alt="alternatetext"
                     width="242"
                     height="103"
@@ -165,16 +127,18 @@
               <div class="row center">
                 <div class="col-md-8">
                   <p>
-                    The <i>Reset Map</i> button can be used at anytime during
-                    map navigation to re-zoom to the initial starting point.
-                    This button will also clear and reset any changes/pop-ups
-                    that appear during the use of the app.
+                    The
+                    <i>Reset Map</i>
+                    button can be used at anytime during map navigation to
+                    re-zoom to the initial starting point. This button will also
+                    clear and reset any changes/pop-ups that appear during the
+                    use of the app.
                   </p>
                 </div>
                 <div class="col-md-4">
                   <img
                     class="img-right"
-                    src="/html/tutorial/images/reset-map.png"
+                    src="/images/tutorial/reset-map.png"
                     alt="alternatetext"
                     width="221"
                     height="112"
@@ -189,11 +153,11 @@
             </summary>
             <p>
               The main content of this app is contained in the
-              <i>community</i> layer. Communities are represented on the map as
-              grey circles with a large, transparent circular border. You can
-              zoom in to gain a better view of communities that are clustered
-              together, and evaluate the approximate location of the community
-              headquarters.
+              <i>community</i>
+              layer. Communities are represented on the map as grey circles with
+              a large, transparent circular border. You can zoom in to gain a
+              better view of communities that are clustered together, and
+              evaluate the approximate location of the community headquarters.
             </p>
             <p>
               The location of each community has been estimated. The exact point
@@ -222,7 +186,7 @@
                 <div class="col-md-4">
                   <img
                     class="img-right"
-                    src="/html/tutorial/images/community-tooltip.png"
+                    src="/images/tutorial/community-tooltip.png"
                     alt="alternatetext"
                     width="393"
                     height="293"
@@ -256,7 +220,6 @@
         </div>
       </div>
     </div>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.js"></script>
-    <script src="../../GCWeb/wet-boew/js/wet-boew.min.js"></script>
+    {{> footer}}
   </body>
 </html>

@@ -9,14 +9,13 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 const webpackOutputs = (function () {
-  const filenames = [["trans_mountain", true]];
+  const filenames = ["trans_mountain"];
 
   function entryJs() {
     const paths = {};
     filenames.forEach((name) => {
-      if (name[1]) {
-        paths[`js/iamc/${name[0]}`] = `./src/entry_points/${name[0]}.js`;
-      }
+      paths[`js/iamc/${name}`] = `./src/entry_points/${name}.js`;
+      paths[`js/iamc/tutorial`] = `./src/entry_points/tutorial.js`;
     });
     return paths;
   }
@@ -24,22 +23,21 @@ const webpackOutputs = (function () {
   function outputHtml() {
     const html = [];
     filenames.forEach((name) => {
-      if (name[1]) {
-        html.push(
-          new HtmlWebpackPlugin({
-            filename: `index.html`,
-            template: "src/components/iamc.html",
-            chunks: [`js/iamc/${name[0]}`],
-            minify: { collapseWhitespace: true },
-          })
-        );
-      }
+      html.push(
+        new HtmlWebpackPlugin({
+          filename: `index.html`,
+          template: "src/components/iamc.hbs",
+          chunks: [`js/iamc/${name}`],
+          minify: { collapseWhitespace: true },
+        })
+      );
     });
     html.push(
       new HtmlWebpackPlugin({
-        filename: `html/tutorial/tutorial.html`,
-        template: "src/components/tutorial.html",
-        inject: false,
+        filename: `tutorial.html`,
+        template: "src/components/tutorial.hbs",
+        // inject: false,
+        chunks: [`js/iamc/tutorial`],
         minify: true,
       })
     );
@@ -70,7 +68,7 @@ export default {
         },
         {
           from: path.resolve(__dirname, "src", "components", "images"),
-          to: path.resolve(__dirname, "dist", "html", "tutorial", "images"),
+          to: path.resolve(__dirname, "dist", "images", "tutorial"),
         },
         {
           from: path.resolve(
@@ -137,19 +135,19 @@ export default {
         },
         type: "javascript/auto",
       },
-      // {
-      //   test: /\.png$/,
-      //   include: /node_modules/,
-      //   use: {
-      //     loader: "file-loader",
-      //     options: {
-      //       publicPath: "../../images",
-      //       outputPath: "images",
-      //       name: "[name].png",
-      //     },
-      //   },
-      //   type: "javascript/auto",
-      // },
+      {
+        test: /\.hbs$/,
+        loader: "handlebars-loader",
+        options: {
+          precompileOptions: {
+            noEscape: true,
+            strict: true,
+            knownHelpersOnly: false,
+          },
+          // runtime: path.resolve(__dirname, "src/components/helpers.cjs"),
+          // knownHelpersOnly: false,
+        },
+      },
     ],
   },
 

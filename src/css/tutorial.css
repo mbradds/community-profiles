@@ -1,0 +1,19 @@
+.instruction-header {
+  font-size: x-large;
+  font-weight: bold;
+}
+.img-right {
+  float: right;
+}
+.center {
+  display: flex;
+  align-items: center;
+}
+img {
+  border-radius: 0.2em;
+  box-shadow: 0 0 10px 5px #559b37;
+}
+body {
+  font-size: 20px;
+  line-height: 1.65em;
+}

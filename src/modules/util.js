@@ -18,6 +18,23 @@ export const cerPalette = {
   hcLightBlue: "#91e8e1",
 };
 
+function openFullscreen() {
+  const elem = document.getElementById("map-panel");
+  elem.style.width = "100%";
+  elem.style.height = "100%";
+  if (elem.requestFullscreen) {
+    elem.requestFullscreen();
+  } else if (elem.webkitRequestFullscreen) {
+    /* Safari */
+    elem.webkitRequestFullscreen();
+  } else if (elem.msRequestFullscreen) {
+    /* IE11 */
+    elem.msRequestFullscreen();
+  }
+}
+
+window.openFullscreen = openFullscreen;
+
 export const featureStyles = {
   territory: {
     color: cerPalette["Night Sky"],
