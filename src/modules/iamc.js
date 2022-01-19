@@ -19,7 +19,6 @@ import {
 import { addCommunityLayer } from "./communityPopUp.js";
 import { spread } from "./spreads.js";
 import territoryPolygons from "../company_data/community_profiles/indigenousTerritoriesCa.json";
-
 import "leaflet/dist/leaflet.css";
 import "../css/iamc.css";
 import "../css/main.css";
@@ -37,10 +36,7 @@ export function landDashboard(
     const flagClass = (val) =>
       val > 0 ? "alert alert-danger" : "alert alert-success";
 
-    let totalFeatures = 0;
-    landFeature.features.forEach(() => {
-      totalFeatures += 1;
-    });
+    const totalFeatures = landFeature.features.length;
     const lengthInfo = lengthUnits(meta.totalLength);
     const htmlLiOver = `Approximately ${addStyle(lengthInfo[0])} ${
       lengthInfo[1]
@@ -82,21 +78,9 @@ export function landDashboard(
     info.addTo(map);
   }
 
-  function onLand(map, polygons) {
+  function onLand(map) {
     const nearbyStuff = (mapWithUser) => {
       const youAreOn = [];
-      // look for user inside matched (on map) polygons
-      if (polygons) {
-        Object.values(polygons._layers).forEach((polygon) => {
-          const inside = pointInPolygon(
-            [mapWithUser.user.lng, mapWithUser.user.lat],
-            polygon.feature.geometry.coordinates[0]
-          );
-          if (inside) {
-            youAreOn.push(polygon.feature.properties);
-          }
-        });
-      }
       // look for user in unmatched (hidden) polygons
       territoryPolygons.features.forEach((polygon) => {
         const inside = pointInPolygon(
@@ -205,9 +189,10 @@ export function landDashboard(
     addResetBtn(map);
 
     if (line) {
-      L.geoJSON(line, {
+      const centerLine = L.geoJSON(line, {
         style: featureStyles.tmx,
       }).addTo(map);
+      layerControl.multi["TMX Centerline"] = centerLine;
     }
 
     let popWidth = Math.floor(mapHeight * 0.9);
@@ -219,9 +204,10 @@ export function landDashboard(
     let communityLayer = false;
     if (meta.company === "Trans Mountain Pipeline ULC") {
       communityLayer = addCommunityLayer(map, popHeight, popWidth);
-      layerControl.multi.Communities = communityLayer;
-      spread(map, communityLayer);
+      const spreadLayer = spread(map, communityLayer);
       communityLayer.electionRangeListener();
+      layerControl.multi["TMX Spreads"] = spreadLayer;
+      layerControl.multi.Communities = communityLayer;
     }
 
     const geoLayer = L.geoJSON(landFeature, {
@@ -236,7 +222,6 @@ export function landDashboard(
       .addTo(map);
 
     layerControl.multi["First Nations Reserves"] = geoLayer;
-
     onLand(map, false);
     mapLegend(map, communityLayer);
     resetZoom(map, geoLayer, communityLayer);

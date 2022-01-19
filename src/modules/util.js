@@ -35,6 +35,10 @@ function openFullscreen() {
 
 window.openFullscreen = openFullscreen;
 
+export function htmlTableRow(text, value) {
+  return `<tr><td>${text}</td><td><b>${value}</b></td></tr>`;
+}
+
 export const featureStyles = {
   territory: {
     color: cerPalette["Night Sky"],
@@ -99,28 +103,6 @@ export const featureStyles = {
   },
 };
 
-/**
- * Overrides the wet4 equal height if it doesnt work.
- * @param {string} divId1 - HTML id of div to compare to second parameter
- * @param {string} divId2 - HMTL id of div to compare to first parameter
- */
-export function equalizeHeight(divId1, divId2) {
-  const d1 = document.getElementById(divId1);
-  const d2 = document.getElementById(divId2);
-
-  d1.style.height = "auto";
-  d2.style.height = "auto";
-
-  const d1Height = d1.clientHeight;
-  const d2Height = d2.clientHeight;
-
-  const maxHeight = Math.max(d1Height, d2Height);
-  if (d1Height !== maxHeight || d2Height !== maxHeight) {
-    d1.style.height = `${maxHeight}px`;
-    d2.style.height = `${maxHeight}px`;
-  }
-}
-
 export function leafletBaseMap(config) {
   const map = new L.map(config.div, {
     zoomDelta: config.zoomDelta,
@@ -134,14 +116,6 @@ export function leafletBaseMap(config) {
       '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
   }).addTo(map);
   return map;
-}
-
-export function setLeafletHeight(scale = 0.7) {
-  const clientSize = Math.floor(window.innerHeight * scale);
-  const leafletDiv = document.getElementById("map");
-  leafletDiv.setAttribute("style", `height:${clientSize}px`);
-  leafletDiv.style.height = `${clientSize}px`;
-  return clientSize;
 }
 
 export function lengthUnits(val) {
@@ -158,7 +132,7 @@ export function setTitle(company, pipelineProfiles = false) {
   document.getElementById("leaflet-map-title").innerText = titleText;
 }
 
-export function setUpHeight(pipelineProfile = false) {
+export function setUpHeight() {
   let dbHeight = document.getElementById("map-panel").clientHeight;
   const userWidth = window.screen.width;
   let userClass = "xs";
@@ -177,30 +151,16 @@ export function setUpHeight(pipelineProfile = false) {
     dbHeight = 700;
   }
 
-  if (pipelineProfile) {
-    const clickDivHeight = `${(dbHeight - (15 + 44)).toFixed(0)}`;
-    let resetId = ["reset-large", "mrgn-tp-md"];
-    if (userClass !== "xs" && userClass !== "sm") {
-      document
-        .getElementById("click-fn-info")
-        .setAttribute("style", `height:${clickDivHeight}px`);
-    } else {
-      resetId = ["reset-small", "mrgn-bttm-md mrgn-tp-md"];
-    }
-    document.getElementById(
-      resetId[0]
-    ).innerHTML = `<button type="button" id="reset-map" class="btn btn-primary btn-block btn-lg ${resetId[1]}">Reset Map</button>`;
-  }
-
   return [userClass, userWidth];
 }
 
 export function addpoly2Length(treaties, company) {
   let treatyHtml = `<table class="table"><thead><tr><th scope="col" class="col-sm-6">Treaty Name</th><th scope="col" class="col-sm-6">Operating Km</th></tr></thead><tbody>`;
   treaties.forEach((land) => {
-    treatyHtml += `<tr><td>${land.ENAME}:</td><td> ${(
-      land.length_gpd / 1000
-    ).toFixed(0)} km</td></tr>`;
+    treatyHtml += htmlTableRow(
+      `${land.ENAME}:`,
+      `${(land.length_gpd / 1000).toFixed(0)} km`
+    );
   });
   treatyHtml += "</tbody></table>";
   document.getElementById("treaty-length").innerHTML = treatyHtml;
@@ -238,21 +198,22 @@ function eventTooltip(event) {
   };
 
   let toolText = `<table class="map-tooltip"><caption><b>${event.id}</b></caption>`;
-  toolText += `<tr><td>Status:&nbsp</td><td><b>${event.status}</td></tr>`;
-  toolText += `<tr><td>Incident Type:&nbsp</td><td><b>${event.type}</td></tr>`;
-  toolText += `<tr><td>Substance:&nbsp</td><td><b>${event.sub}</td></tr>`;
-  toolText += `<tr><td>What Happened:&nbsp</td><td><b>${listify(
-    event.what
-  )}</td></tr>`;
-  toolText += `<tr><td>Why It Happened:&nbsp</td><td><b>${listify(
-    event.why
-  )}</td></tr>`;
-  toolText += `<tr><td>Approximate volume released:&nbsp</td><td><b>${
+  toolText += htmlTableRow("Status:&nbsp", event.status);
+  toolText += htmlTableRow("Incident Type:&nbsp", event.type);
+  toolText += htmlTableRow("Substance:&nbsp", event.sub);
+  toolText += htmlTableRow("What Happened:&nbsp", listify(event.what));
+  toolText += htmlTableRow("Why It Happened:&nbsp", listify(event.why));
+  toolText += htmlTableRow(
+    "Approximate volume released:&nbsp",
     event.vol === null ? "Not provided" : `${event.vol} (m3)`
-  }</td></tr>`;
+  );
+
   if (event.distance > 0) {
     const lengthInfo = lengthUnits(event.distance);
-    toolText += `<tr><td>Approximate distance from ${event.landId}:&nbsp</td><td><b>${lengthInfo[0]}&nbsp${lengthInfo[1]}</td></tr>`;
+    toolText += htmlTableRow(
+      `Approximate distance from ${event.landId}:&nbsp`,
+      `${lengthInfo[0]}&nbsp${lengthInfo[1]}`
+    );
   }
   return toolText;
 }
@@ -336,10 +297,13 @@ export function reservePopUp(reserve) {
 
   layerInfo.overlaps.forEach((overlap) => {
     const l = lengthUnits(overlap.length);
-    popHtml += `<tr><td>${overlap.plname} (${overlap.status})</td><td><b>${l[0]}${l[1]}<b></td></tr>`;
+    popHtml += htmlTableRow(
+      `${overlap.plname} (${overlap.status})`,
+      `${l[0]}${l[1]}`
+    );
   });
   if (layerInfo.overlaps.length > 1) {
-    popHtml += `<tr><td>Total: </td><td><b>${total[0]}${total[1]}<b></td></tr>`;
+    popHtml += htmlTableRow("Total: ", `${total[0]}${total[1]}`);
   }
   popHtml += `</tbody></table><h3 class="center-header">Incident Overlaps</h3>`;
   popHtml += `<div style="margin-bottom: 15px" class="${alertClass(
@@ -359,79 +323,6 @@ export function reservePopUp(reserve) {
     false
   )} within 15km</p></div></div>`;
   return popHtml;
-}
-
-export function onEachFeature(feature, layer) {
-  const alertClass = (val, type) => {
-    if (type === "on" && val > 0) {
-      return "alert alert-danger";
-    }
-    if (type === "close" && val > 0) {
-      return "alert alert-warning";
-    }
-    return "alert alert-success";
-  };
-
-  const { landInfo } = this;
-  const { incidentFeature } = this;
-
-  const popStyle = { h: 3 };
-  if (this.pipelineProfile) {
-    popStyle.h = 5;
-  }
-
-  layer.on({
-    click(e) {
-      const layerInfo = landInfo[feature.properties.NAME1];
-      const totalLength = layerInfo.overlaps.reduce(getSum, 0);
-
-      this._map.fitBounds(e.target.getBounds(), {
-        padding: [200, 200],
-      });
-
-      const proximityCount = addIncidents(
-        this._map,
-        feature.properties.NAME1,
-        incidentFeature
-      );
-      const total = lengthUnits(totalLength);
-      let popHtml = `<h${popStyle.h} class="center-header">${feature.properties.NAME1}</h${popStyle.h}>`;
-
-      // first table: pipeline overlaps
-      popHtml += `<table class="table" style="margin-bottom:0px">`;
-      popHtml += `<caption>Pipeline Overlaps</caption><tbody>`;
-      layerInfo.overlaps.forEach((overlap) => {
-        const l = lengthUnits(overlap.length);
-        popHtml += `<tr><td>${overlap.plname} (${overlap.status})</td><td><b>${l[0]}${l[1]}<b></td></tr>`;
-      });
-      if (layerInfo.overlaps.length > 1) {
-        popHtml += `<tr><td>Total: </td><td><b>${total[0]}${total[1]}<b></td></tr>`;
-      }
-      popHtml += `</tbody></table>`;
-
-      // second table: incident overlaps
-      popHtml += `<table class="table" style="margin-bottom:0px">`;
-      popHtml += `<caption>Incident Overlaps</caption></table>`;
-
-      popHtml += `<div style="margin-bottom: 15px" class="${alertClass(
-        proximityCount.on,
-        "on"
-      )} col-md-12"><p>${proximityCount.on} ${plural(
-        proximityCount.on,
-        "incident",
-        false
-      )} directly within</p></div>`;
-      popHtml += `<div class="${alertClass(
-        proximityCount.close,
-        "close"
-      )} col-md-12"><p>${proximityCount.close} ${plural(
-        proximityCount.close,
-        "incident",
-        false
-      )} within 15km</p></div>`;
-      document.getElementById("intersection-details").innerHTML = popHtml;
-    },
-  });
 }
 
 export function mapLegend(map, communityLayer, metisLayer) {
@@ -476,16 +367,14 @@ export function mapLegend(map, communityLayer, metisLayer) {
 
 export function reserveTooltip(layer, landInfo) {
   const layerInfo = landInfo[layer.NAME1];
-  const totalLength = layerInfo.overlaps.reduce(getSum, 0);
-  const length = lengthUnits(totalLength);
+  const length = lengthUnits(layerInfo.overlaps.reduce(getSum, 0));
 
-  let table = `<table class="map-tooltip">`;
-  table += `<caption><b>${layer.NAME1}</b></caption>`;
-  table += `<tr><td>Land Type:&nbsp</td> <td><b>${layerInfo.meta.altype}</td></tr>`;
+  let table = `<table class="map-tooltip"><caption><b>${layer.NAME1}</b></caption>`;
+  table += htmlTableRow("Land Type:&nbsp", layerInfo.meta.altype);
   if (layerInfo.meta.bandName) {
-    table += `<tr><td>Band name:&nbsp</td> <td><b>${layerInfo.meta.bandName}</td></tr>`;
+    table += htmlTableRow("Band name:&nbsp", layerInfo.meta.bandName);
   }
-  table += `<tr><td>Total overlap:&nbsp</td> <td><b>${length[0]} ${length[1]}</td></tr>`;
+  table += htmlTableRow("Total overlap:&nbsp", `${length[0]} ${length[1]}`);
   table += `</table><i class="center-footer">Click to view details</i>`;
   return table;
 }
@@ -494,12 +383,6 @@ export function reserveTooltipSimple(layer, landInfo) {
   return `<span class="h3">${layer.NAME1} - ${
     landInfo[layer.NAME1].meta.bandName
   }</span><br><i class="center-footer">Click to view details</i>`;
-}
-
-export function clickExtraInfo() {
-  document.getElementById(
-    "intersection-details"
-  ).innerHTML = `<div class="alert alert-info"><p>Click on a <span class="region-click-text" style="background-color: ${featureStyles.reserveOverlap.fillColor};">region</span> to view extra info</p></div>`;
 }
 
 export function resetZoom(map, geoLayer, communityLayer, fly = false) {
@@ -525,24 +408,15 @@ export function resetZoom(map, geoLayer, communityLayer, fly = false) {
   }
 }
 
-export function resetListener(
-  map,
-  geoLayer,
-  communityLayer,
-  pipelineProfile = false
-) {
+export function resetListener(map, geoLayer, communityLayer) {
   document.getElementById("reset-map").addEventListener("click", () => {
     resetZoom(map, geoLayer, communityLayer, true);
     removeIncidents(map);
     map.closePopup();
-    if (pipelineProfile) {
-      clickExtraInfo();
-    } else {
-      map.youAreOn.removeHtml();
-      if (communityLayer) {
-        communityLayer.resetSpreads();
-        communityLayer.resetStyle();
-      }
+    map.youAreOn.removeHtml();
+    if (communityLayer) {
+      communityLayer.resetSpreads();
+      communityLayer.resetStyle();
     }
   });
 }

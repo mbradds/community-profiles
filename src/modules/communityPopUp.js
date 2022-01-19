@@ -1,6 +1,6 @@
 import * as L from "leaflet";
 import communityInfo from "../company_data/community_profiles/community_info.json";
-import { featureStyles } from "./util.js";
+import { featureStyles, htmlTableRow } from "./util.js";
 
 function popUpTable(landInfo, hasImage) {
   let tableHtml = "";
@@ -37,9 +37,7 @@ function popUpTable(landInfo, hasImage) {
       ["Project Spreads", land.spread],
       ["About Us", land.about],
     ].forEach((row) => {
-      table += `<tr><td>${row[0]}</td><td><strong>${
-        row[1] ? row[1] : "Not available"
-      }</strong></td></tr>`;
+      table += htmlTableRow(row[0], `${row[1] ? row[1] : "Not available"}`);
     });
     table += `</tbody></table>`;
     tableHtml += table;
@@ -216,7 +214,7 @@ export function addDigitalTerritory(
       (layer) => {
         let table = `<table class="map-tooltip">`;
         table += `<caption><b>${layer.feature.properties.Name}</b></caption>`;
-        table += `<tr><td>Land Type:&nbsp</td> <td><b>Traditional Territory</td></tr>`;
+        table += htmlTableRow("Land Type:&nbsp", "Traditional Territory");
         table += `</table><i class="center-footer">Click to view details</i>`;
         return table;
       },
