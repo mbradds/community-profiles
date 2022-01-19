@@ -4,6 +4,7 @@ import CopyWebpackPlugin from "copy-webpack-plugin";
 import MiniCssExtractPlugin from "mini-css-extract-plugin";
 import { CleanWebpackPlugin } from "clean-webpack-plugin";
 import { fileURLToPath } from "url";
+import { tutorialText } from "./src/components/tutorialText.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -34,6 +35,7 @@ const webpackOutputs = (function () {
     });
     html.push(
       new HtmlWebpackPlugin({
+        page: JSON.parse(JSON.stringify(tutorialText)),
         filename: `tutorial.html`,
         template: "src/components/tutorial.hbs",
         // inject: false,

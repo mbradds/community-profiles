@@ -1,3 +1,4 @@
+/* TODO: center images on smaller screens */
 .instruction-header {
   font-size: x-large;
   font-weight: bold;
@@ -8,10 +9,13 @@
 .center {
   display: flex;
   align-items: center;
+  flex-wrap: wrap;
 }
 img {
   border-radius: 0.2em;
   box-shadow: 0 0 10px 5px #559b37;
+  height: auto;
+  max-width: 100%;
 }
 body {
   font-size: 20px;

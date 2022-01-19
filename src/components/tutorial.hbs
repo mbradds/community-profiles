@@ -72,80 +72,9 @@
                 out.
               </li>
             </ul>
-            <div class="well">
-              <div class="row center">
-                <div class="col-md-8">
-                  <p>
-                    In addition to using the zoom options above, the map has
-                    <strong>+</strong>
-                    and
-                    <strong>-</strong>
-                    buttons that can be clicked to zoom in and out.
-                  </p>
-                  <p>
-                    The
-                    <i>layer</i>
-                    button directly below the
-                    <strong>+</strong>
-                    and
-                    <strong>-</strong>
-                    buttons can be used to filter map layers to make it less
-                    cluttered if certain map layers are not required.
-                  </p>
-                </div>
-                <div class="col-md-4">
-                  <img
-                    class="img-right"
-                    src="/images/tutorial/map-navigation.png"
-                    alt="alternatetext"
-                    width="318"
-                    height="204"
-                  />
-                </div>
-              </div>
-            </div>
-            <div class="well">
-              <div class="row center">
-                <div class="col-md-8">
-                  <p>
-                    It is highly recommended to use the fullscreen option when
-                    using the application.
-                  </p>
-                </div>
-                <div class="col-md-4">
-                  <img
-                    class="img-right"
-                    src="/images/tutorial/fullscreen.png"
-                    alt="alternatetext"
-                    width="242"
-                    height="103"
-                  />
-                </div>
-              </div>
-            </div>
-            <div class="well">
-              <div class="row center">
-                <div class="col-md-8">
-                  <p>
-                    The
-                    <i>Reset Map</i>
-                    button can be used at anytime during map navigation to
-                    re-zoom to the initial starting point. This button will also
-                    clear and reset any changes/pop-ups that appear during the
-                    use of the app.
-                  </p>
-                </div>
-                <div class="col-md-4">
-                  <img
-                    class="img-right"
-                    src="/images/tutorial/reset-map.png"
-                    alt="alternatetext"
-                    width="221"
-                    height="112"
-                  />
-                </div>
-              </div>
-            </div>
+            {{> tutorialImage text=htmlWebpackPlugin.options.page.imageSections.zoom}}
+            {{> tutorialImage text=htmlWebpackPlugin.options.page.imageSections.fullscreen}}
+            {{> tutorialImage text=htmlWebpackPlugin.options.page.imageSections.reset}}
           </details>
           <details open="open" class="mrgn-bttm-md" id="communities">
             <summary class="instruction-header">
@@ -166,34 +95,8 @@
               grey circle is used to indicate that the community is not
               neccecarily a pinpoint on the map.
             </p>
-            <div class="well">
-              <div class="row center">
-                <div class="col-md-8">
-                  <p>
-                    When hovering over a community circle, a tooltip will appear
-                    with some preliminary information. The community name is
-                    listed at the top in bold, and if available, the phonetic
-                    information will apear in brackets next to the name
-                    indicating the proper way to sound out the community name.
-                  </p>
-                  <p>
-                    When hovering over a community, the tooltip gives an
-                    indication that you can click directly on the circle to view
-                    additional information about the community. See additional
-                    instructions below.
-                  </p>
-                </div>
-                <div class="col-md-4">
-                  <img
-                    class="img-right"
-                    src="/images/tutorial/community-tooltip.png"
-                    alt="alternatetext"
-                    width="393"
-                    height="293"
-                  />
-                </div>
-              </div>
-            </div>
+            {{> tutorialImage text=htmlWebpackPlugin.options.page.imageSections.communityTooltip}}
+            {{> tutorialImage text=htmlWebpackPlugin.options.page.imageSections.communityPopup}}
           </details>
           <details open="open" class="mrgn-bttm-md" id="tmx">
             <summary class="instruction-header">

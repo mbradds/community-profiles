@@ -1,0 +1,22 @@
+<div class="well">
+  <div class="row center">
+    <div class="col-md-8">
+      {{#each text.paragraphs}}
+        <p>{{this}}</p>
+      {{/each}}
+    </div>
+    <div class="col-md-4">
+      <img
+        class="img-right"
+        src="{{text.path}}"
+        alt="alternatetext"
+        {{#if text.width}}
+        width="{{text.width}}"
+        {{/if}}
+        {{#if text.height}}
+        height="{{text.height}}"
+        {{/if}}
+      />
+    </div>
+  </div>
+</div>
