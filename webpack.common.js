@@ -9,41 +9,14 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 const webpackOutputs = (function () {
-  const filenames = [
-    ["ngtl", true],
-    ["trans_mountain", true],
-    ["alliance", false],
-    ["norman_wells", false],
-    ["enbridge_mainline", true],
-    ["keystone", true],
-    ["tcpl", true],
-    ["trans_northern", false],
-    ["westcoast", true],
-    ["montreal", false],
-    ["aurora", false],
-    ["emera", false],
-    ["foothills", false],
-    ["many_islands", false],
-    ["mnp", false],
-    ["cochin", false],
-    ["plains", false],
-    ["southern_lights", false],
-    ["tqm", false],
-    ["genesis", false],
-    ["vector", false],
-    ["westspur", false],
-    ["enbridge_bakken", false],
-  ];
+  const filenames = [["trans_mountain", true]];
 
   function entryJs() {
     const paths = {};
     filenames.forEach((name) => {
       if (name[1]) {
-        paths[`js/iamc/${name[0]}`] = `./src/entry_points/iamc/${name[0]}.js`;
+        paths[`js/iamc/${name[0]}`] = `./src/entry_points/${name[0]}.js`;
       }
-      paths[
-        `js/pipeline-profiles/${name[0]}`
-      ] = `./src/entry_points/pipeline-profiles/${name[0]}.js`;
     });
     return paths;
   }
@@ -51,25 +24,16 @@ const webpackOutputs = (function () {
   function outputHtml() {
     const html = [];
     filenames.forEach((name) => {
-      const htmls = [
-        new HtmlWebpackPlugin({
-          filename: `html/pipeline-profiles/${name[0]}.html`,
-          template: "src/components/pipeline-profiles.html",
-          chunks: [`js/pipeline-profiles/${name[0]}`],
-          minify: { collapseWhitespace: true },
-        }),
-      ];
       if (name[1]) {
-        htmls.push(
+        html.push(
           new HtmlWebpackPlugin({
-            filename: `html/${name[0]}.html`,
+            filename: `index.html`,
             template: "src/components/iamc.html",
             chunks: [`js/iamc/${name[0]}`],
             minify: { collapseWhitespace: true },
           })
         );
       }
-      html.push(...htmls);
     });
     html.push(
       new HtmlWebpackPlugin({
@@ -98,16 +62,11 @@ export default {
 
   plugins: [
     ...webpackOutputs.outputHtml(),
-    // new BundleAnalyzerPlugin(),
     new CopyWebpackPlugin({
       patterns: [
         {
           from: path.resolve(__dirname, "src", "GCWeb"),
           to: path.resolve(__dirname, "dist", "GCWeb"),
-        },
-        {
-          from: path.resolve(__dirname, "src", "index.html"),
-          to: path.resolve(__dirname, "dist", "index.html"),
         },
         {
           from: path.resolve(__dirname, "src", "components", "images"),
@@ -121,7 +80,7 @@ export default {
             "dist",
             "images"
           ),
-          to: path.resolve(__dirname, "dist", "html", "images"),
+          to: path.resolve(__dirname, "dist", "images"),
         },
         {
           from: path.resolve(
@@ -131,7 +90,7 @@ export default {
             "community_profiles",
             "images"
           ),
-          to: path.resolve(__dirname, "dist", "images"),
+          to: path.resolve(__dirname, "dist", "images", "territories"),
         },
       ],
     }),

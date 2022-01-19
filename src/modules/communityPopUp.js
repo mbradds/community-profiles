@@ -73,7 +73,7 @@ export function addCommunityLayer(map, popHeight, popWidth) {
       landMarker.bindTooltip(circleTooltip(land.info));
       const hasImage = !!land.info[0].map;
       const imgHtml = hasImage
-        ? `<img src="../images/${landName}.1.png" height="${popHeight}px" width="${popWidth}px" max-width="${popWidth}px"/>`
+        ? `<img src="../images/territories/${landName}.1.png" height="${popHeight}px" width="${popWidth}px" max-width="${popWidth}px"/>`
         : `<div class="well" style="text-align: center;"><span class="h3">Traditional Territory image not available<span></div>`;
       landMarker.bindPopup(
         `<div class="territory-popup iamc-popup">${imgHtml}${popUpTable(
