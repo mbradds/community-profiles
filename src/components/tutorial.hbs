@@ -102,13 +102,25 @@
             <summary class="instruction-header">
               Map Feature - TMX Centerline, Kilometer Posts, and Spreads
             </summary>
-            <p>Coming soon!</p>
+            <p>
+              The TMX Centerline and Kiomter posts are represented on the map in 
+              dark red. You will need to zoom in on the line to distingush 
+              between the centerline and kilometer posts.
+            </p>
+            {{> tutorialImage text=htmlWebpackPlugin.options.page.imageSections.kpTooltip}}
           </details>
           <details open="open" class="mrgn-bttm-md" id="reserves">
             <summary class="instruction-header">
               Map Feature - First Nations Reserves and Pipeline Incidents
             </summary>
-            <p>Coming soon!</p>
+            <p>
+              In addition to communities, there are a collection of First Nations 
+              Reserves displayed on the map as blue regions with a bright yellow border.
+              Behind the scenes, there is a GIS process that has identified these reserves
+              as having a direct overlap with TMX or the existing mainline.
+            </p>
+            {{> tutorialImage text=htmlWebpackPlugin.options.page.imageSections.reserveTooltip}}
+            {{> tutorialImage text=htmlWebpackPlugin.options.page.imageSections.reservePopup}}
           </details>
           <details open="open" class="mrgn-bttm-md" id="elections">
             <summary class="instruction-header">
