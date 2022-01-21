@@ -74,5 +74,31 @@ export const tutorialText = {
       width: 448,
       height: 336,
     },
+    electionSlider: {
+      paragraphs: [
+        "The slider can be moved to the right to filter communities on the map that have an election within the desired number of days (from 0 to 356 days to an election)",
+        "Once the slider is set, any communities on the map that have an election within your desired range will change color to green. Communities with elections outside of this range, or that dont have current election information will still appear on the map as small transparent grey circles.",
+      ],
+      path: "/images/tutorial/election-slider.png",
+      width: 391,
+      height: 79,
+    },
+    findMe: {
+      paragraphs: [
+        "Click on the <i>Find Me</i> button in the bottom left corner of the map. You will need to click <i>Allow</i> when prompted by your browser.",
+      ],
+      path: "/images/tutorial/find-me.png",
+      width: 163,
+      height: 171,
+    },
+    findMePopup: {
+      paragraphs: [
+        "If there are no issues with your location services, a pop-up will appear in the lower right corner of the map after the <i>Find Me</i> button is clicked. This will tell you which Territories you may be located on, with links to the source information from native-land.ca",
+        "You can move the blue location marker to other areas of the map and re-click the <i>Find Me</i> button to evaluate other locations. Once you are dont using this featuere, you can click the <i>Close</i> button on the pop-up, or the <i>Reset Map</i> button.",
+      ],
+      path: "/images/tutorial/find-me-popup.png",
+      width: 493,
+      height: 197,
+    },
   },
 };
