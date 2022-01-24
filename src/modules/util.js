@@ -39,6 +39,19 @@ export function htmlTableRow(text, value) {
   return `<tr><td>${text}</td><td><b>${value}</b></td></tr>`;
 }
 
+export function toolTipHtml(headText, midText, footText, color) {
+  let style = "margin-bottom: 5px";
+  if (color) {
+    style += `; color:${color}`;
+  }
+  let table = `<h3 class="center-header" style="${style}"><b>${headText}</b></h3>`;
+  if (midText) {
+    table += `<p class="center-footer">${midText}</p>`;
+  }
+  table += `<i class="center-footer">${footText}</i>`;
+  return table;
+}
+
 export const featureStyles = {
   territory: {
     color: cerPalette["Night Sky"],
@@ -78,6 +91,10 @@ export const featureStyles = {
     color: cerPalette.Aubergine,
     className: "no-hover",
     fillOpacity: 1,
+  },
+  mainline: {
+    color: cerPalette["Cool Grey"],
+    weight: 10,
   },
   reserveOverlap: {
     fillColor: cerPalette["Night Sky"],
@@ -325,19 +342,14 @@ export function reservePopUp(reserve) {
   return popHtml;
 }
 
-export function mapLegend(map, communityLayer, metisLayer) {
+export function mapLegend(map, communityLayer) {
   let legend = `<h4><span class="region-click-text" 
   style="height: 10px; background-color: ${featureStyles.reserveOverlap.fillColor}">
   &nbsp;&nbsp;&nbsp;</span>&nbsp;&nbsp;First Nations Reserve</h4>`;
 
-  if (metisLayer) {
-    legend += `<h4><span class="region-click-text"
-    style="height: 10px; background-color: ${featureStyles.metis.fillColor}"">
-    &nbsp;&nbsp;&nbsp;</span>&nbsp;&nbsp;Métis Settlement</h4>`;
-  }
-
   if (communityLayer) {
-    legend += `<h4 style='color:${featureStyles.tmx.fillColor};'>&#9473;&#9473; TMX</h4>`;
+    // legend += `<h4 style='color:${featureStyles.tmx.fillColor};'>&#9473;&#9473; TMX</h4>`;
+    legend += `<h4 style='color:${featureStyles.mainline.color};'>&#9473;&#9473; Mainline</h4>`;
     legend += `<h4 style='color:${featureStyles.territory.fillColor};'>&#11044; Community</h4>`;
   }
   const info = L.control();
@@ -347,11 +359,17 @@ export function mapLegend(map, communityLayer, metisLayer) {
     map.legend = this;
     return this._div;
   };
-  info.addItem = function (entry = "incidents", spread = undefined) {
+  info.addItem = function (
+    entry = "incidents",
+    spread = undefined,
+    color = undefined
+  ) {
     if (entry === "incidents") {
       this._div.innerHTML += `<h4 class="legend-temp" style='color:${featureStyles.incident.fillColor};'>&#11044; Incident</h4>`;
     } else if (entry === "spread") {
-      this._div.innerHTML += `<h4 class="legend-temp" style='color:${featureStyles.community.color};'>&#11044; Spread ${spread} communities</h4>`;
+      this._div.innerHTML += `<h4 class="legend-temp" style='color:${
+        color || featureStyles.community.color
+      };'>&#11044; Spread ${spread} communities</h4>`;
     }
   };
   info.removeItem = function () {
@@ -377,12 +395,6 @@ export function reserveTooltip(layer, landInfo) {
   table += htmlTableRow("Total overlap:&nbsp", `${length[0]} ${length[1]}`);
   table += `</table><i class="center-footer">Click to view details</i>`;
   return table;
-}
-
-export function reserveTooltipSimple(layer, landInfo) {
-  return `<span class="h3">${layer.NAME1} - ${
-    landInfo[layer.NAME1].meta.bandName
-  }</span><br><i class="center-footer">Click to view details</i>`;
 }
 
 export function resetZoom(map, geoLayer, communityLayer, fly = false) {

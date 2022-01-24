@@ -1,3 +1,7 @@
+/**
+ * deprecated
+ */
+
 import { featureStyles } from "./util.js";
 import spreadToKp from "../company_data/TransMountainPipelineULC/spreads.json";
 import spreads from "../company_data/TransMountainPipelineULC/kilometerPosts.json";

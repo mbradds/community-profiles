@@ -48,10 +48,10 @@ export const tutorialText = {
     },
     kpTooltip: {
       paragraphs: [
-        "Kilometer Posts (KP) are represented on the map as transparent maroon circles overlayed on top of the centerline. Hover over a KP to view the KP number and the project spread that the KP belongs to.",
-        "You can click on a KP to isolate the communities specific to that project spread. Once a KP is clicked, the map will zoom to fit all the communities for that spread, and the circles for these communities will change color to light blue. At this point, you can click on the <i>Reset Map</i> button or click on another KP to continue using the app.",
+        "When hovering over one of the project spreads, a tooltip will appear indicating which spread it is. You can click directly on one of the spreads to filter/isolate the communities specific to that spread.",
+        "After the click is initiated, the map will zoom to fit the desired communities, and the community circles will change color to match the spread. At this point, you can click on the <i>Reset Map</i> button or click on another spread to continue using the app.",
       ],
-      path: "/images/tutorial/kp-tooltip.png",
+      path: "/images/tutorial/spread-tooltip.png",
       width: 259,
       height: 194,
     },

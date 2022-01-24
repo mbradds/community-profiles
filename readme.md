@@ -27,4 +27,4 @@
   </h3>
 </div>
 
-This project is a joint development effort between the CER and the TMX-IAMC. The web app designed to be used by Indigenous and Non-Indigenous monitors and inspectors in the field. Features such as geo-location and map layers containing community information and activities such as incidents can assist with Indigenous consulation and activities related to the development of the TMX expansion project and the existing mainline.
+This project is a joint development effort between the CER and the TMX-IAMC. The web app is designed to be used by Indigenous and Non-Indigenous monitors and inspectors in the field. Features such as geo-location and map layers containing community information and activities such as incidents can assist with Indigenous consulation and activities related to the development of the TMX expansion project and the existing mainline.

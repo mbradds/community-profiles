@@ -11,8 +11,9 @@
             This tutorial will teach you how to use the interactive map features
             of the Community Profiles web app. For additional information, or to
             request a demo, please email
-            <a href="mailto:grant.moss@cer-rec.gc.ca">Grant Moss
-              (grant.moss@cer-rec.gc.ca)</a>.
+            <a href="mailto:grant.moss@cer-rec.gc.ca"
+              >Grant Moss (grant.moss@cer-rec.gc.ca)</a
+            >.
           </p>
           <section class="panel panel-default">
             <header class="panel-heading">
@@ -30,12 +31,16 @@
                   <a href="#communities">Map Feature - Communities</a>
                 </li>
                 <li>
-                  <a href="#tmx">Map Feature - TMX Centerline, Kilometer Posts,
-                    and Spreads</a>
+                  <a href="#tmx"
+                    >Map Feature - TMX Centerline, Kilometer Posts, and
+                    Spreads</a
+                  >
                 </li>
                 <li>
-                  <a href="#reserves">Map Feature - First Nations Reserves and
-                    Pipeline Incidents</a>
+                  <a href="#reserves"
+                    >Map Feature - First Nations Reserves and Pipeline
+                    Incidents</a
+                  >
                 </li>
                 <li>
                   <a href="#elections">Map Feature - Election Filter</a>
@@ -72,8 +77,8 @@
                 out.
               </li>
             </ul>
-            {{> tutorialImage text=htmlWebpackPlugin.options.page.imageSections.zoom}}
-            {{> tutorialImage text=htmlWebpackPlugin.options.page.imageSections.fullscreen}}
+            {{> tutorialImage text=htmlWebpackPlugin.options.page.imageSections.zoom}} 
+            {{> tutorialImage text=htmlWebpackPlugin.options.page.imageSections.fullscreen}} 
             {{> tutorialImage text=htmlWebpackPlugin.options.page.imageSections.reset}}
           </details>
           <details open="open" class="mrgn-bttm-md" id="communities">
@@ -100,12 +105,21 @@
           </details>
           <details open="open" class="mrgn-bttm-md" id="tmx">
             <summary class="instruction-header">
-              Map Feature - TMX Centerline, Kilometer Posts, and Spreads
+              Map Feature - TMX Spreads and Existing Mainline
             </summary>
             <p>
-              The TMX Centerline and Kiomter posts are represented on the map in 
-              dark red. You will need to zoom in on the line to distingush 
-              between the centerline and kilometer posts.
+              The TMX and existing mainline data comes from the
+              <a
+                href="https://www.transmountain.com/all-communities?b=47.781%2C-128.966%2C54.646%2C-107.323"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                Trans Mountain Website.
+              </a>
+              The project spreads are color coded, and have additional 
+              functionality detailed below. The existing mainline is 
+              visible as a thicker (for illustration purposes) grey line, 
+              and doesnt have any additional click functionality.
             </p>
             {{> tutorialImage text=htmlWebpackPlugin.options.page.imageSections.kpTooltip}}
           </details>
@@ -114,10 +128,11 @@
               Map Feature - First Nations Reserves and Pipeline Incidents
             </summary>
             <p>
-              In addition to communities, there are a collection of First Nations 
-              Reserves displayed on the map as blue regions with a bright yellow border.
-              Behind the scenes, there is a GIS process that has identified these reserves
-              as having a direct overlap with TMX or the existing mainline.
+              In addition to communities, there are a collection of First
+              Nations Reserves displayed on the map as blue regions with a
+              bright yellow border. Behind the scenes, there is a GIS process
+              that has identified these reserves as having a direct overlap with
+              TMX or the existing mainline.
             </p>
             {{> tutorialImage text=htmlWebpackPlugin.options.page.imageSections.reserveTooltip}}
             {{> tutorialImage text=htmlWebpackPlugin.options.page.imageSections.reservePopup}}
@@ -127,9 +142,9 @@
               Map Feature - Election Filter
             </summary>
             <p>
-              Directly below the map, there is a range slider with the default value 
-              set to <i>All</i>. This map feature can be used to find communities 
-              with upcomming elections.
+              Directly below the map, there is a range slider with the default
+              value set to <i>All</i>. This map feature can be used to find
+              communities with upcomming elections.
             </p>
             {{> tutorialImage text=htmlWebpackPlugin.options.page.imageSections.electionSlider}}
           </details>
@@ -137,14 +152,16 @@
             <summary class="instruction-header">Map Feature - Find Me</summary>
             <p>
               This map feature uses data from
-            <a
-              href="https://native-land.ca/"
-              target="_blank"
-              rel="noopener noreferrer"
-              >native-land.ca</a
-            > as well as your current location to evaluate which Indigenous Traditional 
-            Territories you are on. Make sure you have location services enabled in your
-            internet browser setting to use this feature.
+              <a
+                href="https://native-land.ca/"
+                target="_blank"
+                rel="noopener noreferrer"
+                >native-land.ca</a
+              >
+              as well as your current location to evaluate which Indigenous
+              Traditional Territories you are on. Make sure you have location
+              services enabled in your internet browser setting to use this
+              feature.
             </p>
             {{> tutorialImage text=htmlWebpackPlugin.options.page.imageSections.findMe}}
             {{> tutorialImage text=htmlWebpackPlugin.options.page.imageSections.findMePopup}}

@@ -1,4 +1,4 @@
-name: pipeline-profiles
+name: community-profiles
 channels:
   - defaults
 dependencies:
@@ -12,4 +12,4 @@ dependencies:
   - urllib3
   - bs4
   - pyodbc
-prefix: /home/grant/anaconda3/envs/pipeline-profiles
+prefix: /home/grant/anaconda3/envs/community-profiles

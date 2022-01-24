@@ -3,15 +3,6 @@ import landInfo from "../company_data/TransMountainPipelineULC/landInfo.json";
 import poly2Length from "../company_data/TransMountainPipelineULC/poly2.json";
 import incidentFeature from "../company_data/TransMountainPipelineULC/events.json";
 import meta from "../company_data/TransMountainPipelineULC/meta.json";
-import line from "../company_data/TransMountainPipelineULC/tmx.json";
-import { landDashboard } from "../modules/iamc.js";
+import { iamcDashboard } from "../modules/iamcDashboard.js";
 
-landDashboard(
-  landFeature,
-  landInfo,
-  poly2Length,
-  incidentFeature,
-  meta,
-  line,
-  false
-);
+iamcDashboard(landFeature, landInfo, poly2Length, incidentFeature, meta);
