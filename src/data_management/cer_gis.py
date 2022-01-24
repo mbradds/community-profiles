@@ -11,64 +11,40 @@ crs_proj = 'EPSG:2960'
 crs_geo = 'EPSG:4269'
 
 
-companies = {
-    "ALLIANCE PIPELINE LTD. (A159)": "Alliance Pipeline Ltd.",
-    "ENBRIDGE PIPELINES (NW) INC. (E102)": "Enbridge Norman Wells",
-    "ENBRIDGE PIPELINES INC. (E101)": "Enbridge Pipelines Inc.",
-    "FOOTHILLS PIPE LINES LTD. (F115)": "Foothills Pipe Lines Ltd.",
-    "KINDER MORGAN COCHIN ULC (K077)": "PKM Cochin ULC",
-    "MARITIMES & NORTHEAST PIPELINE MANAGEMENT LTD. (M124)": "Maritimes & Northeast Pipeline Management Ltd.",
-    "NOVA GAS TRANSMISSION LTD. (N081)": "NOVA Gas Transmission Ltd.",
-    "TRANS MOUNTAIN PIPELINE ULC (T260)": "Trans Mountain Pipeline ULC",
-    "TRANS QUÉBEC AND MARITIMES PIPELINE INC. (T201)": "Trans Quebec and Maritimes Pipeline Inc.",
-    "TRANS-NORTHERN PIPELINES INC. (T217)": "Trans-Northern Pipelines Inc.",
-    "TRANSCANADA KEYSTONE PIPELINE GP LTD. (T241)": "TransCanada Keystone Pipeline GP Ltd.",
-    "TRANSCANADA PIPELINES LIMITED (T211)": "TransCanada PipeLines Limited",
-    "WESTCOAST ENERGY INC., CARRYING ON BUSINESS AS SPECTRA ENERGY TRANSMISSION (W102)": "Westcoast Energy Inc.",
-    "AURORA PIPE LINE COMPANY LTD. (A313)": "Aurora Pipe Line Company Ltd.",
-    "EMERA BRUNSWICK PIPELINE COMPANY LTD. (E236)": "Emera Brunswick Pipeline Company Ltd.",
-    "MONTREAL PIPE LINE LIMITED (M253)": "Montreal Pipe Line Limited",
-    "MANY ISLANDS PIPE LINES (CANADA) LIMITED (M182)": "Many Islands Pipe Lines (Canada) Limited",
-    "PLAINS MIDSTREAM CANADA ULC (P384)": "Plains Midstream Canada ULC",
-    "ENBRIDGE SOUTHERN LIGHTS GP INC. ON BEHALF OF ENBRIDGE SOUTHERN LIGHTS LP (E242)": "Southern Lights Pipeline",
-    "ENBRIDGE BAKKEN PIPELINE COMPANY INC., ON BEHALF OF ENBRIDGE BAKKEN PIPELINE LIMITED PARTNE...(E256)": "Enbridge Bakken System",
-    "VECTOR PIPELINE LIMITED PARTNERSHIP (V016)": "Vector Pipeline Limited Partnership",
-    "GENESIS PIPELINE CANADA LTD. (G062)": "Genesis Pipeline Canada Ltd.",
-    "TEML WESTSPUR PIPELINES LIMITED (T309)": "Kingston Midstream Westspur Limited"
-    }
+companies = {"TRANS MOUNTAIN PIPELINE ULC (T260)": "Trans Mountain Pipeline ULC"}
 
 
-def import_tmx(crs_target=crs_proj):
-    data = gpd.read_file(os.path.join(os.getcwd(), "raw_data", "tmx/centreline.json"))
-    data = data.set_geometry('geometry')
-    data = data.to_crs(crs_target)
-    data.crs = crs_target
-    for delete in ['OBJECTID', 'FolderPath', 'Shape_Length']:
-        del data[delete]
+def import_trans_mountain(crs_target=crs_proj):
+    def process_tm(data, plname, status):
+        data = data.set_geometry('geometry')
+        data = data.to_crs(crs_target)
+        data.crs = crs_target
 
-    data['OPERATOR'] = "Trans Mountain Pipeline ULC"
-    data["PLNAME"] = "TMX"
-    data["STATUS"] = "Approved"
-    data = data.dissolve(by=['OPERATOR', 'PLNAME', 'STATUS']).reset_index()
+        data['OPERATOR'] = "Trans Mountain Pipeline ULC"
+        data["PLNAME"] = plname
+        data["STATUS"] = status
 
-    tmx = data.copy()
-    tmx = tmx.to_crs(crs_geo)
-    tmx.crs = crs_geo
-    if not os.path.isdir("../company_data/TransMountainPipelineULC"):
-        os.mkdir("../company_data/TransMountainPipelineULC")
-    tmx.to_file("../company_data/TransMountainPipelineULC/tmx.json", driver="GeoJSON")
+        data = data.dissolve(by=['OPERATOR', 'PLNAME', 'STATUS']).reset_index()
+        data['geometry'] = data.boundary
+        return data
 
-    return data
+    mainline = gpd.read_file(os.path.join(os.getcwd(), "..", "company_data", "trans_mountain_files", "existing-pipeline.json"))
+    tmx = gpd.read_file(os.path.join(os.getcwd(), "..", "company_data", "trans_mountain_files", "pipeline-spread-geometries.json"))
+
+    mainline = process_tm(mainline, "Existing Mainline", "Operating")
+    tmx = process_tm(tmx, "TMX", "Approved")
+
+    return mainline, tmx
 
 
 def import_geodata(path, d_type, crs_target):
 
-    if d_type != "incidents":
+    if d_type not in ["incidents", "pipe"]:
         data = gpd.read_file(path)
         data = data.set_geometry('geometry')
         data = data.to_crs(crs_target)
         data.crs = crs_target
-    else:
+    elif d_type != "pipe":
         data = pd.read_csv(path,
                            encoding="latin-1",
                            skiprows=0,
@@ -128,59 +104,8 @@ def import_geodata(path, d_type, crs_target):
         del data["BAND_NUMBER"]
 
     elif d_type == 'pipe':
-        pipe_remove = ['MAT_TYPE',
-                       'MAT_GRADE',
-                       'STRESS',
-                       'LABEL',
-                       'H2S',
-                       'FROM_SVY',
-                       'TO_SVY',
-                       'RBLC_TYPE',
-                       'LIC',
-                       'LINE',
-                       'SEGMENT',
-                       'SUBB',
-                       'SUBA',
-                       'TYPE',
-                       'SUBC',
-                       'OD',
-                       'PROVINCE',
-                       'WT',
-                       'MATERIAL',
-                       'JOINT',
-                       'PROTECT',
-                       'EXCOAT',
-                       'ORDER_NO',
-                       'FROM_FACIL',
-                       'TO_FACIL',
-                       'NEBGROUP',
-                       'PROV',
-                       'SOURCE',
-                       'COMMENT',
-                       'LENGTH',
-                       'LTO_YEAR',
-                       'MOP',
-                       'UPDATED',
-                       'UPI',
-                       'LENGTH_CAL']
-
-        # print(sorted(list(set(data["OPERATOR"]))))
-        # data = data[data['NEBGROUP'] == "Group 1"].copy().reset_index(drop=True)
-        # company_names = sorted(list(set(data['OPERATOR'])))
-        # print(company_names)
-        # TOOD: add a method that looks at all company names and flags a warning if a company name isnt in "replace" keys
-        # TODO: add a method that looks at "replace" keys and flags a warning if one isnt in the dataset
-        for remove in pipe_remove:
-            del data[remove]
-        data['OPERATOR'] = [x.strip() for x in data['OPERATOR']]
-        data['OPERATOR'] = data['OPERATOR'].replace(companies)
-
-        # remove the old tmx
-        data = data.drop(data[(data['STATUS'] == 'Approved') & (data['OPERATOR'] == 'Trans Mountain Pipeline ULC')].index)
-        data = data[data['STATUS'] != "Approved"].copy().reset_index(drop=True)
-        # add the new tmx
-        tmx = import_tmx()
-        data = pd.concat([data, tmx], ignore_index=True)
+        mainline, tmx = import_trans_mountain()
+        data = pd.concat([mainline, tmx], ignore_index=True)
     elif d_type == "incidents":
         remove = ['Reported Date',
                   'Nearest Populated Centre',
@@ -196,7 +121,6 @@ def import_geodata(path, d_type, crs_target):
         data = data.rename(columns={'Approximate Volume Released (m³)': 'Approximate Volume Released',
                                     'Approximate Volume Released (m3)': 'Approximate Volume Released'})
         data.crs = crs_geo
-        # data.to_file("./raw_data/incidents_geo/incidents.shp")
         data = data.to_crs(crs_proj)
         data.crs = crs_proj
 
@@ -206,14 +130,11 @@ def import_geodata(path, d_type, crs_target):
 
 def import_files(crs_target):
     data_paths = {'poly1': './raw_data/AL_TA_CA_SHP_eng/AL_TA_CA_2_129_eng.shp',
-                  'pipe': './raw_data/pipeline/pipeline.shp',
+                  'pipe': '',
                   'poly2': './raw_data/Traite_Pre_1975_Treaty_SHP/Traite_Pre_1975_Treaty_SHP.shp',
                   'incidents': './raw_data/cer_data/incident-data.csv',
                   'traditionalTerritory': './raw_data/traditional_territory/indigenousTerritories.json'}
-    # pool = mp.Pool(processes=len(data_paths))
-    # results = [pool.apply_async(import_geodata, args=(path, d_type, crs_target, )) for d_type, path in data_paths.items()]
-    # out = [p.get() for p in results]
-    # return out[0], out[1], out[2], out[3]
+
     out = {}
     for d_type, path in data_paths.items():
         out[d_type] = import_geodata(path, d_type, crs_target)
