@@ -7,29 +7,27 @@ import {
   setTitle,
   setUpHeight,
   addpoly2Length,
-  reservePopUp,
   mapLegend,
   resetZoom,
-  reserveTooltip,
   resetListener,
   plural,
   featureStyles,
   findUser,
 } from "./util.js";
-import { addCommunityLayer } from "./communityPopUp.js";
-import { spread } from "./spreads.js";
+import { addCommunityLayer } from "./addCommunityLayer.js";
+import { addReserveLayer } from "./addReserveLayer.js";
+import { tmAssets } from "./tmAssets.js";
 import territoryPolygons from "../company_data/community_profiles/indigenousTerritoriesCa.json";
 import "leaflet/dist/leaflet.css";
 import "../css/iamc.css";
 import "../css/main.css";
 
-export function landDashboard(
+export function iamcDashboard(
   landFeature,
   landInfo,
   poly2Length,
   incidentFeature,
-  meta,
-  line = false
+  meta
 ) {
   function dashboardTotals() {
     const addStyle = (val) => `<strong>${val}</strong>`;
@@ -188,13 +186,6 @@ export function landDashboard(
     mapWarning(map);
     addResetBtn(map);
 
-    if (line) {
-      const centerLine = L.geoJSON(line, {
-        style: featureStyles.tmx,
-      }).addTo(map);
-      layerControl.multi["TMX Centerline"] = centerLine;
-    }
-
     let popWidth = Math.floor(mapHeight * 0.9);
     const popHeight = Math.floor(popWidth * 0.9);
     if (user[1] < popWidth) {
@@ -204,28 +195,26 @@ export function landDashboard(
     let communityLayer = false;
     if (meta.company === "Trans Mountain Pipeline ULC") {
       communityLayer = addCommunityLayer(map, popHeight, popWidth);
-      const spreadLayer = spread(map, communityLayer);
       communityLayer.electionRangeListener();
-      layerControl.multi["TMX Spreads"] = spreadLayer;
       layerControl.multi.Communities = communityLayer;
     }
+    const [tmSpreadLayer, mainlineLayer] = tmAssets(map, communityLayer);
+    layerControl.multi.TMX = tmSpreadLayer;
+    layerControl.multi["Existing Mainline"] = mainlineLayer;
 
-    const geoLayer = L.geoJSON(landFeature, {
-      style: featureStyles.reserveOverlap,
+    const reserveLayer = addReserveLayer(
+      map,
+      landFeature,
+      featureStyles,
       landInfo,
-      incidentFeature,
-    })
-      .bindTooltip((layer) =>
-        reserveTooltip(layer.feature.properties, landInfo)
-      )
-      .bindPopup((layer) => reservePopUp(layer))
-      .addTo(map);
+      incidentFeature
+    );
 
-    layerControl.multi["First Nations Reserves"] = geoLayer;
+    layerControl.multi["First Nations Reserves"] = reserveLayer;
     onLand(map, false);
     mapLegend(map, communityLayer);
-    resetZoom(map, geoLayer, communityLayer);
-    resetListener(map, geoLayer, communityLayer);
+    resetZoom(map, reserveLayer, communityLayer);
+    resetListener(map, reserveLayer, communityLayer);
     L.control
       .layers(layerControl.single, layerControl.multi, { position: "topleft" })
       .addTo(map);

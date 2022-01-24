@@ -1,6 +1,6 @@
 import * as L from "leaflet";
 import communityInfo from "../company_data/community_profiles/community_info.json";
-import { featureStyles, htmlTableRow } from "./util.js";
+import { featureStyles, htmlTableRow, toolTipHtml } from "./util.js";
 
 function popUpTable(landInfo, hasImage) {
   let tableHtml = "";
@@ -55,10 +55,11 @@ export function addCommunityLayer(map, popHeight, popWidth) {
       )
       .join("<br>");
     const plural = landInfo.length > 1 ? "communities" : "community";
-    let table = `<h3 class="center-header" style="margin-bottom: 5px"><b>${communityNames}</b></h3>`;
-    table += `<p class="center-footer">Circle represents approximate location of the ${plural}</p>`;
-    table += `<i class="center-footer">Click to view full community info and traditional territory map</i>`;
-    return table;
+    return toolTipHtml(
+      communityNames,
+      `Circle represents approximate location of the ${plural}`,
+      "Click to view full community info and traditional territory map"
+    );
   }
 
   function addCircles() {
@@ -167,29 +168,35 @@ export function addCommunityLayer(map, popHeight, popWidth) {
         });
       });
     };
-    communityCircleLayer.findSpreads = function (highlight) {
+    communityCircleLayer.findSpreads = function (highlight, color, sprdName) {
       this.resetSlider();
       map.legend.removeItem();
       map.warningMsg.removeWarning();
       const zoomToLayer = [];
-      Object.values(this._layers).forEach((circle) => {
-        if (circle.spreadNums.includes(highlight)) {
-          circle.setStyle({
-            ...featureStyles.community,
-          });
-          zoomToLayer.push(circle);
-        }
-      });
+      const noCommunities = () =>
+        map.warningMsg.addWarning(
+          `There are no communities identified for ${sprdName}`
+        );
+      if (highlight) {
+        Object.values(this._layers).forEach((circle) => {
+          if (highlight.some((r) => circle.spreadNums.includes(r))) {
+            circle.setStyle({
+              fillColor: color,
+            });
+            zoomToLayer.push(circle);
+          }
+        });
+      } else {
+        noCommunities();
+      }
+
       if (zoomToLayer.length > 0) {
         map.fitBounds(L.featureGroup(zoomToLayer).getBounds());
-        map.legend.addItem("spread", highlight);
+        map.legend.addItem("spread", highlight, color);
       } else {
-        map.warningMsg.addWarning(
-          `There are no communities identified for Spread ${highlight}`
-        );
+        noCommunities();
       }
     };
-
     communityCircleLayer.addTo(map);
     return communityCircleLayer;
   }
