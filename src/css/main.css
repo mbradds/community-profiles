@@ -1,30 +1,69 @@
-/* shared css between iamc and pipeline-profiles */
-
 @import url("cer.css");
+@import url("sizing.css");
+@import url("loader.css");
 
-html,
-body,
-.container-fluid {
-  height: 100%;
-}
-
-#map {
+#summary-row {
   display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100%;
-  width: 100%;
+  flex-flow: row wrap;
 }
 
-#map-panel {
-  margin-bottom: 0px;
-  height: 100%;
+.summary-point {
+  display: flex;
+  flex-flow: column;
 }
 
-#map-panel-body {
-  height: 88%;
-  padding: 0px !important;
-  position: relative;
+.summary-point .alert {
+  display: flex;
+  align-items: stretch;
+  flex-direction: column;
+  flex-grow: 1;
+}
+
+.header-btn {
+  position: relative !important;
+  margin-left: auto;
+}
+
+.header-text {
+  display: inline !important;
+}
+
+.text-val {
+  font-weight: bold;
+  font-style: normal;
+}
+
+.territory-popup {
+  overflow-y: hidden;
+  overflow-x: hidden;
+}
+
+.iamc-popup tr {
+  font-size: 14px;
+}
+
+.iamc-popup p {
+  font-size: 14px;
+  margin-bottom: 0px !important;
+}
+
+#reserve-popup {
+  overflow: auto;
+}
+
+#image-disclaimer.alert > :first-child:before {
+  position: relative !important;
+}
+
+#image-disclaimer {
+  margin-top: 15px;
+  margin-bottom: 30px;
+  margin-right: 10px;
+}
+
+#image-disclaimer p {
+  margin: 1px;
+  font-size: 14px;
 }
 
 .center-vert {
@@ -87,22 +126,4 @@ body,
 .map-tooltip td {
   padding-bottom: 1px;
   padding-top: 1px;
-}
-
-.loader {
-  border: 16px solid #f3f3f3; /* Light grey */
-  border-top: 16px solid #3498db; /* Blue */
-  border-radius: 50%;
-  width: 120px;
-  height: 120px;
-  animation: spin 2s linear infinite;
-}
-
-@keyframes spin {
-  0% {
-    transform: rotate(0deg);
-  }
-  100% {
-    transform: rotate(360deg);
-  }
 }

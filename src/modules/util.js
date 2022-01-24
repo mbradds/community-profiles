@@ -149,23 +149,11 @@ export function setTitle(company) {
 export function setUpHeight() {
   let dbHeight = document.getElementById("map-panel").clientHeight;
   const userWidth = window.screen.width;
-  let userClass = "xs";
-  if (userWidth < 768) {
-    userClass = "xs";
-  } else if (userWidth >= 1200) {
-    userClass = "lg";
-  } else if (userWidth >= 992) {
-    userClass = "md";
-  } else if (userWidth >= 768) {
-    userClass = "sm";
-  }
-
   if (!dbHeight || dbHeight === 0) {
     // set dashboard to 700 pixels if I cant access client screen size
     dbHeight = 700;
   }
-
-  return [userClass, userWidth];
+  return userWidth;
 }
 
 export function addpoly2Length(treaties, company) {
