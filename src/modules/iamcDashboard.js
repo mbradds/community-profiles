@@ -11,7 +11,6 @@ import {
   resetZoom,
   resetListener,
   plural,
-  featureStyles,
   findUser,
 } from "./util.js";
 import { addCommunityLayer } from "./addCommunityLayer.js";
@@ -205,7 +204,6 @@ export function iamcDashboard(
     const reserveLayer = addReserveLayer(
       map,
       landFeature,
-      featureStyles,
       landInfo,
       incidentFeature
     );
