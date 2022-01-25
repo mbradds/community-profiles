@@ -18,7 +18,6 @@ import { addReserveLayer } from "./addReserveLayer.js";
 import { tmAssets } from "./tmAssets.js";
 import territoryPolygons from "../company_data/community_profiles/indigenousTerritoriesCa.json";
 import "leaflet/dist/leaflet.css";
-import "../css/iamc.css";
 import "../css/main.css";
 
 export function iamcDashboard(
@@ -173,7 +172,7 @@ export function iamcDashboard(
     map.warningMsg = info;
   }
 
-  function loadMap(mapHeight, user) {
+  function loadMap(mapHeight, userWidth) {
     const layerControl = { single: {}, multi: {} };
     const map = leafletBaseMap({
       div: "map",
@@ -187,8 +186,8 @@ export function iamcDashboard(
 
     let popWidth = Math.floor(mapHeight * 0.9);
     const popHeight = Math.floor(popWidth * 0.9);
-    if (user[1] < popWidth) {
-      popWidth = user[1] - 85;
+    if (userWidth < popWidth) {
+      popWidth = userWidth - 85;
     }
 
     let communityLayer = false;

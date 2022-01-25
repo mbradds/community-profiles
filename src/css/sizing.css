@@ -1,0 +1,51 @@
+html,
+body,
+.container-fluid {
+  height: 100%;
+}
+
+#map {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 800px;
+  width: 100%;
+}
+
+.map-row {
+  display: flex;
+}
+
+.map-col {
+  width: 100%;
+  display: flex;
+}
+
+#map-panel {
+  margin-bottom: 0px;
+  width: 100%;
+}
+
+#map-panel-body {
+  padding: 0px !important;
+  position: relative;
+}
+
+#map-panel-heading {
+  display: flex;
+}
+
+#map-panel-footing {
+  display: flex;
+  flex-wrap: wrap;
+  flex-flow: row wrap;
+  align-items: center;
+  justify-content: space-between;
+}
+
+#election-range-slider {
+  flex: 1;
+  min-width: 230px !important;
+  margin-left: 20px;
+  margin-right: 10px;
+}

@@ -4,43 +4,39 @@ responsive style options
 
 /* extra small screen phones (col-xs) */
 @media only screen and (max-width: 767px) {
-  #map-panel-body {
-    height: 84% !important;
+  #map {
+    height: 520px;
   }
-
-  .header-footer-percent {
-    height: 8% !important;
+  #election-range-slider {
+    margin-left: 0px !important;
+    margin-right: 0px !important;
   }
 }
 
 /* small screen tablet (col-sm) */
 @media only screen and (min-width: 768px) {
-  #map-panel-body {
-    height: 86% !important;
-  }
-
-  .header-footer-percent {
-    height: 7% !important;
+  #map {
+    height: 600px;
   }
 }
 
-/* medium screen */
-@media only screen and (min-width: 1000px) {
-  #map-panel-body {
-    height: 84% !important;
-  }
-
-  .header-footer-percent {
-    height: 8% !important;
+/* medium screen tablet */
+@media only screen and (min-width: 992px) {
+  #map {
+    height: 600px;
   }
 }
+
+/* large screens */
+@media only screen and (min-width: 1200px) {
+  #map {
+    height: 600px;
+  }
+}
+
 /* large screens */
 @media only screen and (min-width: 1600px) {
-  #map-panel-body {
-    height: 88% !important;
-  }
-
-  .header-footer-percent {
-    height: 6% !important;
+  #map {
+    height: 700px;
   }
 }
