@@ -4,8 +4,8 @@ responsive style options
 
 /* extra small screen phones (col-xs) */
 @media only screen and (max-width: 767px) {
-  #map {
-    height: 520px;
+  #map-panel {
+    min-height: 520px;
   }
   #election-range-slider {
     margin-left: 0px !important;
@@ -15,28 +15,28 @@ responsive style options
 
 /* small screen tablet (col-sm) */
 @media only screen and (min-width: 768px) {
-  #map {
-    height: 600px;
+  #map-panel {
+    min-height: 600px;
   }
 }
 
 /* medium screen tablet */
 @media only screen and (min-width: 992px) {
-  #map {
-    height: 600px;
+  #map-panel {
+    min-height: 650px;
   }
 }
 
 /* large screens */
 @media only screen and (min-width: 1200px) {
-  #map {
-    height: 600px;
+  #map-panel {
+    min-height: 650px;
   }
 }
 
 /* large screens */
 @media only screen and (min-width: 1600px) {
-  #map {
-    height: 700px;
+  #map-panel {
+    min-height: 780px;
   }
 }
