@@ -1,6 +1,7 @@
 @import url("cer.css");
 @import url("sizing.css");
 @import url("loader.css");
+@import url("responsive.css");
 
 #summary-row {
   display: flex;
