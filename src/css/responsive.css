@@ -5,11 +5,15 @@ responsive style options
 /* extra small screen phones (col-xs) */
 @media only screen and (max-width: 767px) {
   #map-panel {
-    min-height: 520px;
+    min-height: 560px;
   }
   #election-range-slider {
     margin-left: 0px !important;
     margin-right: 0px !important;
+  }
+  .legend {
+    display: none;
+    visibility: hidden;
   }
 }
 

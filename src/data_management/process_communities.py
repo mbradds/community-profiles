@@ -172,37 +172,22 @@ def processTerritoryInfo():
             landKey = row["Community"]
         else:
             landKey = row["mapFile"]
+        
+        # if landKey in land:
+        #     print(landKey)
 
         if landKey in land and land[landKey]["loc"][0] == row["Lat"] and land[landKey]["loc"][1] == row["Long"]:
-            land[landKey]["info"].append(addInfo(row))
+            print("Error: "+landKey+" already processed!")
         else:
             land[landKey] = {"loc": [row["Lat"], row["Long"]],
                              "info": [addInfo(row)]}
-
+    
     with open('../company_data/community_profiles/community_info.json', 'w') as fp:
         json.dump(land, fp)
     return df
 
 
-def spreads():
-    df = gpd.read_file("./raw_data/tmx/PUBLIC_Kilometer_Posts_1km.geojson")
-    df = df.to_crs(crs_geo)
-    df.crs = crs_geo
-    spread_list = []
-    df["Name"] = [x.split(" ")[-1] for x in df["Name"]]
-    df["Name"] = [int(float(x)) for x in df["Name"]]
-
-    for name, geo in zip(df["Name"], df["geometry"]):
-        spread_list.append({
-            "n": name,
-            "l": [round(geo.y, 3), round(geo.x, 3)]})
-    with open('../company_data/TransMountainPipelineULC/kilometerPosts.json', 'w') as fp:
-        json.dump(spread_list, fp)
-    return spread_list
-
-
 if __name__ == "__main__":
     print("updating tranditional territory metadata...")
     df_community = processTerritoryInfo()
-    df_spreads = spreads()
     print("done!")

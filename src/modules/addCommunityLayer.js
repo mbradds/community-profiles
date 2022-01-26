@@ -69,6 +69,7 @@ export function addCommunityLayer(map, popHeight, popWidth) {
       const landMarker = L.circleMarker([land.loc[0], land.loc[1]], params);
       landMarker.electionDate = land.info.map((l) => l.election);
       landMarker.spreadNums = land.info.map((l) => l.spreadNumber);
+      landMarker.communityName = land.info[0].community;
       landMarker.bindTooltip(circleTooltip(land.info));
       const hasImage = !!land.info[0].map;
       const imgHtml = hasImage
@@ -110,6 +111,21 @@ export function addCommunityLayer(map, popHeight, popWidth) {
         });
       });
       this.resetSlider();
+    };
+
+    communityCircleLayer.getNames = function () {
+      return Object.values(this._layers).map((circle) => ({
+        name: circle.communityName,
+        id: circle._leaflet_id,
+      }));
+    };
+
+    communityCircleLayer.zoomToId = function (id) {
+      Object.values(this._layers).forEach((layer) => {
+        if (layer._leaflet_id === id) {
+          map.flyTo(layer._latlng, 11);
+        }
+      });
     };
 
     communityCircleLayer.electionRangeListener = function () {
