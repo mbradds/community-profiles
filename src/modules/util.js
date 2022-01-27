@@ -273,6 +273,7 @@ export function resetListener(map, geoLayer, communityLayer) {
     if (communityLayer) {
       communityLayer.resetSpreads();
       communityLayer.resetStyle();
+      communityLayer.resetSearch();
     }
   });
 }

@@ -37,6 +37,7 @@ body,
 
 #map-panel-heading {
   display: flex;
+  flex-wrap: wrap;
 }
 
 #map-panel-footing {
@@ -52,4 +53,25 @@ body,
   min-width: 230px !important;
   margin-left: 20px;
   margin-right: 10px;
+}
+
+/* community search  */
+#find-communities-container {
+  display: flex;
+  max-width: 60%;
+  flex-wrap: wrap;
+}
+
+#community-search-error .alert {
+  margin-bottom: 0px !important;
+  padding: 3px !important;
+  margin-left: 10px;
+}
+
+#community-search-error {
+  display: flex;
+}
+
+#community-search {
+  max-width: 100%;
 }

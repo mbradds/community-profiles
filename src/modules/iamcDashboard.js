@@ -4,7 +4,6 @@ import pointInPolygon from "point-in-polygon";
 import {
   leafletBaseMap,
   lengthUnits,
-  // setTitle,
   setUpHeight,
   addpoly2Length,
   mapLegend,
@@ -16,7 +15,6 @@ import {
 import { addCommunityLayer } from "./addCommunityLayer.js";
 import { addReserveLayer } from "./addReserveLayer.js";
 import { tmAssets } from "./tmAssets.js";
-import { searchCommunities } from "./searchCommunities.js";
 import territoryPolygons from "../company_data/community_profiles/indigenousTerritoriesCa.json";
 import "leaflet/dist/leaflet.css";
 import "../css/main.css";
@@ -195,7 +193,7 @@ export function iamcDashboard(
     if (meta.company === "Trans Mountain Pipeline ULC") {
       communityLayer = addCommunityLayer(map, popHeight, popWidth);
       communityLayer.electionRangeListener();
-      searchCommunities(map, communityLayer);
+      communityLayer.searchCommunities();
       layerControl.multi.Communities = communityLayer;
     }
     const [tmSpreadLayer, mainlineLayer] = tmAssets(map, communityLayer);

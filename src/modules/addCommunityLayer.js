@@ -88,7 +88,7 @@ export function addCommunityLayer(map, popHeight, popWidth) {
       return landMarker;
     });
 
-    const communityCircleLayer = L.featureGroup(landCircles);
+    const communityLayer = L.featureGroup(landCircles);
 
     const setDisplayDays = (days) => {
       const display = document.getElementById("election-days-display");
@@ -99,12 +99,12 @@ export function addCommunityLayer(map, popHeight, popWidth) {
       display.innerHTML = `<span>Days to election: (${displayDays})</span>`;
     };
 
-    communityCircleLayer.resetSlider = function () {
+    communityLayer.resetSlider = function () {
       document.getElementById("election-range-slider").value = "366";
       setDisplayDays("All");
     };
 
-    communityCircleLayer.resetStyle = function () {
+    communityLayer.resetStyle = function () {
       Object.values(this._layers).forEach((circle) => {
         circle.setStyle({
           ...featureStyles.territory,
@@ -113,14 +113,14 @@ export function addCommunityLayer(map, popHeight, popWidth) {
       this.resetSlider();
     };
 
-    communityCircleLayer.getNames = function () {
+    communityLayer.getNames = function () {
       return Object.values(this._layers).map((circle) => ({
         name: circle.communityName,
         id: circle._leaflet_id,
       }));
     };
 
-    communityCircleLayer.zoomToId = function (id) {
+    communityLayer.zoomToId = function (id) {
       Object.values(this._layers).forEach((layer) => {
         if (layer._leaflet_id === id) {
           map.flyTo(layer._latlng, 11);
@@ -128,7 +128,7 @@ export function addCommunityLayer(map, popHeight, popWidth) {
       });
     };
 
-    communityCircleLayer.electionRangeListener = function () {
+    communityLayer.electionRangeListener = function () {
       setDisplayDays("All");
       const slider = document.getElementById("election-range-slider");
       slider.addEventListener("change", () => {
@@ -138,7 +138,7 @@ export function addCommunityLayer(map, popHeight, popWidth) {
       });
     };
 
-    communityCircleLayer.filterElections = function (dayRange) {
+    communityLayer.filterElections = function (dayRange) {
       this._map.legend.removeItem();
       const currentDate = Date.now();
       if (dayRange !== "All") {
@@ -176,7 +176,7 @@ export function addCommunityLayer(map, popHeight, popWidth) {
       }
     };
 
-    communityCircleLayer.resetSpreads = function () {
+    communityLayer.resetSpreads = function () {
       map.warningMsg.removeWarning();
       Object.values(this._layers).forEach((circle) => {
         circle.setStyle({
@@ -184,7 +184,7 @@ export function addCommunityLayer(map, popHeight, popWidth) {
         });
       });
     };
-    communityCircleLayer.findSpreads = function (highlight, color, sprdName) {
+    communityLayer.findSpreads = function (highlight, color, sprdName) {
       this.resetSlider();
       map.legend.removeItem();
       map.warningMsg.removeWarning();
@@ -213,8 +213,57 @@ export function addCommunityLayer(map, popHeight, popWidth) {
         noCommunities();
       }
     };
-    communityCircleLayer.addTo(map);
-    return communityCircleLayer;
+
+    communityLayer.searchCommunities = function () {
+      let options = "";
+      this.getNames().forEach((name) => {
+        options += `<option data-id=${name.id} label="" value="${name.name}"></option>`;
+      });
+      document.getElementById("find-communities-container").innerHTML = `
+      <input type="text" id="community-search" name="community-search" list="suggestions" />
+      <button class="btn btn-primary btn-xs header-btn" id="find-communities-btn">Find Community</button>
+      <datalist id="suggestions">
+      ${options}
+      </datalist>
+      <div id="community-search-error"></div>`;
+      document
+        .getElementById("find-communities-btn")
+        .addEventListener("click", () => {
+          const listItems = document.getElementById("suggestions");
+          const listObj = document.getElementById("community-search");
+
+          let foundId;
+          Array.from(listItems.options).forEach((item) => {
+            if (item.value === listObj.value) {
+              foundId = parseInt(item.getAttribute("data-id"), 10);
+            }
+          });
+          if (foundId) {
+            this.resetSearchError();
+            this.zoomToId(foundId);
+          } else {
+            this.searchError("Cant find community");
+          }
+        });
+    };
+
+    communityLayer.searchError = function (message) {
+      document.getElementById(
+        "community-search-error"
+      ).innerHTML = `<div class="alert alert-danger"><span>${message}</span></div>`;
+    };
+
+    communityLayer.resetSearchError = function () {
+      document.getElementById("community-search-error").innerHTML = "";
+    };
+
+    communityLayer.resetSearch = function () {
+      document.getElementById("community-search").value = "";
+      this.resetSearchError();
+    };
+
+    communityLayer.addTo(map);
+    return communityLayer;
   }
   return addCircles();
 }
