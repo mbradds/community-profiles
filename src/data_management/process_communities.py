@@ -2,8 +2,6 @@ import os
 import json
 import pandas as pd
 import numpy as np
-import geopandas as gpd
-from cer_gis import crs_geo
 from util import set_cwd_to_script
 set_cwd_to_script()
 

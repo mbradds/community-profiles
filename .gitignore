@@ -7,6 +7,7 @@ __pycache__
 *.twb
 *.tde
 *.twbx
+*.xlsx#
 *.twbr
 *.pickle
 .ipynb_checkpoints
@@ -14,7 +15,7 @@ __pycache__
 src/data_management/raw_data/*
 !src/data_management/raw_data/cer_data
 !src/data_management/raw_data/tmx
-!src/data_management/raw_data/traditional_territory/TMX_IAMC_Indigenous_Community_Profiles.xlsx
+!src/data_management/raw_data/traditional_territory
 node_modules
 npm-debug.log
 .DS_Store
