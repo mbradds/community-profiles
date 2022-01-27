@@ -89,8 +89,6 @@ export function addCommunityLayer(map, popHeight, popWidth) {
       return landMarker;
     });
 
-    const communityLayer = L.featureGroup(landCircles);
-
     const setDisplayDays = (days) => {
       const display = document.getElementById("election-days-display");
       const displayDays =
@@ -99,6 +97,8 @@ export function addCommunityLayer(map, popHeight, popWidth) {
           : `<strong style="color:${featureStyles.territoryElection.fillColor}";>${days} or less</strong>`;
       display.innerHTML = `<span>Days to election: (${displayDays})</span>`;
     };
+
+    const communityLayer = L.featureGroup(landCircles);
 
     communityLayer.resetSlider = function () {
       document.getElementById("election-range-slider").value = "366";
@@ -267,45 +267,4 @@ export function addCommunityLayer(map, popHeight, popWidth) {
     return communityLayer;
   }
   return addCircles();
-}
-
-/**
- * deprecated
- */
-export function addDigitalTerritory(
-  territory,
-  digitalMatch,
-  popHeight,
-  popWidth
-) {
-  const digitalTerritoryLayer = L.geoJSON(territory, {
-    style(feature) {
-      return { color: feature.properties.color };
-    },
-  })
-    .bindTooltip(
-      (layer) => {
-        let table = `<table class="map-tooltip">`;
-        table += `<caption><b>${layer.feature.properties.Name}</b></caption>`;
-        table += htmlTableRow("Land Type:&nbsp", "Traditional Territory");
-        table += `</table><i class="center-footer">Click to view details</i>`;
-        return table;
-      },
-      { sticky: true }
-    )
-    .bindPopup(
-      (layer) => {
-        const cerInfo = digitalMatch[layer.feature.properties.Slug];
-        return `<div class="territory-popup iamc-popup"><img src="../images/${
-          cerInfo[0].map
-        }.1.png" height="${popHeight}px" width="${popWidth}px" max-width="${popWidth}px"/>${popUpTable(
-          cerInfo
-        )}</div>`;
-      },
-      { maxHeight: `${popHeight}`, maxWidth: `${popWidth}` }
-    );
-  digitalTerritoryLayer.on("add", () => {
-    digitalTerritoryLayer.bringToBack();
-  });
-  return digitalTerritoryLayer;
 }

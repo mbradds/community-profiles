@@ -15,7 +15,6 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "set NODE_OPTIONS=--max_old_space_size=15192 && webpack --config webpack.prod.js",
     "analyze-build": "webpack --config webpack.analyze.js",
-    "heroku-postbuild": "webpack --config webpack.prod.js",
     "dev": "set NODE_OPTIONS=--max_old_space_size=15192 && webpack serve --config webpack.dev.js",
     "minify-maps": "sh ./scripts/maps_min.sh",
     "get-map-data": "conda run -n community-profiles python src/data_management/get_map_files.py",
