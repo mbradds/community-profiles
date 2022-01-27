@@ -241,7 +241,7 @@ export function addCommunityLayer(map, popHeight, popWidth) {
           if (foundId) {
             this.resetSearchError();
             this.zoomToId(foundId);
-          } else {
+          } else if (listObj.value !== "") {
             this.searchError("Cant find community");
           }
         });
