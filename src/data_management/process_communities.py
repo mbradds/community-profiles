@@ -19,7 +19,6 @@ def next_election(df, col="Leadership"):
                 this_election = this_election.split(".")[0]
             if this_election[0] == ",":
                 this_election = this_election[1:]
-            # print(this_election)
             this_election = this_election.strip().capitalize()
             elections.append(this_election)
         else:
@@ -27,12 +26,15 @@ def next_election(df, col="Leadership"):
     df["nextElection"] = elections
     df["nextElection"] = pd.to_datetime(df["nextElection"], errors="coerce")
     elections_list = []
+    no_data = 0
     for date in df["nextElection"]:
         if date.year > 0:
             elections_list.append([date.month, date.day, date.year])
         else:
             elections_list.append([])
+            no_data += 1
     df['nextElection'] = elections_list
+    print("There are "+str(no_data)+" communities without election data, out of "+str(len(elections_list))+" communities.")
     return df
 
 
@@ -90,6 +92,7 @@ def processTerritoryInfo():
                     "Contact Information",
                     "Protocol",
                     "Project Spreads",
+                    "Concerns - Issues",
                     "History",
                     "Community Website"]:
 
@@ -106,7 +109,7 @@ def processTerritoryInfo():
     df = pd.merge(df, sources, how="left", left_on="Community", right_on="Community")
     df = df.where(df.notnull(), None)
     df = next_election(df)
-    
+
     no_website = ["No Community Website", "No official Community site", "Not Available"]
     for no_site in no_website:
         df["Community Website"] = df["Community Website"].replace({no_site: None})
@@ -155,6 +158,7 @@ def processTerritoryInfo():
                 "address": row["Address"],
                 "contactInfo": row["Contact Information"],
                 "protocol": row["Protocol"],
+                "concerns": row["Concerns - Issues"],
                 "about": row["History"],
                 "spread": row["Project Spreads"],
                 "web": row["Community Website"],
@@ -170,16 +174,13 @@ def processTerritoryInfo():
             landKey = row["Community"]
         else:
             landKey = row["mapFile"]
-        
-        # if landKey in land:
-        #     print(landKey)
 
         if landKey in land and land[landKey]["loc"][0] == row["Lat"] and land[landKey]["loc"][1] == row["Long"]:
             print("Error: "+landKey+" already processed!")
         else:
             land[landKey] = {"loc": [row["Lat"], row["Long"]],
                              "info": [addInfo(row)]}
-    
+
     with open('../company_data/community_profiles/community_info.json', 'w') as fp:
         json.dump(land, fp)
     return df

@@ -2,7 +2,7 @@ export const tutorialText = {
   imageSections: {
     zoom: {
       paragraphs: [
-        "In addition to using the zoom options above, the map has <strong>+</strong> and <strong>-</strong> buttons that can be clicked to zoom in and out.",
+        "In addition to using the zoom options above, the map has <strong>+</strong> and <strong>-</strong> buttons (upper left corner of the map) that can be clicked to zoom in and out.",
         "The <i>layer</i> button directly below the <strong>+</strong> and <strong>-</strong> buttons can be used to filter map layers to make it less cluttered if certain map layers are not required.",
       ],
       path: "/images/tutorial/map-navigation.png",
@@ -11,7 +11,7 @@ export const tutorialText = {
     },
     fullscreen: {
       paragraphs: [
-        "It is highly recommended to use the fullscreen option when using the application.",
+        "It is highly recommended to use the fullscreen option (upper right corner of the map) when using the application.",
       ],
       path: "/images/tutorial/fullscreen.png",
       width: 242,
@@ -19,7 +19,7 @@ export const tutorialText = {
     },
     reset: {
       paragraphs: [
-        "The <i>Reset Map</i> button can be used at anytime during map navigation to re-zoom to the initial starting point. This button will also clear and reset any changes/pop-ups that appear during the use of the app.",
+        "The <i>Reset Map</i> button (bottom left corner of the map) can be used at anytime during map navigation to re-zoom to the initial starting point. This button will also clear and reset any changes/pop-ups that appear during the use of the app.",
       ],
       path: "/images/tutorial/reset-map.png",
       width: 221,
@@ -45,6 +45,13 @@ export const tutorialText = {
       path: "/images/tutorial/community-popup.png",
       width: 469,
       height: 428,
+    },
+    communitySearch: {
+      paragraphs: [
+        "The community search function (upper left corner of the map) can be used to find specific communities.",
+        "Click on the white search box to get a drop down list of all the communities contained in the map. Select the community name you are interested in, and then click the <i>Find Community</i> button. The map will then zoom in and center on that community.",
+      ],
+      path: "/images/tutorial/search-communities.png",
     },
     kpTooltip: {
       paragraphs: [

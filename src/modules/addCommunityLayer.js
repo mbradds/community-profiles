@@ -35,6 +35,7 @@ function popUpTable(landInfo, hasImage) {
       ["Address", land.address],
       ["Protocol", land.protocol],
       ["Project Spreads", land.spread],
+      ["Concerns - Issues", land.concerns],
       ["About Us", land.about],
     ].forEach((row) => {
       table += htmlTableRow(row[0], `${row[1] ? row[1] : "Not available"}`);
@@ -123,7 +124,7 @@ export function addCommunityLayer(map, popHeight, popWidth) {
     communityLayer.zoomToId = function (id) {
       Object.values(this._layers).forEach((layer) => {
         if (layer._leaflet_id === id) {
-          map.flyTo(layer._latlng, 11);
+          map.setView(layer._latlng, 10);
         }
       });
     };
