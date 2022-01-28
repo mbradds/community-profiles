@@ -35,10 +35,24 @@ function openFullscreen() {
 
 window.openFullscreen = openFullscreen;
 
+/**
+ *
+ * @param {string} text The row key
+ * @param {string} value The row value
+ * @returns {string} HTML table row
+ */
 export function htmlTableRow(text, value) {
   return `<tr><td>${text}</td><td><b>${value}</b></td></tr>`;
 }
 
+/**
+ *
+ * @param {string} headText Centered <h3> sized tooltip title
+ * @param {string} midText Optional <p> in between headText and footText
+ * @param {string} footText Centered <i> text at the bottom of the tooltip
+ * @param {string} color Optional color for the headText
+ * @returns {string} HTML table
+ */
 export function toolTipHtml(headText, midText, footText, color) {
   let style = "margin-bottom: 5px";
   if (color) {
@@ -120,6 +134,15 @@ export const featureStyles = {
   },
 };
 
+/**
+ * Creates an empty leaflet map object
+ * @param {Object} config Set up options for the leaflet map object
+ * @param {string} config.div HTML div where the map will be rendered
+ * @param {number} config.zoomDelta Zoom increment for the map
+ * @param {Array.<number>} config.initZoomTo [lat, -long] initial map center
+ * @param {string} config.initZoomLevel Initial zoom level for the map
+ * @returns {Object} leaflet map
+ */
 export function leafletBaseMap(config) {
   const map = new L.map(config.div, {
     zoomDelta: config.zoomDelta,
@@ -135,6 +158,11 @@ export function leafletBaseMap(config) {
   return map;
 }
 
+/**
+ * Converts a length number in meters to kilometers if val is over 1km
+ * @param {number} val The length number in meters
+ * @returns {[number, string]}
+ */
 export function lengthUnits(val) {
   if (val >= 1000) {
     return [(val / 1000).toFixed(1), "km"];
@@ -142,10 +170,18 @@ export function lengthUnits(val) {
   return [val.toFixed(1), "m"];
 }
 
+/**
+ * deprecated
+ * @param {string} company
+ */
 export function setTitle(company) {
   document.getElementById("leaflet-map-title").innerText = `Map - ${company}`;
 }
 
+/**
+ * Gets client screen width for sizing the community popup and traditional territory image
+ * @returns {number} Pixel width of ther users window
+ */
 export function setUpHeight() {
   let dbHeight = document.getElementById("map-panel").clientHeight;
   const userWidth = window.screen.width;
@@ -156,6 +192,11 @@ export function setUpHeight() {
   return userWidth;
 }
 
+/**
+ * Adds an HTML table with the pipeline intersection length with numbered treaties
+ * @param {Object[]} treaties Info about numbered treaty overlap
+ * @param {string} company Company name
+ */
 export function addpoly2Length(treaties, company) {
   let treatyHtml = `<table class="table"><thead><tr><th scope="col" class="col-sm-6">Treaty Name</th><th scope="col" class="col-sm-6">Operating Km</th></tr></thead><tbody>`;
   treaties.forEach((land) => {
@@ -172,6 +213,10 @@ export function addpoly2Length(treaties, company) {
   ).innerText = `${company} & Historic Treaty Land`;
 }
 
+/**
+ * Clears incident circles from the map and resets the map legend
+ * @param {Object} map leaflet map object
+ */
 export function removeIncidents(map) {
   map.legend.removeItem();
   map.eachLayer((layer) => {
@@ -181,10 +226,23 @@ export function removeIncidents(map) {
   });
 }
 
+/**
+ * Intermediate function used in array.reduce
+ * @param {number} total
+ * @param {Object} num
+ * @returns {number}
+ */
 export function getSum(total, num) {
   return total + num.length;
 }
 
+/**
+ * Looks at the number of events (val) and determines if the singular or plural of (type) should be displayed to the user
+ * @param {number} val The number of incidents, or number of First Nations Reserves
+ * @param {string} type The event name
+ * @param {boolean} [cap=false] Whether the returned word should be capitalized
+ * @returns {string} The input type with the proper singular/plural case
+ */
 export function plural(val, type, cap = false) {
   function capitalize(s, c) {
     if (c) {
@@ -201,6 +259,12 @@ export function plural(val, type, cap = false) {
   return type;
 }
 
+/**
+ *
+ * @param {Object} map leaflet map object
+ * @param {Object} communityLayer leaflet featureGroup for communities
+ * @returns {Object} leaflet control object for map legend
+ */
 export function mapLegend(map, communityLayer) {
   let legend = `<h4><span class="region-click-text" 
   style="height: 10px; background-color: ${featureStyles.reserveOverlap.fillColor}">
@@ -241,6 +305,13 @@ export function mapLegend(map, communityLayer) {
   return info;
 }
 
+/**
+ * Resets the map zoom to default showing all communities and First Nations Reserves
+ * @param {Object} map leaflet map object
+ * @param {Object} geoLayer First Nations Reserves leaflet geojson layer
+ * @param {Object} communityLayer leaflet featureGroup for communities
+ * @param {boolean} [fly=false]
+ */
 export function resetZoom(map, geoLayer, communityLayer, fly = false) {
   let padd = [25, 25];
   let fullBounds = geoLayer.getBounds();
@@ -264,6 +335,12 @@ export function resetZoom(map, geoLayer, communityLayer, fly = false) {
   }
 }
 
+/**
+ * Binds an event listener to the "Reset Map" button for re-setting zoom and other map elements
+ * @param {Object} map leaflet map object
+ * @param {Object} geoLayer First Nations Reserves leaflet geojson layer
+ * @param {Object} communityLayer leaflet featureGroup for communities
+ */
 export function resetListener(map, geoLayer, communityLayer) {
   document.getElementById("reset-map").addEventListener("click", () => {
     resetZoom(map, geoLayer, communityLayer, true);
@@ -278,6 +355,11 @@ export function resetListener(map, geoLayer, communityLayer) {
   });
 }
 
+/**
+ * Finds the user's location, adds a market, and saves location info in map object
+ * @param {Object} map leaflet map object
+ * @returns {Promise}
+ */
 export async function findUser(map) {
   return new Promise((resolve, reject) => {
     map

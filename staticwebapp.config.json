@@ -1,0 +1,22 @@
+{
+  "routes": [
+    {
+      "route": "/GCWeb/*.css",
+      "headers": {
+        "Cache-Control": "public, max-age=86400"
+      }
+    },
+    {
+      "route": "/shared/*.js",
+      "headers": {
+        "Cache-Control": "public, max-age=86400"
+      }
+    },
+    {
+      "route": "/js/iamc/*.js",
+      "headers": {
+        "Cache-Control": "public, max-age=86400"
+      }
+    }
+  ]
+}
