@@ -2,6 +2,12 @@ import * as L from "leaflet";
 import communityInfo from "../company_data/community_profiles/community_info.json";
 import { featureStyles, htmlTableRow, toolTipHtml } from "./util.js";
 
+/**
+ * Generates an HTML partial for the community pop-up information
+ * @param {Object[]} landInfo Community information for the pop-up
+ * @param {boolean} hasImage Specifies if the pop-up will have a traditional territory image
+ * @returns {string} HTML partial to be added to the leaflet community pop-up
+ */
 function popUpTable(landInfo, hasImage) {
   let tableHtml = "";
   if (hasImage) {
@@ -46,6 +52,13 @@ function popUpTable(landInfo, hasImage) {
   return tableHtml;
 }
 
+/**
+ * Generates a leaflet featureLayer for the communities
+ * @param {Object} map leaflet map object
+ * @param {number} popHeight Height of the pop-up
+ * @param {number} popWidth Width of the pop-up
+ * @returns {Object} leaflet featureLayer for the communities
+ */
 export function addCommunityLayer(map, popHeight, popWidth) {
   function circleTooltip(landInfo) {
     const communityNames = landInfo

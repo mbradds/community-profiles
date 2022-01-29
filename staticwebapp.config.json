@@ -13,7 +13,7 @@
       }
     },
     {
-      "route": "/js/iamc/*.js",
+      "route": "/js/*.js",
       "headers": {
         "Cache-Control": "public, max-age=86400"
       }

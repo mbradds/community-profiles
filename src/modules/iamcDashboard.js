@@ -19,18 +19,23 @@ import territoryPolygons from "../company_data/community_profiles/indigenousTerr
 import "leaflet/dist/leaflet.css";
 import "../css/main.css";
 
+/**
+ * Sets the summary statistics above the map
+ * @param {Object} landFeature First Nations Reserve geojson
+ * @param {Object} incidentFeature Corresponding incident info for each reserve
+ * @param {Object} meta Company name and total reserve overlap length
+ */
 function dashboardTotals(landFeature, incidentFeature, meta) {
   const addStyle = (val) => `<strong>${val}</strong>`;
   const flagClass = (val) =>
     val > 0 ? "alert alert-danger" : "alert alert-success";
 
-  const totalFeatures = landFeature.features.length;
   const lengthInfo = lengthUnits(meta.totalLength);
   const htmlLiOver = `Approximately ${addStyle(lengthInfo[0])} ${
     lengthInfo[1]
   } of regulated pipeline passes directly through ${addStyle(
-    totalFeatures
-  )} First Nations ${plural(totalFeatures, "reserve", true)}.`;
+    landFeature.features.length
+  )} First Nations ${plural(landFeature.features.length, "reserve", true)}.`;
   document.getElementById("overlap-meta-point").innerHTML = htmlLiOver;
 
   const incidentMeta = incidentFeature.meta;
@@ -56,6 +61,10 @@ function dashboardTotals(landFeature, incidentFeature, meta) {
   document.getElementById("incident-meta-point-off").innerHTML = htmlLiIncOff;
 }
 
+/**
+ * Adds a leaflet control object for the "Reset Map" button
+ * @param {Object} map leaflet map object
+ */
 function addResetBtn(map) {
   const info = L.control({ position: "bottomleft" });
   info.onAdd = function () {
@@ -66,6 +75,10 @@ function addResetBtn(map) {
   info.addTo(map);
 }
 
+/**
+ * Evaluates the users location against traditional territory's
+ * @param {Object} map leaflet map object
+ */
 function onLand(map) {
   const nearbyStuff = (mapWithUser) => {
     const youAreOn = [];
@@ -146,6 +159,10 @@ function onLand(map) {
   });
 }
 
+/**
+ * Adds a leaflet map control to the bottom right corner
+ * @param {Object} map leaflet map object
+ */
 function mapWarning(map) {
   const info = L.control({ position: "bottomright" });
   info.onAdd = function () {
@@ -163,6 +180,11 @@ function mapWarning(map) {
   map.warningMsg = info;
 }
 
+/**
+ * Adds a layer control filter to the map
+ * @param {Object[]} layers list of all the map layers to be added to the filter
+ * @param {Object} map leaflet map object
+ */
 function addLayerControl(layers, map) {
   const layerControl = { single: {}, multi: {} };
   layers.forEach((layer) => {
@@ -173,6 +195,15 @@ function addLayerControl(layers, map) {
     .addTo(map);
 }
 
+/**
+ * Loads the basemap and all the map layers
+ * @param {number} mapHeight height of the map container
+ * @param {number} userWidth width of the users screen
+ * @param {Object} landFeature First Nations Reserve geojson
+ * @param {Object} landInfo Information on overlaps for each First Nations Reserve
+ * @param {Object} incidentFeature Information on incidents for each First Nations Reserve
+ * @returns {Object} leaflet map object
+ */
 function loadMap(mapHeight, userWidth, landFeature, landInfo, incidentFeature) {
   const map = leafletBaseMap({
     div: "map",
@@ -211,13 +242,21 @@ function loadMap(mapHeight, userWidth, landFeature, landInfo, incidentFeature) {
     map
   );
 
-  onLand(map, false);
+  onLand(map);
   mapLegend(map, communityLayer);
   resetZoom(map, reserveLayer, communityLayer);
   resetListener(map, reserveLayer, communityLayer);
   return map;
 }
 
+/**
+ * Loads non map components (totals, treaty overlaps)
+ * @param {Object[]} poly2Length Information about numbered treaty overlaps
+ * @param {*} landFeature
+ * @param {*} incidentFeature
+ * @param {*} meta
+ * @returns
+ */
 function loadNonMap(poly2Length, landFeature, incidentFeature, meta) {
   addpoly2Length(poly2Length, meta.company);
   dashboardTotals(landFeature, incidentFeature, meta);
@@ -225,6 +264,14 @@ function loadNonMap(poly2Length, landFeature, incidentFeature, meta) {
   return user;
 }
 
+/**
+ * Loads the main dashboard
+ * @param {*} landFeature
+ * @param {*} landInfo
+ * @param {*} poly2Length
+ * @param {*} incidentFeature
+ * @param {*} meta
+ */
 export function iamcDashboard(
   landFeature,
   landInfo,
