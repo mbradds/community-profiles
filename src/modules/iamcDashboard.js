@@ -204,7 +204,13 @@ function addLayerControl(layers, map) {
  * @param {Object} incidentFeature Information on incidents for each First Nations Reserve
  * @returns {Object} leaflet map object
  */
-function loadMap(mapHeight, userWidth, landFeature, landInfo, incidentFeature) {
+async function loadMap(
+  mapHeight,
+  userWidth,
+  landFeature,
+  landInfo,
+  incidentFeature
+) {
   const map = leafletBaseMap({
     div: "map",
     zoomDelta: 0.25,
@@ -221,7 +227,7 @@ function loadMap(mapHeight, userWidth, landFeature, landInfo, incidentFeature) {
     popWidth = userWidth - 85;
   }
 
-  const communityLayer = addCommunityLayer(map, popHeight, popWidth);
+  const communityLayer = await addCommunityLayer(map, popHeight, popWidth);
   communityLayer.electionRangeListener();
   communityLayer.searchCommunities();
   const [tmSpreadLayer, mainlineLayer] = tmAssets(map, communityLayer);

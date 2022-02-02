@@ -383,3 +383,13 @@ export async function findUser(map) {
       });
   });
 }
+
+export function appError(header, err) {
+  document.getElementById(
+    "error-container"
+  ).innerHTML = `<section class="alert alert-danger">
+  <h3>${header}</h3>
+  <p>Please try refreshing the page. If the problem persists, please submit an issue using the email below, with the following error message attached:</p>
+  ${JSON.stringify(err)}
+</section>`;
+}

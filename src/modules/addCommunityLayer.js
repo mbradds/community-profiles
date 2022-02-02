@@ -1,6 +1,30 @@
 import * as L from "leaflet";
-import communityInfo from "../company_data/community_profiles/community_info.json";
-import { featureStyles, htmlTableRow, toolTipHtml } from "./util.js";
+import { featureStyles, htmlTableRow, toolTipHtml, appError } from "./util.js";
+
+async function getStrapiData() {
+  try {
+    // const url =
+    //   process.env.NODE_ENV === "development"
+    //     ? "http://localhost:1337/api/communities"
+    //     : "http://localhost:1337/api/communities";
+    const url = "https://cp-admin.azurewebsites.net/api/communities";
+
+    const response = await fetch(url);
+
+    if (!response.ok) {
+      return appError("App Data Error", {
+        status: response.status,
+        ok: response.ok,
+        statusText: response.statusText,
+        url: response.url,
+      });
+    }
+    const data = await response.json();
+    return data.data;
+  } catch (err) {
+    return appError("App Data Error", err);
+  }
+}
 
 /**
  * Generates an HTML partial for the community pop-up information
@@ -11,8 +35,8 @@ import { featureStyles, htmlTableRow, toolTipHtml } from "./util.js";
 function popUpTable(landInfo, hasImage) {
   let tableHtml = "";
   if (hasImage) {
-    if (landInfo[0].srcLnk) {
-      tableHtml += `<p>Image source:&nbsp;<a href="${landInfo[0].srcLnk}" target="_blank">${landInfo[0].srcTxt}</a></p>`;
+    if (landInfo.MapLink) {
+      tableHtml += `<p>Image source:&nbsp;<a href="${landInfo.MapLink}" target="_blank">${landInfo.MapSource}</a></p>`;
     } else {
       tableHtml += `<p>Image source:&nbsp;not available</p>`;
     }
@@ -26,29 +50,28 @@ function popUpTable(landInfo, hasImage) {
       of each Nation.</p></div>`;
   }
 
-  landInfo.forEach((land) => {
-    let table = `<table class="table"><tbody><h2 class="center-header">${land.community}</h2>`;
-    if (land.pronounce) {
-      table += `<h3 class="center-header"><i>Pronounced: ${land.pronounce}</i></h3>`;
-    }
-    if (land.web) {
-      table += `<a class="center-header" href="${land.web}" target="_blank">Community Website</a>`;
-    }
-    [
-      ["Leadership", land.leadership],
-      ["Contact Person", land.contactPerson],
-      ["Contact Information", land.contactInfo],
-      ["Address", land.address],
-      ["Protocol", land.protocol],
-      ["Project Spreads", land.spread],
-      ["Concerns - Issues", land.concerns],
-      ["About Us", land.about],
-    ].forEach((row) => {
-      table += htmlTableRow(row[0], `${row[1] ? row[1] : "Not available"}`);
-    });
-    table += `</tbody></table>`;
-    tableHtml += table;
+  let table = `<table class="table"><tbody><h2 class="center-header">${landInfo.Name}</h2>`;
+  if (landInfo.Pronunciation) {
+    table += `<h3 class="center-header"><i>Pronounced: ${landInfo.Pronunciation}</i></h3>`;
+  }
+  if (landInfo.Website) {
+    table += `<a class="center-header" href="${landInfo.Website}" target="_blank">Community Website</a>`;
+  }
+  [
+    ["Leadership", landInfo.Leadership],
+    ["Contact Person", landInfo.ContactPerson],
+    ["Contact Information", landInfo.ContactInfo],
+    ["Address", landInfo.Address],
+    ["Protocol", landInfo.Protocol],
+    ["Project Spreads", landInfo.ProjectSpreads],
+    ["Concerns - Issues", landInfo.ConcernsOrIssues],
+    ["About Us", landInfo.History],
+  ].forEach((row) => {
+    table += htmlTableRow(row[0], `${row[1] ? row[1] : "Not available"}`);
   });
+  table += `</tbody></table>`;
+  tableHtml += table;
+
   return tableHtml;
 }
 
@@ -61,13 +84,10 @@ function popUpTable(landInfo, hasImage) {
  */
 export function addCommunityLayer(map, popHeight, popWidth) {
   function circleTooltip(landInfo) {
-    const communityNames = landInfo
-      .map((land) =>
-        !land.pronounce
-          ? land.community
-          : `${land.community}&nbsp;(<span class="glyphicon glyphicon-volume-up" aria-hidden="true"></span> <i>${land.pronounce}</i>)`
-      )
-      .join("<br>");
+    const communityNames = !landInfo.Pronunciation
+      ? landInfo.Name
+      : `${landInfo.Name}&nbsp;(<span class="glyphicon glyphicon-volume-up" aria-hidden="true"></span> <i>${landInfo.Pronunciation}</i>)`;
+
     const plural = landInfo.length > 1 ? "communities" : "community";
     return toolTipHtml(
       communityNames,
@@ -76,22 +96,28 @@ export function addCommunityLayer(map, popHeight, popWidth) {
     );
   }
 
-  function addCircles() {
-    const landCircles = Object.keys(communityInfo).map((landName) => {
-      const land = communityInfo[landName];
-      const params = featureStyles.territory;
-      const landMarker = L.circleMarker([land.loc[0], land.loc[1]], params);
-      landMarker.electionDate = land.info.map((l) => l.election);
-      landMarker.spreadNums = land.info.map((l) => l.spreadNumber);
-      landMarker.communityName = land.info[0].community;
-      landMarker.bindTooltip(circleTooltip(land.info));
-      const hasImage = !!land.info[0].map;
+  async function addCircles() {
+    const communityData = await getStrapiData();
+
+    const landCircles = communityData.map((community) => {
+      const com = community.attributes;
+      const landMarker = L.circleMarker(
+        [com.Latitude, com.Longitude],
+        featureStyles.territory
+      );
+      landMarker.electionDate = com.NextElection
+        ? new Date(com.NextElection)
+        : null;
+      landMarker.spreadNums = [com.ProjectSpreadNumber];
+      landMarker.communityName = com.Name;
+      landMarker.bindTooltip(circleTooltip(com));
+      const hasImage = com.MapFile !== null;
       const imgHtml = hasImage
-        ? `<img src="../images/territories/${landName}.1.png" height="${popHeight}px" width="${popWidth}px" max-width="${popWidth}px"/>`
+        ? `<img src="../images/territories/${com.MapFile}.1.png" height="${popHeight}px" width="${popWidth}px" max-width="${popWidth}px"/>`
         : `<div class="well" style="text-align: center;"><span class="h3">Traditional Territory image not available<span></div>`;
       landMarker.bindPopup(
         `<div class="territory-popup iamc-popup">${imgHtml}${popUpTable(
-          land.info,
+          com,
           hasImage
         )}</div>`,
         {
@@ -158,23 +184,21 @@ export function addCommunityLayer(map, popHeight, popWidth) {
       if (dayRange !== "All") {
         Object.values(this._layers).forEach((circle) => {
           let insideRange = false;
-          circle.electionDate.forEach((date) => {
-            if (date.length === 3) {
-              const thisElection = new Date(date[2], date[0] - 1, date[1]);
-              const daysUntilElection =
-                (thisElection.getTime() - currentDate) / (1000 * 3600 * 24);
-              if (
-                daysUntilElection <= parseInt(dayRange, 10) &&
-                daysUntilElection > 0
-              ) {
-                insideRange = true;
-              }
-            } else {
-              circle.setStyle({
-                ...featureStyles.territoryNoElection,
-              });
+          if (circle.electionDate) {
+            const daysUntilElection =
+              (circle.electionDate.getTime() - currentDate) /
+              (1000 * 3600 * 24);
+            if (
+              daysUntilElection <= parseInt(dayRange, 10) &&
+              daysUntilElection > 0
+            ) {
+              insideRange = true;
             }
-          });
+          } else {
+            circle.setStyle({
+              ...featureStyles.territoryNoElection,
+            });
+          }
           if (insideRange) {
             circle.setStyle({
               ...featureStyles.territoryElection,
