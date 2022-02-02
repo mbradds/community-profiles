@@ -1,30 +1,5 @@
 import * as L from "leaflet";
-import { featureStyles, htmlTableRow, toolTipHtml, appError } from "./util.js";
-
-async function getStrapiData() {
-  try {
-    // const url =
-    //   process.env.NODE_ENV === "development"
-    //     ? "http://localhost:1337/api/communities"
-    //     : "http://localhost:1337/api/communities";
-    const url = "https://cp-admin.azurewebsites.net/api/communities";
-
-    const response = await fetch(url);
-
-    if (!response.ok) {
-      return appError("App Data Error", {
-        status: response.status,
-        ok: response.ok,
-        statusText: response.statusText,
-        url: response.url,
-      });
-    }
-    const data = await response.json();
-    return data.data;
-  } catch (err) {
-    return appError("App Data Error", err);
-  }
-}
+import { featureStyles, htmlTableRow, toolTipHtml } from "./util.js";
 
 /**
  * Generates an HTML partial for the community pop-up information
@@ -60,7 +35,7 @@ function popUpTable(landInfo, hasImage) {
   [
     ["Leadership", landInfo.Leadership],
     ["Contact Person", landInfo.ContactPerson],
-    ["Contact Information", landInfo.ContactInfo],
+    ["Contact Information", landInfo.ContactInformation],
     ["Address", landInfo.Address],
     ["Protocol", landInfo.Protocol],
     ["Project Spreads", landInfo.ProjectSpreads],
@@ -82,7 +57,7 @@ function popUpTable(landInfo, hasImage) {
  * @param {number} popWidth Width of the pop-up
  * @returns {Object} leaflet featureLayer for the communities
  */
-export function addCommunityLayer(map, popHeight, popWidth) {
+export function addCommunityLayer(map, popHeight, popWidth, communityData) {
   function circleTooltip(landInfo) {
     const communityNames = !landInfo.Pronunciation
       ? landInfo.Name
@@ -97,8 +72,6 @@ export function addCommunityLayer(map, popHeight, popWidth) {
   }
 
   async function addCircles() {
-    const communityData = await getStrapiData();
-
     const landCircles = communityData.map((community) => {
       const com = community.attributes;
       const landMarker = L.circleMarker(
@@ -154,10 +127,14 @@ export function addCommunityLayer(map, popHeight, popWidth) {
     };
 
     communityLayer.getNames = function () {
-      return Object.values(this._layers).map((circle) => ({
-        name: circle.communityName,
-        id: circle._leaflet_id,
-      }));
+      return Object.values(this._layers)
+        .map((circle) => ({
+          name: circle.communityName,
+          id: circle._leaflet_id,
+        }))
+        .sort((a, b) =>
+          a.name.toLowerCase().localeCompare(b.name.toLowerCase())
+        );
     };
 
     communityLayer.zoomToId = function (id) {

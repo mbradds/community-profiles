@@ -15,6 +15,7 @@ import {
 import { addCommunityLayer } from "./addCommunityLayer.js";
 import { addReserveLayer } from "./addReserveLayer.js";
 import { tmAssets } from "./tmAssets.js";
+import { getCommunityData } from "./getCommunityData.js";
 import territoryPolygons from "../company_data/community_profiles/indigenousTerritoriesCa.json";
 import "leaflet/dist/leaflet.css";
 import "../css/main.css";
@@ -211,6 +212,7 @@ async function loadMap(
   landInfo,
   incidentFeature
 ) {
+  const communityData = await getCommunityData();
   const map = leafletBaseMap({
     div: "map",
     zoomDelta: 0.25,
@@ -227,7 +229,12 @@ async function loadMap(
     popWidth = userWidth - 85;
   }
 
-  const communityLayer = await addCommunityLayer(map, popHeight, popWidth);
+  const communityLayer = await addCommunityLayer(
+    map,
+    popHeight,
+    popWidth,
+    communityData
+  );
   communityLayer.electionRangeListener();
   communityLayer.searchCommunities();
   const [tmSpreadLayer, mainlineLayer] = tmAssets(map, communityLayer);
