@@ -2,11 +2,10 @@ import { appError } from "./util.js";
 
 export async function getCommunityData() {
   try {
-    // const url =
-    //   process.env.NODE_ENV === "development"
-    //     ? "http://localhost:1337/api/communities"
-    //     : "http://localhost:1337/api/communities";
-    const url = "https://cp-admin.azurewebsites.net/api/communities";
+    const url =
+      process.env.NODE_ENV === "development"
+        ? "http://localhost:1337/api/communities"
+        : "https://cp-admin.azurewebsites.net/api/communities";
 
     const response = await fetch(url);
 

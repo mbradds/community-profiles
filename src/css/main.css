@@ -38,11 +38,11 @@
   overflow-x: hidden;
 }
 
-.iamc-popup tr {
+.territory-popup tr {
   font-size: 14px;
 }
 
-.iamc-popup p {
+.territory-popup p {
   font-size: 14px;
   margin-bottom: 0px !important;
 }
@@ -128,3 +128,12 @@
   padding-top: 1px;
 }
 
+.leaflet-control .panel {
+  height: 100%;
+  margin-bottom: 0px;
+}
+
+.leaflet-control .panel-body {
+  /* max-height: 100px; */
+  overflow-y: auto;
+}

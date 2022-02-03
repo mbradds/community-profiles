@@ -89,7 +89,7 @@ export function addCommunityLayer(map, popHeight, popWidth, communityData) {
         ? `<img src="../images/territories/${com.MapFile}.1.png" height="${popHeight}px" width="${popWidth}px" max-width="${popWidth}px"/>`
         : `<div class="well" style="text-align: center;"><span class="h3">Traditional Territory image not available<span></div>`;
       landMarker.bindPopup(
-        `<div class="territory-popup iamc-popup">${imgHtml}${popUpTable(
+        `<div class="territory-popup">${imgHtml}${popUpTable(
           com,
           hasImage
         )}</div>`,
@@ -199,18 +199,27 @@ export function addCommunityLayer(map, popHeight, popWidth, communityData) {
         });
       });
     };
-    communityLayer.findSpreads = function (highlight, color, sprdName) {
+
+    /**
+     *
+     * @param {Array.<number>} selectedSpreads List of spread numbers that user has clicked on
+     * @param {string} color Color code of the clicked spread. Changes the community circle color
+     * @param {string} sprdName Display name of the spread
+     */
+    communityLayer.findSpreads = function (selectedSpreads, color, sprdName) {
       this.resetSlider();
       map.legend.removeItem();
       map.warningMsg.removeWarning();
       const zoomToLayer = [];
+      const contactInfo = [];
       const noCommunities = () =>
         map.warningMsg.addWarning(
           `There are no communities identified for ${sprdName}`
         );
-      if (highlight) {
+      if (selectedSpreads) {
         Object.values(this._layers).forEach((circle) => {
-          if (highlight.some((r) => circle.spreadNums.includes(r))) {
+          if (selectedSpreads.some((r) => circle.spreadNums.includes(r))) {
+            contactInfo.push({ name: circle.communityName });
             circle.setStyle({
               fillColor: color,
             });
@@ -223,7 +232,7 @@ export function addCommunityLayer(map, popHeight, popWidth, communityData) {
 
       if (zoomToLayer.length > 0) {
         map.fitBounds(L.featureGroup(zoomToLayer).getBounds());
-        map.legend.addItem("spread", highlight, color);
+        map.legend.addItem("spread", selectedSpreads, color);
       } else {
         noCommunities();
       }

@@ -390,6 +390,63 @@ export function appError(header, err) {
   ).innerHTML = `<section class="alert alert-danger">
   <h3>${header}</h3>
   <p>Please try refreshing the page. If the problem persists, please submit an issue using the email below, with the following error message attached:</p>
-  ${JSON.stringify(err)}
+  ${JSON.stringify(err.message)}
 </section>`;
+}
+
+export function addCustomControl(position, map) {
+  const info = L.control({ position });
+  info.onAdd = function () {
+    this._div = L.DomUtil.create("div");
+    this._div.innerHTML = ``;
+    return this._div;
+  };
+  info.updateHtml = function (html) {
+    this._div.innerHTML = html;
+  };
+  info.removeHtml = function () {
+    this._div.innerHTML = "";
+  };
+  info.fixScroll = function (popUpId) {
+    L.DomEvent.on(
+      L.DomUtil.get(popUpId),
+      "mousewheel",
+      L.DomEvent.stopPropagation
+    );
+  };
+  info.closeBtnListener = function (closeId) {
+    document.getElementById(closeId).addEventListener("click", () => {
+      this.removeHtml();
+    });
+  };
+  /**
+   * Add a wet4 info section to the control
+   * @param {string} sectionId HTML id for the section
+   * @param {string} closeBtnId HTML id for the close button
+   * @param {string} header Section header text
+   * @param {string} bodyHtml HTML partial for the panel body
+   * @param {string} footer Optional paragraph text below the bodyHtml
+   */
+  info.addSection = function (sectionId, closeBtnId, header, bodyHtml, footer) {
+    this.updateHtml(`<section class="panel panel-info" id="${sectionId}">
+    <header class="panel-heading">
+     <h5 class="panel-title header-text">${header}</h5>
+     <div class="pull-right header-btn">
+     <button
+       type="button"
+       class="btn btn-primary btn-xs"
+       id="${closeBtnId}"
+     >
+     Close
+     </button>
+   </div>
+    </header>
+    <div class="panel-body">
+     ${bodyHtml}
+     <p style="margin-bottom:0px;">${footer}</p>
+    </div>
+  </section>`);
+  };
+  info.addTo(map);
+  return info;
 }

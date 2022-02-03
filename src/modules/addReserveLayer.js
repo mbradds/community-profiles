@@ -111,7 +111,7 @@ function reservePopUp(reserve) {
     incidentFeature
   );
   const total = lengthUnits(totalLength);
-  let popHtml = `<div class="iamc-popup" id="reserve-popup"><h2 class="center-header">${reserve.feature.properties.NAME1}</h2>`;
+  let popHtml = `<div class="territory-popup" id="reserve-popup"><h2 class="center-header">${reserve.feature.properties.NAME1}</h2>`;
 
   // first table: pipeline overlaps
   popHtml += `<table class="table" style="margin-bottom:0px">`;

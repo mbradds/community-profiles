@@ -11,6 +11,7 @@ import {
   resetListener,
   plural,
   findUser,
+  addCustomControl,
 } from "./util.js";
 import { addCommunityLayer } from "./addCommunityLayer.js";
 import { addReserveLayer } from "./addReserveLayer.js";
@@ -98,48 +99,18 @@ function onLand(map) {
       youAreOnTable += `<li><a href="${land.description}" target="_blank">${land.Name}</a></li>`;
     });
     youAreOnTable += "</ul>";
-    mapWithUser.youAreOn.updateHtml(
-      `<section class="panel panel-warning">
-      <header class="panel-heading">
-       <h5 class="panel-title header-text">You are on ${youAreOn.length} Traditional Territories</h5>
-       <div class="pull-right header-btn">
-       <button
-         type="button"
-         class="btn btn-primary btn-xs"
-         id="close-you-are-on"
-       >
-       Close
-       </button>
-     </div>
-      </header>
-      <div class="panel-body">
-       ${youAreOnTable}
-       <p style="margin-bottom:0px;">Move the blue marker to a new area and click <i>Find Me</i> again to view other locations.</p>
-      </div>
-    </section>`
+    mapWithUser.youAreOn.addSection(
+      "ur-on",
+      "close-you-are-on",
+      `You are on ${youAreOn.length} Traditional Territories`,
+      youAreOnTable,
+      "Move the blue marker to a new area and click <i>Find Me</i> again to view other locations."
     );
-    document
-      .getElementById("close-you-are-on")
-      .addEventListener("click", () => {
-        map.youAreOn.removeHtml();
-      });
+    mapWithUser.youAreOn.fixScroll("ur-on");
+    mapWithUser.youAreOn.closeBtnListener("close-you-are-on");
   };
 
-  // div for displaying territories you are on
-  const info = L.control({ position: "bottomright" });
-  info.onAdd = function () {
-    this._div = L.DomUtil.create("div");
-    this._div.innerHTML = ``;
-    return this._div;
-  };
-  info.updateHtml = function (html) {
-    this._div.innerHTML = html;
-  };
-  info.removeHtml = function () {
-    this._div.innerHTML = "";
-  };
-  info.addTo(map);
-  map.youAreOn = info;
+  map.youAreOn = addCustomControl("bottomright", map);
 
   document.getElementById("find-me").addEventListener("click", () => {
     if (!map.user) {
