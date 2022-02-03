@@ -348,9 +348,7 @@ export function resetListener(map, geoLayer, communityLayer) {
     map.closePopup();
     map.youAreOn.removeHtml();
     if (communityLayer) {
-      communityLayer.resetSpreads();
-      communityLayer.resetStyle();
-      communityLayer.resetSearch();
+      communityLayer.reset();
     }
   });
 }
@@ -428,7 +426,7 @@ export function addCustomControl(position, map) {
    * @param {string} footer Optional paragraph text below the bodyHtml
    */
   info.addSection = function (sectionId, closeBtnId, header, bodyHtml, footer) {
-    this.updateHtml(`<section class="panel panel-info" id="${sectionId}">
+    this.updateHtml(`<section class="panel panel-default" id="${sectionId}">
     <header class="panel-heading">
      <h5 class="panel-title header-text">${header}</h5>
      <div class="pull-right header-btn">

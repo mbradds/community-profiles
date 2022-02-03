@@ -128,12 +128,21 @@
   padding-top: 1px;
 }
 
-.leaflet-control .panel {
-  height: 100%;
+.leaflet-bottom.leaflet-right .leaflet-control {
   margin-bottom: 0px;
 }
 
+#spread-contacts {
+  max-width: 450px;
+}
+
+.leaflet-control .panel {
+  margin-bottom: 5px;
+}
+
 .leaflet-control .panel-body {
-  /* max-height: 100px; */
+  max-height: 250px;
+  width: inherit;
   overflow-y: auto;
+  margin: 0px !important;
 }

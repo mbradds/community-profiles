@@ -1,5 +1,10 @@
 import * as L from "leaflet";
-import { featureStyles, htmlTableRow, toolTipHtml } from "./util.js";
+import {
+  featureStyles,
+  htmlTableRow,
+  toolTipHtml,
+  addCustomControl,
+} from "./util.js";
 
 /**
  * Generates an HTML partial for the community pop-up information
@@ -83,6 +88,7 @@ export function addCommunityLayer(map, popHeight, popWidth, communityData) {
         : null;
       landMarker.spreadNums = [com.ProjectSpreadNumber];
       landMarker.communityName = com.Name;
+      landMarker.contactInfo = com.ContactInformation;
       landMarker.bindTooltip(circleTooltip(com));
       const hasImage = com.MapFile !== null;
       const imgHtml = hasImage
@@ -111,6 +117,8 @@ export function addCommunityLayer(map, popHeight, popWidth, communityData) {
     };
 
     const communityLayer = L.featureGroup(landCircles);
+
+    communityLayer.contactControl = addCustomControl("bottomright", map);
 
     communityLayer.resetSlider = function () {
       document.getElementById("election-range-slider").value = "366";
@@ -200,6 +208,32 @@ export function addCommunityLayer(map, popHeight, popWidth, communityData) {
       });
     };
 
+    communityLayer.spreadContactPopUp = function (contacts, sprdName) {
+      map.youAreOn.updateHtml("");
+      let contactsTable = `<table class="table">`;
+      contactsTable += `<thead>
+      <tr>
+        <th scope="col">Community</th>
+        <th scope="col">Contact</th>
+      </tr>
+    </thead>`;
+      contactsTable += `<tbody>`;
+      contacts.forEach((contact) => {
+        contactsTable += `<tr><td>${contact.name}</td><td>${contact.contact}</td>`;
+      });
+      contactsTable += `</tbody>`;
+      contactsTable += `</table>`;
+      this.contactControl.addSection(
+        "spread-contacts",
+        "close-spread-contacts",
+        `Contact Info for ${sprdName}`,
+        contactsTable,
+        ""
+      );
+      this.contactControl.fixScroll("spread-contacts");
+      this.contactControl.closeBtnListener("close-spread-contacts");
+    };
+
     /**
      *
      * @param {Array.<number>} selectedSpreads List of spread numbers that user has clicked on
@@ -219,7 +253,10 @@ export function addCommunityLayer(map, popHeight, popWidth, communityData) {
       if (selectedSpreads) {
         Object.values(this._layers).forEach((circle) => {
           if (selectedSpreads.some((r) => circle.spreadNums.includes(r))) {
-            contactInfo.push({ name: circle.communityName });
+            contactInfo.push({
+              name: circle.communityName,
+              contact: circle.contactInfo,
+            });
             circle.setStyle({
               fillColor: color,
             });
@@ -233,6 +270,7 @@ export function addCommunityLayer(map, popHeight, popWidth, communityData) {
       if (zoomToLayer.length > 0) {
         map.fitBounds(L.featureGroup(zoomToLayer).getBounds());
         map.legend.addItem("spread", selectedSpreads, color);
+        this.spreadContactPopUp(contactInfo, sprdName);
       } else {
         noCommunities();
       }
@@ -284,6 +322,13 @@ export function addCommunityLayer(map, popHeight, popWidth, communityData) {
     communityLayer.resetSearch = function () {
       document.getElementById("community-search").value = "";
       this.resetSearchError();
+    };
+
+    communityLayer.reset = function () {
+      this.resetSpreads();
+      this.resetStyle();
+      this.resetSearch();
+      this.contactControl.updateHtml("");
     };
 
     communityLayer.addTo(map);

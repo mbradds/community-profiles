@@ -81,7 +81,7 @@ function addResetBtn(map) {
  * Evaluates the users location against traditional territory's
  * @param {Object} map leaflet map object
  */
-function onLand(map) {
+function onLand(map, communityLayer) {
   const nearbyStuff = (mapWithUser) => {
     const youAreOn = [];
     territoryPolygons.features.forEach((polygon) => {
@@ -113,6 +113,7 @@ function onLand(map) {
   map.youAreOn = addCustomControl("bottomright", map);
 
   document.getElementById("find-me").addEventListener("click", () => {
+    communityLayer.contactControl.updateHtml("");
     if (!map.user) {
       findUser(map)
         .then(() => {
@@ -226,7 +227,7 @@ async function loadMap(
     map
   );
 
-  onLand(map);
+  onLand(map, communityLayer);
   mapLegend(map, communityLayer);
   resetZoom(map, reserveLayer, communityLayer);
   resetListener(map, reserveLayer, communityLayer);
