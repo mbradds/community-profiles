@@ -15,6 +15,7 @@ export async function getCommunityData() {
         ok: response.ok,
         statusText: response.statusText,
         url: response.url,
+        message: `${response.status} ${response.statusText}`,
       });
     }
     const data = await response.json();

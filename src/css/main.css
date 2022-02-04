@@ -132,8 +132,12 @@
   margin-bottom: 0px;
 }
 
-#spread-contacts {
-  max-width: 450px;
+.leaflet-bottom.leaflet-right {
+  width: 100%;
+}
+
+.leaflet-bottom.leaflet-right .leaflet-control {
+  max-width: 40%;
 }
 
 .leaflet-control .panel {

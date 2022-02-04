@@ -78,40 +78,44 @@ function addResetBtn(map) {
 }
 
 /**
+ * Evaluates the users location against the traditional territory polygons.
+ * TODO: extend this function to find communities near the user.
+ * @param {Object} map leaflet map object
+ */
+function nearbyStuff(map) {
+  const onTerritories = [];
+  territoryPolygons.features.forEach((polygon) => {
+    const inside = pointInPolygon(
+      [map.user.lng, map.user.lat],
+      polygon.geometry.coordinates[0]
+    );
+    if (inside) {
+      onTerritories.push(polygon.properties);
+    }
+  });
+  map.panTo(map.user);
+  let youAreOnTable = "<ul>";
+  onTerritories.forEach((land) => {
+    youAreOnTable += `<li><a href="${land.description}" target="_blank">${land.Name}</a></li>`;
+  });
+  youAreOnTable += "</ul>";
+  map.youAreOn.addSection(
+    "ur-on",
+    "close-you-are-on",
+    `You are on ${onTerritories.length} Traditional Territories`,
+    youAreOnTable,
+    "Move the blue marker to a new area and click <i>Find Me</i> again to view other locations."
+  );
+  map.youAreOn.fixScroll("ur-on");
+  map.youAreOn.closeBtnListener("close-you-are-on");
+}
+
+/**
  * Evaluates the users location against traditional territory's
  * @param {Object} map leaflet map object
  */
 function onLand(map, communityLayer) {
-  const nearbyStuff = (mapWithUser) => {
-    const youAreOn = [];
-    territoryPolygons.features.forEach((polygon) => {
-      const inside = pointInPolygon(
-        [mapWithUser.user.lng, mapWithUser.user.lat],
-        polygon.geometry.coordinates[0]
-      );
-      if (inside) {
-        youAreOn.push(polygon.properties);
-      }
-    });
-    mapWithUser.panTo(mapWithUser.user);
-    let youAreOnTable = "<ul>";
-    youAreOn.forEach((land) => {
-      youAreOnTable += `<li><a href="${land.description}" target="_blank">${land.Name}</a></li>`;
-    });
-    youAreOnTable += "</ul>";
-    mapWithUser.youAreOn.addSection(
-      "ur-on",
-      "close-you-are-on",
-      `You are on ${youAreOn.length} Traditional Territories`,
-      youAreOnTable,
-      "Move the blue marker to a new area and click <i>Find Me</i> again to view other locations."
-    );
-    mapWithUser.youAreOn.fixScroll("ur-on");
-    mapWithUser.youAreOn.closeBtnListener("close-you-are-on");
-  };
-
   map.youAreOn = addCustomControl("bottomright", map);
-
   document.getElementById("find-me").addEventListener("click", () => {
     communityLayer.contactControl.updateHtml("");
     if (!map.user) {

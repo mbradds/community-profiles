@@ -117,15 +117,14 @@ export function addCommunityLayer(map, popHeight, popWidth, communityData) {
     };
 
     const communityLayer = L.featureGroup(landCircles);
-
     communityLayer.contactControl = addCustomControl("bottomright", map);
 
-    communityLayer.resetSlider = function () {
+    communityLayer.resetSlider = function resetSlider() {
       document.getElementById("election-range-slider").value = "366";
       setDisplayDays("All");
     };
 
-    communityLayer.resetStyle = function () {
+    communityLayer.resetStyle = function resetStyle() {
       Object.values(this._layers).forEach((circle) => {
         circle.setStyle({
           ...featureStyles.territory,
@@ -134,7 +133,11 @@ export function addCommunityLayer(map, popHeight, popWidth, communityData) {
       this.resetSlider();
     };
 
-    communityLayer.getNames = function () {
+    /**
+     * Returns an alphabetically sorted list of all community names in the communityLayer
+     * @returns {Object[]} [{id: _leaflet_id, name: string}]
+     */
+    communityLayer.getNames = function getNames() {
       return Object.values(this._layers)
         .map((circle) => ({
           name: circle.communityName,
@@ -145,7 +148,11 @@ export function addCommunityLayer(map, popHeight, popWidth, communityData) {
         );
     };
 
-    communityLayer.zoomToId = function (id) {
+    /**
+     * Zooms to the selected community by finding the matching id
+     * @param {number} id leaflet id of the selected community circle
+     */
+    communityLayer.zoomToId = function zoomToId(id) {
       Object.values(this._layers).forEach((layer) => {
         if (layer._leaflet_id === id) {
           map.setView(layer._latlng, 10);
@@ -153,7 +160,10 @@ export function addCommunityLayer(map, popHeight, popWidth, communityData) {
       });
     };
 
-    communityLayer.electionRangeListener = function () {
+    /**
+     * Adds an event listener to the election range slider and fires the filterElections method
+     */
+    communityLayer.electionRangeListener = function electionRangeListener() {
       setDisplayDays("All");
       const slider = document.getElementById("election-range-slider");
       slider.addEventListener("change", () => {
@@ -163,7 +173,11 @@ export function addCommunityLayer(map, popHeight, popWidth, communityData) {
       });
     };
 
-    communityLayer.filterElections = function (dayRange) {
+    /**
+     * Evaluates each communities electionDate vs the current date
+     * @param {number|string} dayRange Number between 0 and 365 or "All"
+     */
+    communityLayer.filterElections = function filterElections(dayRange) {
       this._map.legend.removeItem();
       const currentDate = Date.now();
       if (dayRange !== "All") {
@@ -199,8 +213,12 @@ export function addCommunityLayer(map, popHeight, popWidth, communityData) {
       }
     };
 
-    communityLayer.resetSpreads = function () {
+    /**
+     * Closes the map warning message, the contactControl popup and sets communities to the default color
+     */
+    communityLayer.resetSpreads = function resetSpreads() {
       map.warningMsg.removeWarning();
+      this.contactControl.updateHtml("");
       Object.values(this._layers).forEach((circle) => {
         circle.setStyle({
           ...featureStyles.territory,
@@ -208,7 +226,15 @@ export function addCommunityLayer(map, popHeight, popWidth, communityData) {
       });
     };
 
-    communityLayer.spreadContactPopUp = function (contacts, sprdName) {
+    /**
+     * Adds a leaflet control popup with community contact info
+     * @param {Object[]} contacts [{name: string, contact: string}] contact info for the spread communities
+     * @param {string} sprdName display name of the selected spread
+     */
+    communityLayer.spreadContactPopUp = function spreadContactPopUp(
+      contacts,
+      sprdName
+    ) {
       map.youAreOn.updateHtml("");
       let contactsTable = `<table class="table">`;
       contactsTable += `<thead>
@@ -235,12 +261,16 @@ export function addCommunityLayer(map, popHeight, popWidth, communityData) {
     };
 
     /**
-     *
+     * Finds all communities in the communityLayer that belong to a selected project spread
      * @param {Array.<number>} selectedSpreads List of spread numbers that user has clicked on
      * @param {string} color Color code of the clicked spread. Changes the community circle color
      * @param {string} sprdName Display name of the spread
      */
-    communityLayer.findSpreads = function (selectedSpreads, color, sprdName) {
+    communityLayer.findSpreads = function findSpreads(
+      selectedSpreads,
+      color,
+      sprdName
+    ) {
       this.resetSlider();
       map.legend.removeItem();
       map.warningMsg.removeWarning();
@@ -276,7 +306,10 @@ export function addCommunityLayer(map, popHeight, popWidth, communityData) {
       }
     };
 
-    communityLayer.searchCommunities = function () {
+    /**
+     * Adds an event listener to the find community search function
+     */
+    communityLayer.searchCommunities = function searchCommunities() {
       let options = "";
       this.getNames().forEach((name) => {
         options += `<option data-id=${name.id} label="" value="${name.name}"></option>`;
@@ -309,26 +342,32 @@ export function addCommunityLayer(map, popHeight, popWidth, communityData) {
         });
     };
 
-    communityLayer.searchError = function (message) {
+    /**
+     * Binds an error warning next to the search function when the user input community cant be found
+     * @param {string} message
+     */
+    communityLayer.searchError = function searchError(message) {
       document.getElementById(
         "community-search-error"
       ).innerHTML = `<div class="alert alert-danger"><span>${message}</span></div>`;
     };
 
-    communityLayer.resetSearchError = function () {
+    communityLayer.resetSearchError = function resetSearchError() {
       document.getElementById("community-search-error").innerHTML = "";
     };
 
-    communityLayer.resetSearch = function () {
+    communityLayer.resetSearch = function resetSearch() {
       document.getElementById("community-search").value = "";
       this.resetSearchError();
     };
 
-    communityLayer.reset = function () {
+    /**
+     * Resets community spreads, styles, and search
+     */
+    communityLayer.reset = function reset() {
       this.resetSpreads();
       this.resetStyle();
       this.resetSearch();
-      this.contactControl.updateHtml("");
     };
 
     communityLayer.addTo(map);

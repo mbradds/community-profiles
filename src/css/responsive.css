@@ -5,7 +5,7 @@ responsive style options
 /* extra small screen phones (col-xs) */
 @media only screen and (max-width: 767px) {
   #map-panel {
-    min-height: 620px;
+    min-height: 640px;
   }
   #election-range-slider {
     margin-left: 0px !important;
@@ -15,8 +15,8 @@ responsive style options
     display: none;
     visibility: hidden;
   }
-  .leaflet-right .leaflet-control {
-    width: 100%;
+  .leaflet-bottom.leaflet-right .leaflet-control {
+    max-width: 100% !important;
     margin-bottom: 0px !important;
     margin-right: 0px !important;
   }

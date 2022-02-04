@@ -382,6 +382,11 @@ export async function findUser(map) {
   });
 }
 
+/**
+ * Replaces the map container with a wet4 alert-danger
+ * @param {string} header Error message title
+ * @param {Object} err
+ */
 export function appError(header, err) {
   document.getElementById(
     "error-container"
@@ -392,6 +397,12 @@ export function appError(header, err) {
 </section>`;
 }
 
+/**
+ *
+ * @param {string} position leaflet position for the control
+ * @param {Object} map leaflet map object
+ * @returns {Object} leaflet control object
+ */
 export function addCustomControl(position, map) {
   const info = L.control({ position });
   info.onAdd = function () {
@@ -425,7 +436,13 @@ export function addCustomControl(position, map) {
    * @param {string} bodyHtml HTML partial for the panel body
    * @param {string} footer Optional paragraph text below the bodyHtml
    */
-  info.addSection = function (sectionId, closeBtnId, header, bodyHtml, footer) {
+  info.addSection = function addSection(
+    sectionId,
+    closeBtnId,
+    header,
+    bodyHtml,
+    footer
+  ) {
     this.updateHtml(`<section class="panel panel-default" id="${sectionId}">
     <header class="panel-heading">
      <h5 class="panel-title header-text">${header}</h5>
