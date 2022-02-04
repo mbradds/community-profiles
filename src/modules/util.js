@@ -1,4 +1,5 @@
 import * as L from "leaflet";
+import { UnsupportedBrowserError } from "./errors.js";
 
 export const cerPalette = {
   "Night Sky": "#054169",
@@ -464,4 +465,21 @@ export function addCustomControl(position, map) {
   };
   info.addTo(map);
   return info;
+}
+
+export function ifIEShowError() {
+  // Internet Explorer 6-11
+  const ie = /* @cc_on!@ */ false || !!document.documentMode;
+  if (ie) {
+    Array.from(document.getElementsByClassName("container-fluid")).forEach(
+      (errorDiv) => {
+        errorDiv.innerHTML = `<section class="alert alert-danger"><h4>Outdated Browser</h4>
+      Your web browser is unsupported. Please open the application on a modern web browser.
+    </section>`;
+      }
+    );
+    throw new UnsupportedBrowserError("old browser!");
+  }
+
+  return ie;
 }

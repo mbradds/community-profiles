@@ -12,6 +12,7 @@ import {
   plural,
   findUser,
   addCustomControl,
+  ifIEShowError,
 } from "./util.js";
 import { addCommunityLayer } from "./addCommunityLayer.js";
 import { addReserveLayer } from "./addReserveLayer.js";
@@ -269,6 +270,7 @@ export function iamcDashboard(
   meta
 ) {
   function main() {
+    ifIEShowError();
     async function buildPage() {
       const mapHeight = document.getElementById("map").clientHeight;
       const user = loadNonMap(poly2Length, landFeature, incidentFeature, meta);
