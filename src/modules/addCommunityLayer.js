@@ -156,9 +156,16 @@ export function addCommunityLayer(map, popHeight, popWidth, communityData) {
      * @param {number} id leaflet id of the selected community circle
      */
     communityLayer.zoomToId = function zoomToId(id) {
-      Object.values(this._layers).forEach((layer) => {
-        if (layer._leaflet_id === id) {
-          map.setView(layer._latlng, 10);
+      Object.values(this._layers).forEach((circle) => {
+        if (circle._leaflet_id === id) {
+          map.setView(circle._latlng, 10);
+          circle.setStyle({
+            color: featureStyles.foundCommunity.color,
+            fillColor: featureStyles.foundCommunity.fillColor,
+          });
+          circle.bringToFront();
+        } else {
+          circle.setStyle({ ...featureStyles.territory });
         }
       });
     };

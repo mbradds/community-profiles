@@ -89,23 +89,12 @@ export const featureStyles = {
     opacity: 0.1,
     fillOpacity: 0.1,
   },
-  community: {
-    fillColor: cerPalette["Night Sky"],
-    color: cerPalette.Ocean,
-    opacity: 0.7,
-  },
   incident: {
     color: cerPalette["Cool Grey"],
     fillColor: cerPalette.hcRed,
     weight: 1,
     fillOpacity: 1,
     radius: 600,
-  },
-  tmx: {
-    fillColor: cerPalette.Aubergine,
-    color: cerPalette.Aubergine,
-    className: "no-hover",
-    fillOpacity: 1,
   },
   mainline: {
     color: cerPalette["Cool Grey"],
@@ -118,20 +107,9 @@ export const featureStyles = {
     opacity: 0.5,
     fillOpacity: 1,
   },
-  metis: {
-    fillColor: cerPalette.Forest,
-    color: cerPalette.Flame,
-    weight: 10,
-    opacity: 0.5,
-    fillOpacity: 1,
-  },
-  spread: {
-    fillColor: cerPalette.Aubergine,
+  foundCommunity: {
     color: cerPalette.Aubergine,
-    weight: 1,
-    opacity: 0.3,
-    fillOpacity: 0.1,
-    radius: 10,
+    fillColor: cerPalette.Aubergine,
   },
 };
 
@@ -290,9 +268,7 @@ export function mapLegend(map, communityLayer) {
     if (entry === "incidents") {
       this._div.innerHTML += `<h4 class="legend-temp" style='color:${featureStyles.incident.fillColor};'>&#11044; Incident</h4>`;
     } else if (entry === "spread") {
-      this._div.innerHTML += `<h4 class="legend-temp" style='color:${
-        color || featureStyles.community.color
-      };'>&#11044; Spread ${spread} communities</h4>`;
+      this._div.innerHTML += `<h4 class="legend-temp" style='color:${color};'>&#11044; Spread ${spread} communities</h4>`;
     }
   };
   info.removeItem = function () {
