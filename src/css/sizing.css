@@ -35,7 +35,7 @@ body,
   position: relative;
 }
 
-#map-panel-heading {
+.panel-heading {
   display: flex;
   flex-wrap: wrap;
 }

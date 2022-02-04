@@ -12,15 +12,17 @@ import {
  * @param {boolean} hasImage Specifies if the pop-up will have a traditional territory image
  * @returns {string} HTML partial to be added to the leaflet community pop-up
  */
-function popUpTable(landInfo, hasImage) {
+function popUpTable(imgHtml, landInfo, hasImage) {
   let tableHtml = "";
+  let subImageHtml = "";
   if (hasImage) {
+    // subImageHtml += `<h3 class="center-header">Traditional Territory</h3>`;
     if (landInfo.MapLink) {
-      tableHtml += `<p>Image source:&nbsp;<a href="${landInfo.MapLink}" target="_blank">${landInfo.MapSource}</a></p>`;
+      subImageHtml += `<p>Image source:&nbsp;<a href="${landInfo.MapLink}" target="_blank">${landInfo.MapSource}</a></p>`;
     } else {
-      tableHtml += `<p>Image source:&nbsp;not available</p>`;
+      subImageHtml += `<p>Image source:&nbsp;not available</p>`;
     }
-    tableHtml += `<div id="image-disclaimer" class="alert alert-warning">
+    subImageHtml += `<div id="image-disclaimer" class="alert alert-warning">
     <h2>&nbsp; Traditional Territory Map Disclaimer</h2>
     <p>These maps have been prepared using the Canada Energy Regulator
       internal Indigenous Engagement site information. These maps
@@ -51,7 +53,7 @@ function popUpTable(landInfo, hasImage) {
   });
   table += `</tbody></table>`;
   tableHtml += table;
-
+  tableHtml += imgHtml + subImageHtml;
   return tableHtml;
 }
 
@@ -95,7 +97,8 @@ export function addCommunityLayer(map, popHeight, popWidth, communityData) {
         ? `<img src="../images/territories/${com.MapFile}.1.png" height="${popHeight}px" width="${popWidth}px" max-width="${popWidth}px"/>`
         : `<div class="well" style="text-align: center;"><span class="h3">Traditional Territory image not available<span></div>`;
       landMarker.bindPopup(
-        `<div class="territory-popup">${imgHtml}${popUpTable(
+        `<div class="territory-popup">${popUpTable(
+          imgHtml,
           com,
           hasImage
         )}</div>`,

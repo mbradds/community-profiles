@@ -1,0 +1,23 @@
+.leaflet-bottom.leaflet-right .leaflet-control {
+  margin-bottom: 0px;
+}
+
+.leaflet-bottom.leaflet-right {
+  width: 100%;
+}
+
+.leaflet-bottom.leaflet-right .leaflet-control {
+  max-width: 40%;
+}
+
+.leaflet-control .panel {
+  margin-bottom: 5px;
+}
+
+.leaflet-control .panel-body {
+  max-height: 250px;
+  width: 100%;
+  overflow-y: auto;
+  margin: 0px !important;
+  word-break: break-all;
+}
