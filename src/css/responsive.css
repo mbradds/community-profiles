@@ -3,9 +3,17 @@ responsive style options
 */
 
 /* extra small screen phones (col-xs) */
-@media only screen and (max-width: 767px) {
-  #map-panel {
-    min-height: 640px;
+@media only screen and (max-width: 768px) {
+  .tablet-hide {
+    display: none;
+    visibility: hidden;
+    height: 0px;
+  }
+  .map-row {
+    height: 100%;
+  }
+  .map-col {
+    padding: 0px;
   }
   #election-range-slider {
     margin-left: 0px !important;
@@ -23,23 +31,39 @@ responsive style options
 }
 
 /* small screen tablet (col-sm) */
-@media only screen and (min-width: 768px) {
-  #map-panel {
-    min-height: 600px;
+@media only screen and (max-width: 992px) {
+  .tablet-hide {
+    display: none;
+    visibility: hidden;
+    height: 0px;
+  }
+  .map-row {
+    height: 100%;
+  }
+  .map-col {
+    padding: 0px;
   }
 }
 
 /* medium screen tablet */
-@media only screen and (min-width: 992px) {
-  #map-panel {
-    min-height: 650px;
+@media only screen and (max-width: 1200px) {
+  .tablet-hide {
+    display: none;
+    visibility: hidden;
+    height: 0px;
+  }
+  .map-row {
+    height: 100%;
+  }
+  .map-col {
+    padding: 0px;
   }
 }
 
 /* large screens */
-@media only screen and (min-width: 1200px) {
+@media only screen and (max-width: 1600px) {
   #map-panel {
-    min-height: 650px;
+    min-height: 700px;
   }
 }
 
