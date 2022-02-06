@@ -142,15 +142,15 @@ function onLand(map, communityLayer) {
  */
 function mapWarning(map) {
   const info = L.control({ position: "bottomright" });
-  info.onAdd = function () {
+  info.onAdd = function onAdd() {
     this._div = L.DomUtil.create("div");
     this._div.innerHTML = ``;
     return this._div;
   };
-  info.addWarning = function (text) {
+  info.addWarning = function addWarning(text) {
     this._div.innerHTML = `<div class="alert alert-danger"><span class="h3 mrgn-bttm-0">${text}</span></div>`;
   };
-  info.removeWarning = function () {
+  info.removeWarning = function removeWarning() {
     this._div.innerHTML = "";
   };
   info.addTo(map);
@@ -258,12 +258,7 @@ function loadNonMap(landFeature, incidentFeature, meta) {
  * @param {*} incidentFeature
  * @param {*} meta
  */
-export function iamcDashboard(
-  landFeature,
-  landInfo,
-  incidentFeature,
-  meta
-) {
+export function iamcDashboard(landFeature, landInfo, incidentFeature, meta) {
   function main() {
     ifIEShowError();
     async function buildPage() {

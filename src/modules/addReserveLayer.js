@@ -77,13 +77,12 @@ function addIncidents(map, name, incidentFeature) {
 
 function reserveTooltip(layer, landInfo) {
   const layerInfo = landInfo[layer.NAME1];
-  const length = lengthUnits(layerInfo.overlaps.reduce(getSum, 0));
-
   let table = `<table class="map-tooltip"><caption><b>${layer.NAME1}</b></caption>`;
   table += htmlTableRow("Land Type:&nbsp", layerInfo.meta.altype);
   if (layerInfo.meta.bandName) {
     table += htmlTableRow("Band name:&nbsp", layerInfo.meta.bandName);
   }
+  const length = lengthUnits(layerInfo.overlaps.reduce(getSum, 0));
   table += htmlTableRow("Total overlap:&nbsp", `${length[0]} ${length[1]}`);
   table += `</table><i class="center-footer">Click to view details</i>`;
   return table;
@@ -103,19 +102,17 @@ function reservePopUp(reserve) {
   const { landInfo } = reserve.defaultOptions;
   const { incidentFeature } = reserve.defaultOptions;
   const layerInfo = landInfo[reserve.feature.properties.NAME1];
-  const totalLength = layerInfo.overlaps.reduce(getSum, 0);
 
   const proximityCount = addIncidents(
     reserve._map,
     reserve.feature.properties.NAME1,
     incidentFeature
   );
-  const total = lengthUnits(totalLength);
+  const total = lengthUnits(layerInfo.overlaps.reduce(getSum, 0));
   let popHtml = `<div class="territory-popup" id="reserve-popup"><h2 class="center-header">${reserve.feature.properties.NAME1}</h2>`;
 
   // first table: pipeline overlaps
-  popHtml += `<table class="table" style="margin-bottom:0px">`;
-  popHtml += `<h3 class="center-header">Pipeline Overlaps</h3><tbody>`;
+  popHtml += `<table class="table" style="margin-bottom:0px"><h3 class="center-header">Pipeline Overlaps</h3><tbody>`;
 
   layerInfo.overlaps.forEach((overlap) => {
     const l = lengthUnits(overlap.length);
@@ -148,7 +145,7 @@ function reservePopUp(reserve) {
 }
 
 export function addReserveLayer(map, landFeature, landInfo, incidentFeature) {
-  const geoLayer = L.geoJSON(landFeature, {
+  return L.geoJSON(landFeature, {
     style: featureStyles.reserveOverlap,
     landInfo,
     incidentFeature,
@@ -156,5 +153,4 @@ export function addReserveLayer(map, landFeature, landInfo, incidentFeature) {
     .bindTooltip((layer) => reserveTooltip(layer.feature.properties, landInfo))
     .bindPopup((layer) => reservePopUp(layer))
     .addTo(map);
-  return geoLayer;
 }

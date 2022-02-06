@@ -214,6 +214,9 @@ export function plural(val, type, cap = false) {
   if (type === "reserve" || type === "reserves") {
     return capitalize(val > 1 ? "reserves" : "reserve", cap);
   }
+  if (type === "communities" || type === "community") {
+    return capitalize(val > 1 ? "communities" : "community", cap);
+  }
   return type;
 }
 
@@ -233,13 +236,13 @@ export function mapLegend(map, communityLayer) {
     legend += `<h4 style='color:${featureStyles.territory.fillColor};'>&#11044; Community</h4>`;
   }
   const info = L.control();
-  info.onAdd = function () {
+  info.onAdd = function onAdd() {
     this._div = L.DomUtil.create("div", "legend");
     this._div.innerHTML = legend;
     map.legend = this;
     return this._div;
   };
-  info.addItem = function (
+  info.addItem = function addItem(
     entry = "incidents",
     spread = undefined,
     color = undefined
@@ -250,7 +253,7 @@ export function mapLegend(map, communityLayer) {
       this._div.innerHTML += `<h4 class="legend-temp" style='color:${color};'>&#11044; Spread ${spread} communities</h4>`;
     }
   };
-  info.removeItem = function () {
+  info.removeItem = function removeItem() {
     Array.from(this._div.getElementsByClassName("legend-temp")).forEach(
       (toHide) => {
         toHide.parentNode.removeChild(toHide);
@@ -361,25 +364,25 @@ export function appError(header, err) {
  */
 export function addCustomControl(position, map) {
   const info = L.control({ position });
-  info.onAdd = function () {
+  info.onAdd = function onAdd() {
     this._div = L.DomUtil.create("div");
     this._div.innerHTML = ``;
     return this._div;
   };
-  info.updateHtml = function (html) {
+  info.updateHtml = function updateHtml(html) {
     this._div.innerHTML = html;
   };
-  info.removeHtml = function () {
+  info.removeHtml = function removeHtml() {
     this._div.innerHTML = "";
   };
-  info.fixScroll = function (popUpId) {
+  info.fixScroll = function fixScroll(popUpId) {
     L.DomEvent.on(
       L.DomUtil.get(popUpId),
       "mousewheel",
       L.DomEvent.stopPropagation
     );
   };
-  info.closeBtnListener = function (closeId) {
+  info.closeBtnListener = function closeBtnListener(closeId) {
     document.getElementById(closeId).addEventListener("click", () => {
       this.removeHtml();
     });
@@ -435,6 +438,5 @@ export function ifIEShowError() {
     );
     throw new UnsupportedBrowserError("old browser!");
   }
-
   return ie;
 }

@@ -4,6 +4,7 @@ import {
   htmlTableRow,
   toolTipHtml,
   addCustomControl,
+  plural,
 } from "./util.js";
 
 /**
@@ -70,10 +71,13 @@ export function addCommunityLayer(map, popHeight, popWidth, communityData) {
       ? landInfo.Name
       : `${landInfo.Name}&nbsp;(<span class="glyphicon glyphicon-volume-up" aria-hidden="true"></span> <i>${landInfo.Pronunciation}</i>)`;
 
-    const plural = landInfo.length > 1 ? "communities" : "community";
     return toolTipHtml(
       communityNames,
-      `Circle represents approximate location of the ${plural}`,
+      `Circle represents approximate location of the ${plural(
+        landInfo.length,
+        "community",
+        false
+      )}`,
       "Click to view full community info and traditional territory map"
     );
   }
@@ -111,12 +115,13 @@ export function addCommunityLayer(map, popHeight, popWidth, communityData) {
     });
 
     const setDisplayDays = (days) => {
-      const display = document.getElementById("election-days-display");
       const displayDays =
         days === "All"
           ? days
           : `<strong style="color:${featureStyles.territoryElection.fillColor}";>${days} or less</strong>`;
-      display.innerHTML = `<span>Days to election: (${displayDays})</span>`;
+      document.getElementById(
+        "election-days-display"
+      ).innerHTML = `<span>Days to election: (${displayDays})</span>`;
     };
 
     const communityLayer = L.featureGroup(landCircles);
@@ -246,19 +251,16 @@ export function addCommunityLayer(map, popHeight, popWidth, communityData) {
       sprdName
     ) {
       map.youAreOn.updateHtml("");
-      let contactsTable = `<table class="table">`;
-      contactsTable += `<thead>
+      let contactsTable = `<table class="table"><thead>
       <tr>
         <th scope="col">Community</th>
         <th scope="col">Contact</th>
       </tr>
-    </thead>`;
-      contactsTable += `<tbody>`;
+    </thead><tbody>`;
       contacts.forEach((contact) => {
         contactsTable += `<tr><td>${contact.name}</td><td>${contact.contact}</td>`;
       });
-      contactsTable += `</tbody>`;
-      contactsTable += `</table>`;
+      contactsTable += `</tbody></table>`;
       this.contactControl.addSection(
         "spread-contacts",
         "close-spread-contacts",
@@ -336,7 +338,6 @@ export function addCommunityLayer(map, popHeight, popWidth, communityData) {
         .addEventListener("click", () => {
           const listItems = document.getElementById("suggestions");
           const listObj = document.getElementById("community-search");
-
           let foundId;
           Array.from(listItems.options).forEach((item) => {
             if (item.value === listObj.value) {

@@ -1,0 +1,32 @@
+.territory-popup {
+  overflow-y: hidden;
+  overflow-x: hidden;
+}
+
+.territory-popup tr {
+  font-size: 14px;
+}
+
+.territory-popup p {
+  font-size: 14px;
+  margin-bottom: 0px !important;
+}
+
+#reserve-popup {
+  overflow: auto;
+}
+
+#image-disclaimer.alert > :first-child:before {
+  position: relative !important;
+}
+
+#image-disclaimer {
+  margin-top: 15px;
+  margin-bottom: 30px;
+  margin-right: 10px;
+}
+
+#image-disclaimer p {
+  margin: 1px;
+  font-size: 14px;
+}
