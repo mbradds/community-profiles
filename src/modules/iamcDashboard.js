@@ -5,7 +5,6 @@ import {
   leafletBaseMap,
   lengthUnits,
   setUpHeight,
-  addpoly2Length,
   mapLegend,
   resetZoom,
   resetListener,
@@ -241,14 +240,12 @@ async function loadMap(
 
 /**
  * Loads non map components (totals, treaty overlaps)
- * @param {Object[]} poly2Length Information about numbered treaty overlaps
  * @param {*} landFeature
  * @param {*} incidentFeature
  * @param {*} meta
  * @returns
  */
-function loadNonMap(poly2Length, landFeature, incidentFeature, meta) {
-  addpoly2Length(poly2Length, meta.company);
+function loadNonMap(landFeature, incidentFeature, meta) {
   dashboardTotals(landFeature, incidentFeature, meta);
   const user = setUpHeight();
   return user;
@@ -258,14 +255,12 @@ function loadNonMap(poly2Length, landFeature, incidentFeature, meta) {
  * Loads the main dashboard
  * @param {*} landFeature
  * @param {*} landInfo
- * @param {*} poly2Length
  * @param {*} incidentFeature
  * @param {*} meta
  */
 export function iamcDashboard(
   landFeature,
   landInfo,
-  poly2Length,
   incidentFeature,
   meta
 ) {
@@ -273,7 +268,7 @@ export function iamcDashboard(
     ifIEShowError();
     async function buildPage() {
       const mapHeight = document.getElementById("map").clientHeight;
-      const user = loadNonMap(poly2Length, landFeature, incidentFeature, meta);
+      const user = loadNonMap(landFeature, incidentFeature, meta);
       const map = await loadMap(
         mapHeight,
         user,

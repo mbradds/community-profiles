@@ -2,8 +2,15 @@
 responsive style options 
 */
 
+.tablet-show {
+  display: none;
+}
+
 /* extra small screen phones (col-xs) */
 @media only screen and (max-width: 768px) {
+  .tablet-show {
+    display: block !important;
+  }
   .tablet-hide {
     display: none;
     visibility: hidden;
@@ -32,6 +39,9 @@ responsive style options
 
 /* small screen tablet (col-sm) */
 @media only screen and (max-width: 992px) {
+  .tablet-show {
+    display: block !important;
+  }
   .tablet-hide {
     display: none;
     visibility: hidden;
@@ -47,6 +57,9 @@ responsive style options
 
 /* medium screen tablet */
 @media only screen and (max-width: 1200px) {
+  .tablet-show {
+    display: block !important;
+  }
   .tablet-hide {
     display: none;
     visibility: hidden;

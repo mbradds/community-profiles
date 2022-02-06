@@ -172,27 +172,6 @@ export function setUpHeight() {
 }
 
 /**
- * Adds an HTML table with the pipeline intersection length with numbered treaties
- * @param {Object[]} treaties Info about numbered treaty overlap
- * @param {string} company Company name
- */
-export function addpoly2Length(treaties, company) {
-  let treatyHtml = `<table class="table"><thead><tr><th scope="col" class="col-sm-6">Treaty Name</th><th scope="col" class="col-sm-6">Operating Km</th></tr></thead><tbody>`;
-  treaties.forEach((land) => {
-    treatyHtml += htmlTableRow(
-      `${land.ENAME}:`,
-      `${(land.length_gpd / 1000).toFixed(0)} km`
-    );
-  });
-  treatyHtml += "</tbody></table>";
-  document.getElementById("treaty-length").innerHTML = treatyHtml;
-  // add title
-  document.getElementById(
-    "treaty-length-title"
-  ).innerText = `${company} & Historic Treaty Land`;
-}
-
-/**
  * Clears incident circles from the map and resets the map legend
  * @param {Object} map leaflet map object
  */

@@ -5,7 +5,7 @@
   </head>
   <body>
     <div class="container-fluid mrgn-bttm-sm">
-      {{> h1 h1Text="Community Profiles Prototype" updated="Updated January 2022"}}
+      {{> h1 h1Text="Community Profiles Prototype" updated="Updated February 2022"}}
       <div class="row tablet-hide" id="summary-row">
         <div class="col-md-4 col-sm-12 summary-point">
           <div class="alert alert-warning">
@@ -29,14 +29,23 @@
               id="map-panel-heading"
             >
               <div id="find-communities-container"></div>
-              <button
-                type="button"
-                id="full-screen-btn"
-                class="btn btn-primary btn-xs header-btn tablet-hide"
-                onclick="openFullscreen();"
-              >
-                Enter Fullscreen
-              </button>
+              <div class="map-row">
+                <button
+                  type="button"
+                  id="full-screen-btn"
+                  class="btn btn-primary btn-xs header-btn tablet-hide"
+                  onclick="openFullscreen();"
+                >
+                  Enter Fullscreen
+                </button>
+                <button
+                  type="button"
+                  class="btn btn-primary btn-xs header-btn tablet-show"
+                  onclick=" window.open('/tutorial.html', '_blank'); return false;"
+                >
+                  Open Tutorial
+                </button>
+              </div>
             </header>
             <div class="panel-body" id="map-panel-body">
               <div id="map">
@@ -78,14 +87,7 @@
           </section>
         </div>
         <div class="col-md-4">
-          <section class="alert alert-info hght-inhrt">
-            <h3>Submit Issues</h3>
-            Please email
-            <a href="mailto:grant.moss@cer-rec.gc.ca"
-              >Grant Moss (grant.moss@cer-rec.gc.ca)</a
-            >
-            if you notice errors or have feedback on this application.
-          </section>
+          {{> submitIssues}}
         </div>
         <div class="col-md-4">
           <section class="alert alert-info hght-inhrt">
@@ -97,16 +99,6 @@
               >Trans Mountain Website</a
             >
           </section>
-        </div>
-      </div>
-      <div class="row tablet-hide">
-        <div class="col-md-12">
-          <details>
-            <summary>
-              <strong id="treaty-length-title"></strong>
-            </summary>
-            <div id="treaty-length"></div>
-          </details>
         </div>
       </div>
     </div>
