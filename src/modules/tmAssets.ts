@@ -3,13 +3,14 @@ import { GeoJsonObject } from "geojson";
 import { cerPalette, featureStyles, toolTipHtml } from "./util";
 import tmxSpreads from "../company_data/trans_mountain_files/pipeline-spread-geometries.json";
 import mainline from "../company_data/trans_mountain_files/existing-pipeline.json";
+import { IamcMap, CommunityLayer } from "./interfaces";
 
 interface ToolTipLayer extends L.Layer {
   feature: { id: number };
   options: { color: boolean };
 }
 
-export function tmAssets(map, communityLayer) {
+export function tmAssets(map: IamcMap, communityLayer: CommunityLayer) {
   const mainlineLayer = L.geoJSON(mainline as GeoJsonObject, {
     style: featureStyles.mainline,
   }).addTo(map);
@@ -56,5 +57,4 @@ export function tmAssets(map, communityLayer) {
   });
 
   return [tmSpreadLayer, mainlineLayer];
-  // return [undefined, undefined];
 }

@@ -273,9 +273,9 @@ export function mapLegend(
     return this._div;
   };
   info.addItem = function addItem(
-    entry = "incidents",
-    spread = undefined,
-    color = undefined
+    entry: string = "incidents",
+    spread: any = undefined,
+    color: any = undefined
   ) {
     if (entry === "incidents") {
       this._div.innerHTML += `<h4 class="legend-temp" style='color:${featureStyles.incident.fillColor};'>&#11044; Incident</h4>`;
@@ -409,20 +409,20 @@ export function addCustomControl(position: L.ControlPosition, map: IamcMap) {
     this._div.innerHTML = ``;
     return this._div;
   };
-  info.updateHtml = function updateHtml(html) {
+  info.updateHtml = function updateHtml(html: string) {
     this._div.innerHTML = html;
   };
   info.removeHtml = function removeHtml() {
     this._div.innerHTML = "";
   };
-  info.fixScroll = function fixScroll(popUpId) {
+  info.fixScroll = function fixScroll(popUpId: string) {
     L.DomEvent.on(
       L.DomUtil.get(popUpId),
       "mousewheel",
       L.DomEvent.stopPropagation
     );
   };
-  info.closeBtnListener = function closeBtnListener(closeId) {
+  info.closeBtnListener = function closeBtnListener(closeId: string) {
     document.getElementById(closeId).addEventListener("click", () => {
       this.removeHtml();
     });

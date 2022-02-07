@@ -88,10 +88,10 @@ function addResetBtn(map: IamcMap) {
 /**
  * Evaluates the users location against the traditional territory polygons.
  * TODO: extend this function to find communities near the user.
- * @param {Object} map leaflet map object
+ * @param map leaflet map object
  */
 function nearbyStuff(map: IamcMap) {
-  const onTerritories = [];
+  const onTerritories: any[] = [];
   territoryPolygons.features.forEach((polygon) => {
     const inside = pointInPolygon(
       [map.user.lng, map.user.lat],
@@ -168,20 +168,18 @@ function mapWarning(map: IamcMap) {
 
 /**
  * Adds a layer control filter to the map
- * @param {Object[]} layers list of all the map layers to be added to the filter
- * @param {Object} map leaflet map object
+ * @param layers list of all the map layers to be added to the filter
+ * @param map leaflet map object
  */
 function addLayerControl(
   layers: { display: string; layer: L.Layer }[],
   map: IamcMap
 ) {
-  const layerControl = { single: {}, multi: {} };
+  const layerControl: { [key: string]: L.Layer } = {};
   layers.forEach((layer) => {
-    layerControl.multi[layer.display] = layer.layer;
+    layerControl[layer.display] = layer.layer;
   });
-  L.control
-    .layers(layerControl.single, layerControl.multi, { position: "topleft" })
-    .addTo(map);
+  L.control.layers(undefined, layerControl, { position: "topleft" }).addTo(map);
 }
 
 /**

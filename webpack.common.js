@@ -59,6 +59,7 @@ export default {
     publicPath: "/",
     filename: "[name].[contenthash].js",
   },
+  devtool: "inline-source-map",
 
   plugins: [
     ...webpackOutputs.outputHtml(),

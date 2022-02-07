@@ -10,11 +10,6 @@ import {
 
 import { IamcMap } from "./interfaces";
 
-interface landGeoJson extends L.GeoJSON {
-  landInfo?: any;
-  incidentFeature?: any;
-}
-
 /**
  * TODO: maybe split this method between iamc and profiles. IAMC might need more event info vs profiles.
  * @param event
@@ -63,13 +58,12 @@ function addIncidents(map: IamcMap, name: string, incidentFeature: any) {
       fillOpacity: featureStyles.incident.fillOpacity,
       radius: featureStyles.incident.radius,
       weight: featureStyles.incident.weight,
-      // type: "incident",
     }).bindTooltip(eventTooltip(eventInfo));
 
   const proximityCount = { on: 0, close: 0 };
   if (incidents) {
     map.legend.addItem();
-    const points = incidents.map((p) => {
+    const points = incidents.map((p: any) => {
       if (p.distance === 0) {
         proximityCount.on += 1;
       } else {
@@ -82,7 +76,7 @@ function addIncidents(map: IamcMap, name: string, incidentFeature: any) {
   return proximityCount;
 }
 
-function reserveTooltip(layer, landInfo) {
+function reserveTooltip(layer: any, landInfo: any) {
   const layerInfo = landInfo[layer.NAME1];
   let table = `<table class="map-tooltip"><caption><b>${layer.NAME1}</b></caption>`;
   table += htmlTableRow("Land Type:&nbsp", layerInfo.meta.altype);
@@ -95,7 +89,7 @@ function reserveTooltip(layer, landInfo) {
   return table;
 }
 
-function reservePopUp(reserve: any, incidentFeature: any) {
+function reservePopUp(reserve: any, landInfo: any, incidentFeature: any) {
   const alertClass = (val: number, type: string) => {
     if (type === "on" && val > 0) {
       return "alert alert-danger";
@@ -106,11 +100,7 @@ function reservePopUp(reserve: any, incidentFeature: any) {
     return "alert alert-success";
   };
 
-  const { landInfo } = reserve.defaultOptions;
-  // console.log(reserve, incidentFeature);
-  // const { incidentFeature } = reserve.defaultOptions;
   const layerInfo = landInfo[reserve.feature.properties.NAME1];
-
   const proximityCount = addIncidents(
     reserve._map,
     reserve.feature.properties.NAME1,
@@ -122,7 +112,7 @@ function reservePopUp(reserve: any, incidentFeature: any) {
   // first table: pipeline overlaps
   popHtml += `<table class="table" style="margin-bottom:0px"><h3 class="center-header">Pipeline Overlaps</h3><tbody>`;
 
-  layerInfo.overlaps.forEach((overlap) => {
+  layerInfo.overlaps.forEach((overlap: any) => {
     const l = lengthUnits(overlap.length);
     popHtml += htmlTableRow(
       `${overlap.plname} (${overlap.status})`,
@@ -158,17 +148,14 @@ export function addReserveLayer(
   landInfo: any,
   incidentFeature: any
 ) {
-  const landGeoJson: landGeoJson = L.geoJSON(landFeature, {
+  const landGeoJson = L.geoJSON(landFeature, {
     style: featureStyles.reserveOverlap,
   })
     .bindTooltip((layer: any) =>
       reserveTooltip(layer.feature.properties, landInfo)
     )
-    .bindPopup((layer) => reservePopUp(layer, incidentFeature))
+    .bindPopup((layer) => reservePopUp(layer, landInfo, incidentFeature))
     .addTo(map);
-
-  landGeoJson.landInfo = landInfo;
-  landGeoJson.incidentFeature = incidentFeature;
 
   return landGeoJson;
 }
