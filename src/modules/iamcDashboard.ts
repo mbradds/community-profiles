@@ -1,4 +1,3 @@
-import "core-js/modules/es.promise.js";
 import * as L from "leaflet";
 import pointInPolygon from "point-in-polygon";
 import {
@@ -11,15 +10,19 @@ import {
   plural,
   findUser,
   addCustomControl,
-  ifIEShowError,
-} from "./util.js";
-import { addCommunityLayer } from "./addCommunityLayer.js";
-import { addReserveLayer } from "./addReserveLayer.js";
-import { tmAssets } from "./tmAssets.js";
-import { getCommunityData } from "./getCommunityData.js";
+} from "./util";
+import { addCommunityLayer } from "./addCommunityLayer";
+import { addReserveLayer } from "./addReserveLayer";
+import { tmAssets } from "./tmAssets";
+import { getCommunityData } from "./getCommunityData";
 import territoryPolygons from "../company_data/community_profiles/indigenousTerritoriesCa.json";
 import "leaflet/dist/leaflet.css";
 import "../css/main.css";
+
+interface MapWarning extends L.Control {
+  addWarning?: Function;
+  removeWarning?: Function;
+}
 
 /**
  * Sets the summary statistics above the map
@@ -68,7 +71,7 @@ function dashboardTotals(landFeature, incidentFeature, meta) {
  * @param {Object} map leaflet map object
  */
 function addResetBtn(map) {
-  const info = L.control({ position: "bottomleft" });
+  const info: L.Control = new L.Control({ position: "bottomleft" });
   info.onAdd = function () {
     this._div = L.DomUtil.create("div");
     this._div.innerHTML = `<button type="button" id="find-me" class="btn btn-primary btn-block btn-lg">Find Me</button><button type="button" id="reset-map" class="btn btn-primary btn-block btn-lg">Reset Map</button>`;
@@ -141,7 +144,8 @@ function onLand(map, communityLayer) {
  * @param {Object} map leaflet map object
  */
 function mapWarning(map) {
-  const info = L.control({ position: "bottomright" });
+  const info: MapWarning = new L.Control({ position: "bottomright" });
+  info.setPosition("bottomright");
   info.onAdd = function onAdd() {
     this._div = L.DomUtil.create("div");
     this._div.innerHTML = ``;
@@ -260,7 +264,6 @@ function loadNonMap(landFeature, incidentFeature, meta) {
  */
 export function iamcDashboard(landFeature, landInfo, incidentFeature, meta) {
   function main() {
-    ifIEShowError();
     async function buildPage() {
       const mapHeight = document.getElementById("map").clientHeight;
       const user = loadNonMap(landFeature, incidentFeature, meta);
@@ -275,10 +278,11 @@ export function iamcDashboard(landFeature, landInfo, incidentFeature, meta) {
     }
 
     buildPage().then(() => {
-      Array.from(document.getElementsByClassName("loader")).forEach((div) => {
-        const divToHide = div;
-        divToHide.style.display = "none";
-      });
+      Array.from(document.getElementsByClassName("loader")).forEach(
+        (div: HTMLInputElement) => {
+          div.style.display = "none";
+        }
+      );
     });
   }
   main();

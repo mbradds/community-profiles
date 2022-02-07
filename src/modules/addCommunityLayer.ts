@@ -5,7 +5,41 @@ import {
   toolTipHtml,
   addCustomControl,
   plural,
-} from "./util.js";
+} from "./util";
+
+interface LandMarker extends L.CircleMarker {
+  electionDate?: Date | null;
+  spreadNums?: number[];
+  communityName?: string;
+  contactInfo?: string;
+}
+
+interface CommunityLayer extends L.FeatureGroup {
+  contactControl?: any;
+  resetSlider?: Function;
+  resetStyle?: Function;
+  getNames?: Function;
+  zoomToId?: Function;
+  electionRangeListener?: Function;
+  filterElections?: Function;
+  resetSpreads?: Function;
+  spreadContactPopUp?: Function;
+  findSpreads?: Function;
+  searchCommunities?: Function;
+  searchError?: Function;
+  resetSearchError?: Function;
+  resetSearch?: Function;
+  reset?: Function;
+}
+
+interface CommunityCircle extends L.CircleMarker {
+  communityName?: string;
+  _leaflet_id?: number;
+  _latlng?: number[];
+  electionDate: Date;
+  spreadNums: number[];
+  contactInfo: string;
+}
 
 /**
  * Generates an HTML partial for the community pop-up information
@@ -13,7 +47,7 @@ import {
  * @param {boolean} hasImage Specifies if the pop-up will have a traditional territory image
  * @returns {string} HTML partial to be added to the leaflet community pop-up
  */
-function popUpTable(imgHtml, landInfo, hasImage) {
+function popUpTable(imgHtml: string, landInfo: any, hasImage: boolean) {
   let tableHtml = "";
   let subImageHtml = "";
   if (hasImage) {
@@ -85,7 +119,7 @@ export function addCommunityLayer(map, popHeight, popWidth, communityData) {
   async function addCircles() {
     const landCircles = communityData.map((community) => {
       const com = community.attributes;
-      const landMarker = L.circleMarker(
+      const landMarker: LandMarker = L.circleMarker(
         [com.Latitude, com.Longitude],
         featureStyles.territory
       );
@@ -107,14 +141,14 @@ export function addCommunityLayer(map, popHeight, popWidth, communityData) {
           hasImage
         )}</div>`,
         {
-          maxHeight: `${popHeight}`,
-          maxWidth: `${popWidth}`,
+          maxHeight: popHeight,
+          maxWidth: popWidth,
         }
       );
       return landMarker;
     });
 
-    const setDisplayDays = (days) => {
+    const setDisplayDays = (days: string) => {
       const displayDays =
         days === "All"
           ? days
@@ -124,16 +158,18 @@ export function addCommunityLayer(map, popHeight, popWidth, communityData) {
       ).innerHTML = `<span>Days to election: (${displayDays})</span>`;
     };
 
-    const communityLayer = L.featureGroup(landCircles);
+    const communityLayer: CommunityLayer = L.featureGroup(landCircles);
     communityLayer.contactControl = addCustomControl("bottomright", map);
 
     communityLayer.resetSlider = function resetSlider() {
-      document.getElementById("election-range-slider").value = "366";
+      (<HTMLInputElement>(
+        document.getElementById("election-range-slider")
+      )).value = "366";
       setDisplayDays("All");
     };
 
     communityLayer.resetStyle = function resetStyle() {
-      Object.values(this._layers).forEach((circle) => {
+      Object.values(this._layers).forEach((circle: CommunityCircle) => {
         circle.setStyle({
           ...featureStyles.territory,
         });
@@ -147,7 +183,7 @@ export function addCommunityLayer(map, popHeight, popWidth, communityData) {
      */
     communityLayer.getNames = function getNames() {
       return Object.values(this._layers)
-        .map((circle) => ({
+        .map((circle: CommunityCircle) => ({
           name: circle.communityName,
           id: circle._leaflet_id,
         }))
@@ -160,8 +196,8 @@ export function addCommunityLayer(map, popHeight, popWidth, communityData) {
      * Zooms to the selected community by finding the matching id
      * @param {number} id leaflet id of the selected community circle
      */
-    communityLayer.zoomToId = function zoomToId(id) {
-      Object.values(this._layers).forEach((circle) => {
+    communityLayer.zoomToId = function zoomToId(id: number) {
+      Object.values(this._layers).forEach((circle: CommunityCircle) => {
         if (circle._leaflet_id === id) {
           map.setView(circle._latlng, 10);
           circle.setStyle({
@@ -180,9 +216,12 @@ export function addCommunityLayer(map, popHeight, popWidth, communityData) {
      */
     communityLayer.electionRangeListener = function electionRangeListener() {
       setDisplayDays("All");
-      const slider = document.getElementById("election-range-slider");
+      const slider = <HTMLInputElement>(
+        document.getElementById("election-range-slider")
+      );
       slider.addEventListener("change", () => {
-        const displayValue = slider.value > 365 ? "All" : slider.value;
+        const displayValue =
+          parseInt(slider.value) > 365 ? "All" : slider.value;
         setDisplayDays(displayValue);
         this.filterElections(displayValue);
       });
@@ -196,7 +235,7 @@ export function addCommunityLayer(map, popHeight, popWidth, communityData) {
       this._map.legend.removeItem();
       const currentDate = Date.now();
       if (dayRange !== "All") {
-        Object.values(this._layers).forEach((circle) => {
+        Object.values(this._layers).forEach((circle: CommunityCircle) => {
           let insideRange = false;
           if (circle.electionDate) {
             const daysUntilElection =
@@ -234,7 +273,7 @@ export function addCommunityLayer(map, popHeight, popWidth, communityData) {
     communityLayer.resetSpreads = function resetSpreads() {
       map.warningMsg.removeWarning();
       this.contactControl.updateHtml("");
-      Object.values(this._layers).forEach((circle) => {
+      Object.values(this._layers).forEach((circle: CommunityCircle) => {
         circle.setStyle({
           ...featureStyles.territory,
         });
@@ -293,7 +332,7 @@ export function addCommunityLayer(map, popHeight, popWidth, communityData) {
           `There are no communities identified for ${sprdName}`
         );
       if (selectedSpreads) {
-        Object.values(this._layers).forEach((circle) => {
+        Object.values(this._layers).forEach((circle: CommunityCircle) => {
           if (selectedSpreads.some((r) => circle.spreadNums.includes(r))) {
             contactInfo.push({
               name: circle.communityName,
@@ -336,8 +375,12 @@ export function addCommunityLayer(map, popHeight, popWidth, communityData) {
       document
         .getElementById("find-communities-btn")
         .addEventListener("click", () => {
-          const listItems = document.getElementById("suggestions");
-          const listObj = document.getElementById("community-search");
+          const listItems = <HTMLSelectElement>(
+            document.getElementById("suggestions")
+          );
+          const listObj = <HTMLInputElement>(
+            document.getElementById("community-search")
+          );
           let foundId;
           Array.from(listItems.options).forEach((item) => {
             if (item.value === listObj.value) {
@@ -368,7 +411,8 @@ export function addCommunityLayer(map, popHeight, popWidth, communityData) {
     };
 
     communityLayer.resetSearch = function resetSearch() {
-      document.getElementById("community-search").value = "";
+      (<HTMLInputElement>document.getElementById("community-search")).value =
+        "";
       this.resetSearchError();
     };
 

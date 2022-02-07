@@ -1,4 +1,4 @@
-import { appError } from "./util.js";
+import { appError } from "./util";
 
 export async function getCommunityData() {
   try {

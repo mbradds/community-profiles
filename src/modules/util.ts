@@ -1,5 +1,29 @@
 import * as L from "leaflet";
-import { UnsupportedBrowserError } from "./errors.js";
+
+declare global {
+  interface Window {
+    openFullscreen: any;
+  }
+}
+
+interface mapLegendControl extends L.Control {
+  addItem?: Function;
+  removeItem?: Function;
+}
+
+interface userMarker extends L.Marker {
+  id?: string;
+  _latlng: number[];
+  getPosition: Function;
+}
+
+interface customControl extends L.Control {
+  updateHtml?: Function;
+  removeHtml?: Function;
+  fixScroll?: Function;
+  closeBtnListener?: Function;
+  addSection?: Function;
+}
 
 export const cerPalette = {
   "Night Sky": "#054169",
@@ -20,7 +44,7 @@ export const cerPalette = {
 };
 
 function openFullscreen() {
-  const elem = document.getElementById("map-panel");
+  const elem: any = document.getElementById("map-panel");
   elem.style.width = "100%";
   elem.style.height = "100%";
   if (elem.requestFullscreen) {
@@ -54,7 +78,7 @@ export function htmlTableRow(text, value) {
  * @param {string} color Optional color for the headText
  * @returns {string} HTML table
  */
-export function toolTipHtml(headText, midText, footText, color) {
+export function toolTipHtml(headText, midText, footText, color = false) {
   let style = "margin-bottom: 5px";
   if (color) {
     style += `; color:${color}`;
@@ -123,14 +147,13 @@ export const featureStyles = {
  * @returns {Object} leaflet map
  */
 export function leafletBaseMap(config) {
-  const map = new L.map(config.div, {
+  const map: L.Map = L.map(config.div, {
     zoomDelta: config.zoomDelta,
     maxZoom: 17,
     minZoom: 4,
     zoomSnap: 0.5,
   }).setView(config.initZoomTo, config.initZoomLevel);
-  L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png?{foo}", {
-    foo: "bar",
+  L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
     attribution:
       '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
   }).addTo(map);
@@ -235,7 +258,7 @@ export function mapLegend(map, communityLayer) {
     legend += `<h4 style='color:${featureStyles.mainline.color};'>&#9473;&#9473; Existing Mainline</h4>`;
     legend += `<h4 style='color:${featureStyles.territory.fillColor};'>&#11044; Community</h4>`;
   }
-  const info = L.control();
+  const info: mapLegendControl = new L.Control({ position: "topright" });
   info.onAdd = function onAdd() {
     this._div = L.DomUtil.create("div", "legend");
     this._div.innerHTML = legend;
@@ -255,7 +278,7 @@ export function mapLegend(map, communityLayer) {
   };
   info.removeItem = function removeItem() {
     Array.from(this._div.getElementsByClassName("legend-temp")).forEach(
-      (toHide) => {
+      (toHide: HTMLInputElement) => {
         toHide.parentNode.removeChild(toHide);
       }
     );
@@ -324,15 +347,15 @@ export async function findUser(map) {
         watch: false,
       })
       .on("locationfound", (e) => {
-        const marker = L.marker([e.latitude, e.longitude], {
+        const marker: L.Marker = L.marker([e.latitude, e.longitude], {
           draggable: true,
         }).bindPopup("Click and drag to move locations");
         marker.on("drag", (d) => {
           map.user = d.target.getLatLng();
         });
-        marker.id = "userLocation";
+        // marker.id = "userLocation";
         map.addLayer(marker);
-        map.user = marker._latlng;
+        map.user = marker.getLatLng();
         resolve(marker);
       })
       .on("locationerror", (err) => {
@@ -363,7 +386,8 @@ export function appError(header, err) {
  * @returns {Object} leaflet control object
  */
 export function addCustomControl(position, map) {
-  const info = L.control({ position });
+  const info: customControl = new L.Control({ position });
+  info.setPosition(position);
   info.onAdd = function onAdd() {
     this._div = L.DomUtil.create("div");
     this._div.innerHTML = ``;
@@ -425,18 +449,18 @@ export function addCustomControl(position, map) {
   return info;
 }
 
-export function ifIEShowError() {
-  // Internet Explorer 6-11
-  const ie = /* @cc_on!@ */ false || !!document.documentMode;
-  if (ie) {
-    Array.from(document.getElementsByClassName("container-fluid")).forEach(
-      (errorDiv) => {
-        errorDiv.innerHTML = `<section class="alert alert-danger"><h4>Outdated Browser</h4>
-      Your web browser is unsupported. Please open the application on a modern web browser.
-    </section>`;
-      }
-    );
-    throw new UnsupportedBrowserError("old browser!");
-  }
-  return ie;
-}
+// export function ifIEShowError() {
+//   // Internet Explorer 6-11
+//   const ie = /* @cc_on!@ */ false || !!document.documentMode;
+//   if (ie) {
+//     Array.from(document.getElementsByClassName("container-fluid")).forEach(
+//       (errorDiv) => {
+//         errorDiv.innerHTML = `<section class="alert alert-danger"><h4>Outdated Browser</h4>
+//       Your web browser is unsupported. Please open the application on a modern web browser.
+//     </section>`;
+//       }
+//     );
+//     throw new UnsupportedBrowserError("old browser!");
+//   }
+//   return ie;
+// }

@@ -1,3 +1,4 @@
+import * as L from "leaflet";
 import {
   getSum,
   lengthUnits,
@@ -5,7 +6,12 @@ import {
   plural,
   featureStyles,
   removeIncidents,
-} from "./util.js";
+} from "./util";
+
+interface landGeoJson extends L.GeoJSON {
+  landInfo?: any;
+  incidentFeature?: any;
+}
 
 /**
  * TODO: maybe split this method between iamc and profiles. IAMC might need more event info vs profiles.
@@ -56,7 +62,7 @@ function addIncidents(map, name, incidentFeature) {
       fillOpacity: featureStyles.incident.fillOpacity,
       radius: featureStyles.incident.radius,
       weight: featureStyles.incident.weight,
-      type: "incident",
+      // type: "incident",
     }).bindTooltip(eventTooltip(eventInfo));
 
   const proximityCount = { on: 0, close: 0 };
@@ -145,12 +151,17 @@ function reservePopUp(reserve) {
 }
 
 export function addReserveLayer(map, landFeature, landInfo, incidentFeature) {
-  return L.geoJSON(landFeature, {
+  const landGeoJson: landGeoJson = L.geoJSON(landFeature, {
     style: featureStyles.reserveOverlap,
-    landInfo,
-    incidentFeature,
   })
-    .bindTooltip((layer) => reserveTooltip(layer.feature.properties, landInfo))
+    // .bindTooltip((layer: L.Layer) =>
+    //   reserveTooltip(layer.feature.properties, landInfo)
+    // )
     .bindPopup((layer) => reservePopUp(layer))
     .addTo(map);
+
+  landGeoJson.landInfo = landInfo;
+  landGeoJson.incidentFeature = incidentFeature;
+
+  return landGeoJson;
 }
