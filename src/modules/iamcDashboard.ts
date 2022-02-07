@@ -18,21 +18,26 @@ import { getCommunityData } from "./getCommunityData";
 import territoryPolygons from "../company_data/community_profiles/indigenousTerritoriesCa.json";
 import "leaflet/dist/leaflet.css";
 import "../css/main.css";
+import { IamcMap, MapWarning, CommunityLayer } from "./interfaces";
 
-interface MapWarning extends L.Control {
-  addWarning?: Function;
-  removeWarning?: Function;
+interface MetaData {
+  company: string;
+  totalLength: number;
 }
 
 /**
  * Sets the summary statistics above the map
- * @param {Object} landFeature First Nations Reserve geojson
- * @param {Object} incidentFeature Corresponding incident info for each reserve
- * @param {Object} meta Company name and total reserve overlap length
+ * @param landFeature First Nations Reserve geojson
+ * @param incidentFeature Corresponding incident info for each reserve
+ * @param meta Company name and total reserve overlap length
  */
-function dashboardTotals(landFeature, incidentFeature, meta) {
-  const addStyle = (val) => `<strong>${val}</strong>`;
-  const flagClass = (val) =>
+function dashboardTotals(
+  landFeature: any,
+  incidentFeature: any,
+  meta: MetaData
+) {
+  const addStyle = (val: number | string) => `<strong>${val}</strong>`;
+  const flagClass = (val: number) =>
     val > 0 ? "alert alert-danger" : "alert alert-success";
 
   const lengthInfo = lengthUnits(meta.totalLength);
@@ -68,9 +73,9 @@ function dashboardTotals(landFeature, incidentFeature, meta) {
 
 /**
  * Adds a leaflet control object for the "Reset Map" button
- * @param {Object} map leaflet map object
+ * @param map leaflet map object
  */
-function addResetBtn(map) {
+function addResetBtn(map: IamcMap) {
   const info: L.Control = new L.Control({ position: "bottomleft" });
   info.onAdd = function () {
     this._div = L.DomUtil.create("div");
@@ -85,7 +90,7 @@ function addResetBtn(map) {
  * TODO: extend this function to find communities near the user.
  * @param {Object} map leaflet map object
  */
-function nearbyStuff(map) {
+function nearbyStuff(map: IamcMap) {
   const onTerritories = [];
   territoryPolygons.features.forEach((polygon) => {
     const inside = pointInPolygon(
@@ -115,9 +120,9 @@ function nearbyStuff(map) {
 
 /**
  * Evaluates the users location against traditional territory's
- * @param {Object} map leaflet map object
+ * @param map leaflet map object
  */
-function onLand(map, communityLayer) {
+function onLand(map: IamcMap, communityLayer: CommunityLayer) {
   map.youAreOn = addCustomControl("bottomright", map);
   document.getElementById("find-me").addEventListener("click", () => {
     communityLayer.contactControl.updateHtml("");
@@ -141,9 +146,9 @@ function onLand(map, communityLayer) {
 
 /**
  * Adds a leaflet map control to the bottom right corner
- * @param {Object} map leaflet map object
+ * @param map leaflet map object
  */
-function mapWarning(map) {
+function mapWarning(map: IamcMap) {
   const info: MapWarning = new L.Control({ position: "bottomright" });
   info.setPosition("bottomright");
   info.onAdd = function onAdd() {
@@ -151,7 +156,7 @@ function mapWarning(map) {
     this._div.innerHTML = ``;
     return this._div;
   };
-  info.addWarning = function addWarning(text) {
+  info.addWarning = function addWarning(text: string) {
     this._div.innerHTML = `<div class="alert alert-danger"><span class="h3 mrgn-bttm-0">${text}</span></div>`;
   };
   info.removeWarning = function removeWarning() {
@@ -166,7 +171,10 @@ function mapWarning(map) {
  * @param {Object[]} layers list of all the map layers to be added to the filter
  * @param {Object} map leaflet map object
  */
-function addLayerControl(layers, map) {
+function addLayerControl(
+  layers: { display: string; layer: L.Layer }[],
+  map: IamcMap
+) {
   const layerControl = { single: {}, multi: {} };
   layers.forEach((layer) => {
     layerControl.multi[layer.display] = layer.layer;
@@ -178,19 +186,19 @@ function addLayerControl(layers, map) {
 
 /**
  * Loads the basemap and all the map layers
- * @param {number} mapHeight height of the map container
- * @param {number} userWidth width of the users screen
- * @param {Object} landFeature First Nations Reserve geojson
- * @param {Object} landInfo Information on overlaps for each First Nations Reserve
- * @param {Object} incidentFeature Information on incidents for each First Nations Reserve
- * @returns {Object} leaflet map object
+ * @param mapHeight height of the map container
+ * @param userWidth width of the users screen
+ * @param landFeature First Nations Reserve geojson
+ * @param landInfo Information on overlaps for each First Nations Reserve
+ * @param incidentFeature Information on incidents for each First Nations Reserve
+ * @returns leaflet map object
  */
 async function loadMap(
-  mapHeight,
-  userWidth,
-  landFeature,
-  landInfo,
-  incidentFeature
+  mapHeight: number,
+  userWidth: number,
+  landFeature: any,
+  landInfo: any,
+  incidentFeature: any
 ) {
   const communityData = await getCommunityData();
   const map = leafletBaseMap({
@@ -244,12 +252,12 @@ async function loadMap(
 
 /**
  * Loads non map components (totals, treaty overlaps)
- * @param {*} landFeature
- * @param {*} incidentFeature
- * @param {*} meta
+ * @param landFeature
+ * @param incidentFeature
+ * @param meta
  * @returns
  */
-function loadNonMap(landFeature, incidentFeature, meta) {
+function loadNonMap(landFeature: any, incidentFeature: any, meta: MetaData) {
   dashboardTotals(landFeature, incidentFeature, meta);
   const user = setUpHeight();
   return user;
@@ -257,12 +265,17 @@ function loadNonMap(landFeature, incidentFeature, meta) {
 
 /**
  * Loads the main dashboard
- * @param {*} landFeature
- * @param {*} landInfo
- * @param {*} incidentFeature
- * @param {*} meta
+ * @param landFeature
+ * @param landInfo
+ * @param incidentFeature
+ * @param meta
  */
-export function iamcDashboard(landFeature, landInfo, incidentFeature, meta) {
+export function iamcDashboard(
+  landFeature: any,
+  landInfo: any,
+  incidentFeature: any,
+  meta: MetaData
+) {
   function main() {
     async function buildPage() {
       const mapHeight = document.getElementById("map").clientHeight;

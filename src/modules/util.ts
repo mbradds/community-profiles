@@ -1,4 +1,5 @@
 import * as L from "leaflet";
+import { CommunityLayer, IamcMap } from "./interfaces";
 
 declare global {
   interface Window {
@@ -6,18 +7,18 @@ declare global {
   }
 }
 
-interface mapLegendControl extends L.Control {
+interface MapLegendControl extends L.Control {
   addItem?: Function;
   removeItem?: Function;
 }
 
-interface userMarker extends L.Marker {
-  id?: string;
-  _latlng: number[];
-  getPosition: Function;
-}
+// interface userMarker extends L.Marker {
+//   id?: string;
+//   _latlng: number[];
+//   getPosition: Function;
+// }
 
-interface customControl extends L.Control {
+interface CustomControl extends L.Control {
   updateHtml?: Function;
   removeHtml?: Function;
   fixScroll?: Function;
@@ -62,23 +63,28 @@ window.openFullscreen = openFullscreen;
 
 /**
  *
- * @param {string} text The row key
- * @param {string} value The row value
- * @returns {string} HTML table row
+ * @param text The row key
+ * @param value The row value
+ * @returns HTML table row
  */
-export function htmlTableRow(text, value) {
+export function htmlTableRow(text: string, value: string | number): string {
   return `<tr><td>${text}</td><td><b>${value}</b></td></tr>`;
 }
 
 /**
  *
- * @param {string} headText Centered <h3> sized tooltip title
- * @param {string} midText Optional <p> in between headText and footText
- * @param {string} footText Centered <i> text at the bottom of the tooltip
- * @param {string} color Optional color for the headText
- * @returns {string} HTML table
+ * @param headText Centered <h3> sized tooltip title
+ * @param midText Optional <p> in between headText and footText
+ * @param footText Centered <i> text at the bottom of the tooltip
+ * @param color Optional color for the headText
+ * @returns HTML table
  */
-export function toolTipHtml(headText, midText, footText, color = false) {
+export function toolTipHtml(
+  headText: string | number,
+  midText: string | number | boolean,
+  footText: string | number,
+  color = false
+): string {
   let style = "margin-bottom: 5px";
   if (color) {
     style += `; color:${color}`;
@@ -139,15 +145,20 @@ export const featureStyles = {
 
 /**
  * Creates an empty leaflet map object
- * @param {Object} config Set up options for the leaflet map object
- * @param {string} config.div HTML div where the map will be rendered
- * @param {number} config.zoomDelta Zoom increment for the map
- * @param {Array.<number>} config.initZoomTo [lat, -long] initial map center
- * @param {string} config.initZoomLevel Initial zoom level for the map
- * @returns {Object} leaflet map
+ * @param config Set up options for the leaflet map object
+ * @param config.div HTML div where the map will be rendered
+ * @param config.zoomDelta Zoom increment for the map
+ * @param config.initZoomTo [lat, -long] initial map center
+ * @param config.initZoomLevel Initial zoom level for the map
+ * @returns leaflet map
  */
-export function leafletBaseMap(config) {
-  const map: L.Map = L.map(config.div, {
+export function leafletBaseMap(config: {
+  div: string;
+  zoomDelta: number;
+  initZoomTo: any;
+  initZoomLevel: number;
+}): IamcMap {
+  const map: IamcMap = L.map(config.div, {
     zoomDelta: config.zoomDelta,
     maxZoom: 17,
     minZoom: 4,
@@ -162,10 +173,11 @@ export function leafletBaseMap(config) {
 
 /**
  * Converts a length number in meters to kilometers if val is over 1km
- * @param {number} val The length number in meters
- * @returns {[number, string]}
+ * @param val The length number in meters
+ * @returns
  */
-export function lengthUnits(val) {
+export function lengthUnits(val: any): [string, string] {
+  // TODO: fix this any
   if (val >= 1000) {
     return [(val / 1000).toFixed(1), "km"];
   }
@@ -173,18 +185,10 @@ export function lengthUnits(val) {
 }
 
 /**
- * deprecated
- * @param {string} company
- */
-export function setTitle(company) {
-  document.getElementById("leaflet-map-title").innerText = `Map - ${company}`;
-}
-
-/**
  * Gets client screen width for sizing the community popup and traditional territory image
- * @returns {number} Pixel width of ther users window
+ * @returns Pixel width of ther users window
  */
-export function setUpHeight() {
+export function setUpHeight(): number {
   let dbHeight = document.getElementById("map-panel").clientHeight;
   const userWidth = window.screen.width;
   if (!dbHeight || dbHeight === 0) {
@@ -198,9 +202,9 @@ export function setUpHeight() {
  * Clears incident circles from the map and resets the map legend
  * @param {Object} map leaflet map object
  */
-export function removeIncidents(map) {
+export function removeIncidents(map: IamcMap) {
   map.legend.removeItem();
-  map.eachLayer((layer) => {
+  map.eachLayer((layer: any) => {
     if (Object.prototype.hasOwnProperty.call(layer.options, "type")) {
       layer.remove();
     }
@@ -209,23 +213,23 @@ export function removeIncidents(map) {
 
 /**
  * Intermediate function used in array.reduce
- * @param {number} total
- * @param {Object} num
- * @returns {number}
+ * @param total
+ * @param num
+ * @returns
  */
-export function getSum(total, num) {
+export function getSum(total: number, num: { length: number }): number {
   return total + num.length;
 }
 
 /**
  * Looks at the number of events (val) and determines if the singular or plural of (type) should be displayed to the user
- * @param {number} val The number of incidents, or number of First Nations Reserves
- * @param {string} type The event name
- * @param {boolean} [cap=false] Whether the returned word should be capitalized
- * @returns {string} The input type with the proper singular/plural case
+ * @param val The number of incidents, or number of First Nations Reserves
+ * @param type The event name
+ * @param cap Whether the returned word should be capitalized
+ * @returns The input type with the proper singular/plural case
  */
-export function plural(val, type, cap = false) {
-  function capitalize(s, c) {
+export function plural(val: number, type: string, cap = false): string {
+  function capitalize(s: string, c: boolean) {
     if (c) {
       return s[0].toUpperCase() + s.slice(1);
     }
@@ -245,11 +249,14 @@ export function plural(val, type, cap = false) {
 
 /**
  *
- * @param {Object} map leaflet map object
- * @param {Object} communityLayer leaflet featureGroup for communities
- * @returns {Object} leaflet control object for map legend
+ * @param map leaflet map object
+ * @param communityLayer leaflet featureGroup for communities
+ * @returns leaflet control object for map legend
  */
-export function mapLegend(map, communityLayer) {
+export function mapLegend(
+  map: IamcMap,
+  communityLayer: CommunityLayer
+): MapLegendControl {
   let legend = `<h4><span class="region-click-text" 
   style="height: 10px; background-color: ${featureStyles.reserveOverlap.fillColor}">
   &nbsp;&nbsp;&nbsp;</span>&nbsp;&nbsp;First Nations Reserve</h4>`;
@@ -258,7 +265,7 @@ export function mapLegend(map, communityLayer) {
     legend += `<h4 style='color:${featureStyles.mainline.color};'>&#9473;&#9473; Existing Mainline</h4>`;
     legend += `<h4 style='color:${featureStyles.territory.fillColor};'>&#11044; Community</h4>`;
   }
-  const info: mapLegendControl = new L.Control({ position: "topright" });
+  const info: MapLegendControl = new L.Control({ position: "topright" });
   info.onAdd = function onAdd() {
     this._div = L.DomUtil.create("div", "legend");
     this._div.innerHTML = legend;
@@ -289,20 +296,25 @@ export function mapLegend(map, communityLayer) {
 
 /**
  * Resets the map zoom to default showing all communities and First Nations Reserves
- * @param {Object} map leaflet map object
- * @param {Object} geoLayer First Nations Reserves leaflet geojson layer
- * @param {Object} communityLayer leaflet featureGroup for communities
- * @param {boolean} [fly=false]
+ * @param map leaflet map object
+ * @param geoLayer First Nations Reserves leaflet geojson layer
+ * @param communityLayer leaflet featureGroup for communities
+ * @param fly
  */
-export function resetZoom(map, geoLayer, communityLayer, fly = false) {
-  let padd = [25, 25];
+export function resetZoom(
+  map: IamcMap,
+  geoLayer: any,
+  communityLayer: CommunityLayer,
+  fly = false
+) {
+  let padd = new L.Point(25, 25);
   let fullBounds = geoLayer.getBounds();
   if (communityLayer) {
     fullBounds = fullBounds.extend(communityLayer.getBounds());
   }
 
   if (Object.keys(geoLayer._layers).length === 1) {
-    padd = [270, 270];
+    padd = new L.Point(270, 270);
   }
   if (fly) {
     map.flyToBounds(fullBounds, {
@@ -319,11 +331,15 @@ export function resetZoom(map, geoLayer, communityLayer, fly = false) {
 
 /**
  * Binds an event listener to the "Reset Map" button for re-setting zoom and other map elements
- * @param {Object} map leaflet map object
- * @param {Object} geoLayer First Nations Reserves leaflet geojson layer
- * @param {Object} communityLayer leaflet featureGroup for communities
+ * @param map leaflet map object
+ * @param geoLayer First Nations Reserves leaflet geojson layer
+ * @param communityLayer leaflet featureGroup for communities
  */
-export function resetListener(map, geoLayer, communityLayer) {
+export function resetListener(
+  map: IamcMap,
+  geoLayer: any,
+  communityLayer: CommunityLayer
+) {
   document.getElementById("reset-map").addEventListener("click", () => {
     resetZoom(map, geoLayer, communityLayer, true);
     removeIncidents(map);
@@ -337,16 +353,16 @@ export function resetListener(map, geoLayer, communityLayer) {
 
 /**
  * Finds the user's location, adds a market, and saves location info in map object
- * @param {Object} map leaflet map object
- * @returns {Promise}
+ * @param map leaflet map object
  */
-export async function findUser(map) {
+export async function findUser(map: any) {
   return new Promise((resolve, reject) => {
     map
       .locate({
         watch: false,
       })
-      .on("locationfound", (e) => {
+      .on("locationfound", (e: any) => {
+        console.log(e);
         const marker: L.Marker = L.marker([e.latitude, e.longitude], {
           draggable: true,
         }).bindPopup("Click and drag to move locations");
@@ -358,7 +374,7 @@ export async function findUser(map) {
         map.user = marker.getLatLng();
         resolve(marker);
       })
-      .on("locationerror", (err) => {
+      .on("locationerror", (err: any) => {
         reject(err);
       });
   });
@@ -366,10 +382,10 @@ export async function findUser(map) {
 
 /**
  * Replaces the map container with a wet4 alert-danger
- * @param {string} header Error message title
- * @param {Object} err
+ * @param header Error message title
+ * @param err
  */
-export function appError(header, err) {
+export function appError(header: string, err: any) {
   document.getElementById(
     "error-container"
   ).innerHTML = `<section class="alert alert-danger">
@@ -381,12 +397,12 @@ export function appError(header, err) {
 
 /**
  *
- * @param {string} position leaflet position for the control
- * @param {Object} map leaflet map object
- * @returns {Object} leaflet control object
+ * @param position leaflet position for the control
+ * @param map leaflet map object
+ * @returns leaflet control object
  */
-export function addCustomControl(position, map) {
-  const info: customControl = new L.Control({ position });
+export function addCustomControl(position: L.ControlPosition, map: IamcMap) {
+  const info: CustomControl = new L.Control({ position });
   info.setPosition(position);
   info.onAdd = function onAdd() {
     this._div = L.DomUtil.create("div");
@@ -413,18 +429,18 @@ export function addCustomControl(position, map) {
   };
   /**
    * Add a wet4 info section to the control
-   * @param {string} sectionId HTML id for the section
-   * @param {string} closeBtnId HTML id for the close button
-   * @param {string} header Section header text
-   * @param {string} bodyHtml HTML partial for the panel body
-   * @param {string} footer Optional paragraph text below the bodyHtml
+   * @param sectionId HTML id for the section
+   * @param closeBtnId HTML id for the close button
+   * @param header Section header text
+   * @param bodyHtml HTML partial for the panel body
+   * @param footer Optional paragraph text below the bodyHtml
    */
   info.addSection = function addSection(
-    sectionId,
-    closeBtnId,
-    header,
-    bodyHtml,
-    footer
+    sectionId: string,
+    closeBtnId: string,
+    header: string,
+    bodyHtml: string,
+    footer: string
   ) {
     this.updateHtml(`<section class="panel panel-default" id="${sectionId}">
     <header class="panel-heading">
@@ -448,19 +464,3 @@ export function addCustomControl(position, map) {
   info.addTo(map);
   return info;
 }
-
-// export function ifIEShowError() {
-//   // Internet Explorer 6-11
-//   const ie = /* @cc_on!@ */ false || !!document.documentMode;
-//   if (ie) {
-//     Array.from(document.getElementsByClassName("container-fluid")).forEach(
-//       (errorDiv) => {
-//         errorDiv.innerHTML = `<section class="alert alert-danger"><h4>Outdated Browser</h4>
-//       Your web browser is unsupported. Please open the application on a modern web browser.
-//     </section>`;
-//       }
-//     );
-//     throw new UnsupportedBrowserError("old browser!");
-//   }
-//   return ie;
-// }

@@ -8,6 +8,8 @@ import {
   removeIncidents,
 } from "./util";
 
+import { IamcMap } from "./interfaces";
+
 interface landGeoJson extends L.GeoJSON {
   landInfo?: any;
   incidentFeature?: any;
@@ -15,11 +17,10 @@ interface landGeoJson extends L.GeoJSON {
 
 /**
  * TODO: maybe split this method between iamc and profiles. IAMC might need more event info vs profiles.
- * @param {*} event
- * @returns
+ * @param event
  */
-function eventTooltip(event) {
-  const listify = (str) => {
+function eventTooltip(event: any): string {
+  const listify = (str: string) => {
     if (str.includes(",")) {
       let listHtml = `<ul>`;
       str.split(",").forEach((li) => {
@@ -52,10 +53,10 @@ function eventTooltip(event) {
   return toolText;
 }
 
-function addIncidents(map, name, incidentFeature) {
+function addIncidents(map: IamcMap, name: string, incidentFeature: any) {
   removeIncidents(map);
   const incidents = incidentFeature[name];
-  const addCircle = (x, y, eventInfo) =>
+  const addCircle = (x: number, y: number, eventInfo: any) =>
     L.circle([x, y], {
       color: featureStyles.incident.color,
       fillColor: featureStyles.incident.fillColor,
@@ -94,8 +95,8 @@ function reserveTooltip(layer, landInfo) {
   return table;
 }
 
-function reservePopUp(reserve) {
-  const alertClass = (val, type) => {
+function reservePopUp(reserve: any, incidentFeature: any) {
+  const alertClass = (val: number, type: string) => {
     if (type === "on" && val > 0) {
       return "alert alert-danger";
     }
@@ -106,7 +107,8 @@ function reservePopUp(reserve) {
   };
 
   const { landInfo } = reserve.defaultOptions;
-  const { incidentFeature } = reserve.defaultOptions;
+  // console.log(reserve, incidentFeature);
+  // const { incidentFeature } = reserve.defaultOptions;
   const layerInfo = landInfo[reserve.feature.properties.NAME1];
 
   const proximityCount = addIncidents(
@@ -150,14 +152,19 @@ function reservePopUp(reserve) {
   return popHtml;
 }
 
-export function addReserveLayer(map, landFeature, landInfo, incidentFeature) {
+export function addReserveLayer(
+  map: IamcMap,
+  landFeature: any,
+  landInfo: any,
+  incidentFeature: any
+) {
   const landGeoJson: landGeoJson = L.geoJSON(landFeature, {
     style: featureStyles.reserveOverlap,
   })
-    // .bindTooltip((layer: L.Layer) =>
-    //   reserveTooltip(layer.feature.properties, landInfo)
-    // )
-    .bindPopup((layer) => reservePopUp(layer))
+    .bindTooltip((layer: any) =>
+      reserveTooltip(layer.feature.properties, landInfo)
+    )
+    .bindPopup((layer) => reservePopUp(layer, incidentFeature))
     .addTo(map);
 
   landGeoJson.landInfo = landInfo;

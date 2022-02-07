@@ -4,8 +4,9 @@ import {
   htmlTableRow,
   toolTipHtml,
   addCustomControl,
-  plural,
 } from "./util";
+
+import { IamcMap, CommunityAttr, CommunityLayer } from "./interfaces";
 
 interface LandMarker extends L.CircleMarker {
   electionDate?: Date | null;
@@ -14,32 +15,18 @@ interface LandMarker extends L.CircleMarker {
   contactInfo?: string;
 }
 
-interface CommunityLayer extends L.FeatureGroup {
-  contactControl?: any;
-  resetSlider?: Function;
-  resetStyle?: Function;
-  getNames?: Function;
-  zoomToId?: Function;
-  electionRangeListener?: Function;
-  filterElections?: Function;
-  resetSpreads?: Function;
-  spreadContactPopUp?: Function;
-  findSpreads?: Function;
-  searchCommunities?: Function;
-  searchError?: Function;
-  resetSearchError?: Function;
-  resetSearch?: Function;
-  reset?: Function;
-}
-
 interface CommunityCircle extends L.CircleMarker {
   communityName?: string;
   _leaflet_id?: number;
-  _latlng?: number[];
   electionDate: Date;
   spreadNums: number[];
   contactInfo: string;
 }
+
+type ContactInfo = {
+  name: string;
+  contact: string;
+};
 
 /**
  * Generates an HTML partial for the community pop-up information
@@ -99,19 +86,20 @@ function popUpTable(imgHtml: string, landInfo: any, hasImage: boolean) {
  * @param {number} popWidth Width of the pop-up
  * @returns {Object} leaflet featureLayer for the communities
  */
-export function addCommunityLayer(map, popHeight, popWidth, communityData) {
-  function circleTooltip(landInfo) {
+export function addCommunityLayer(
+  map: IamcMap,
+  popHeight: number,
+  popWidth: number,
+  communityData: { id: number; attributes: CommunityAttr }[]
+): Promise<CommunityLayer> {
+  function circleTooltip(landInfo: CommunityAttr) {
     const communityNames = !landInfo.Pronunciation
       ? landInfo.Name
       : `${landInfo.Name}&nbsp;(<span class="glyphicon glyphicon-volume-up" aria-hidden="true"></span> <i>${landInfo.Pronunciation}</i>)`;
 
     return toolTipHtml(
       communityNames,
-      `Circle represents approximate location of the ${plural(
-        landInfo.length,
-        "community",
-        false
-      )}`,
+      `Circle represents approximate location of the community`,
       "Click to view full community info and traditional territory map"
     );
   }
@@ -181,7 +169,10 @@ export function addCommunityLayer(map, popHeight, popWidth, communityData) {
      * Returns an alphabetically sorted list of all community names in the communityLayer
      * @returns {Object[]} [{id: _leaflet_id, name: string}]
      */
-    communityLayer.getNames = function getNames() {
+    communityLayer.getNames = function getNames(): {
+      name: string;
+      id: number;
+    }[] {
       return Object.values(this._layers)
         .map((circle: CommunityCircle) => ({
           name: circle.communityName,
@@ -199,7 +190,7 @@ export function addCommunityLayer(map, popHeight, popWidth, communityData) {
     communityLayer.zoomToId = function zoomToId(id: number) {
       Object.values(this._layers).forEach((circle: CommunityCircle) => {
         if (circle._leaflet_id === id) {
-          map.setView(circle._latlng, 10);
+          map.setView(circle.getLatLng(), 10);
           circle.setStyle({
             color: featureStyles.foundCommunity.color,
             fillColor: featureStyles.foundCommunity.fillColor,
@@ -231,7 +222,9 @@ export function addCommunityLayer(map, popHeight, popWidth, communityData) {
      * Evaluates each communities electionDate vs the current date
      * @param {number|string} dayRange Number between 0 and 365 or "All"
      */
-    communityLayer.filterElections = function filterElections(dayRange) {
+    communityLayer.filterElections = function filterElections(
+      dayRange: string
+    ) {
       this._map.legend.removeItem();
       const currentDate = Date.now();
       if (dayRange !== "All") {
@@ -286,8 +279,8 @@ export function addCommunityLayer(map, popHeight, popWidth, communityData) {
      * @param {string} sprdName display name of the selected spread
      */
     communityLayer.spreadContactPopUp = function spreadContactPopUp(
-      contacts,
-      sprdName
+      contacts: ContactInfo[],
+      sprdName: string
     ) {
       map.youAreOn.updateHtml("");
       let contactsTable = `<table class="table"><thead>
@@ -313,20 +306,20 @@ export function addCommunityLayer(map, popHeight, popWidth, communityData) {
 
     /**
      * Finds all communities in the communityLayer that belong to a selected project spread
-     * @param {Array.<number>} selectedSpreads List of spread numbers that user has clicked on
-     * @param {string} color Color code of the clicked spread. Changes the community circle color
-     * @param {string} sprdName Display name of the spread
+     * @param selectedSpreads List of spread numbers that user has clicked on
+     * @param color Color code of the clicked spread. Changes the community circle color
+     * @param sprdName Display name of the spread
      */
     communityLayer.findSpreads = function findSpreads(
-      selectedSpreads,
-      color,
-      sprdName
+      selectedSpreads: number[],
+      color: string,
+      sprdName: string
     ) {
       this.resetSlider();
       map.legend.removeItem();
       map.warningMsg.removeWarning();
-      const zoomToLayer = [];
-      const contactInfo = [];
+      const zoomToLayer: CommunityCircle[] = [];
+      const contactInfo: ContactInfo[] = [];
       const noCommunities = () =>
         map.warningMsg.addWarning(
           `There are no communities identified for ${sprdName}`
@@ -362,7 +355,7 @@ export function addCommunityLayer(map, popHeight, popWidth, communityData) {
      */
     communityLayer.searchCommunities = function searchCommunities() {
       let options = "";
-      this.getNames().forEach((name) => {
+      this.getNames().forEach((name: { id: number; name: string }) => {
         options += `<option data-id=${name.id} label="" value="${name.name}"></option>`;
       });
       document.getElementById("find-communities-container").innerHTML = `
@@ -398,9 +391,9 @@ export function addCommunityLayer(map, popHeight, popWidth, communityData) {
 
     /**
      * Binds an error warning next to the search function when the user input community cant be found
-     * @param {string} message
+     * @param message
      */
-    communityLayer.searchError = function searchError(message) {
+    communityLayer.searchError = function searchError(message: string) {
       document.getElementById(
         "community-search-error"
       ).innerHTML = `<div class="alert alert-danger"><span>${message}</span></div>`;
