@@ -14,7 +14,7 @@ class UnsupportedBrowserError extends Error {
 export function oldBrowserError() {
   // Internet Explorer 6-11
   const ie = /* @cc_on!@ */ false || !!document.documentMode;
-  if (!ie) {
+  if (ie) {
     [].slice
       .call(document.getElementsByClassName("container-fluid"))
       .forEach(function (errorDiv: HTMLElement) {

@@ -10,7 +10,7 @@
   "main": "index.js",
   "scripts": {
     "start": "node --experimental-modules server.js",
-    "images": "node scripts/convert_images.mjs",
+    "images": "node --experimental-modules scripts/convert_images.js",
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "webpack --config webpack.prod.ts",
     "analyze-build": "webpack --config webpack.analyze.ts",
