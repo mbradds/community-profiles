@@ -14,14 +14,14 @@ class UnsupportedBrowserError extends Error {
 export function oldBrowserError() {
   // Internet Explorer 6-11
   const ie = /* @cc_on!@ */ false || !!document.documentMode;
-  if (ie) {
-    Array.from(document.getElementsByClassName("container-fluid")).forEach(
-      (errorDiv) => {
+  if (!ie) {
+    [].slice
+      .call(document.getElementsByClassName("container-fluid"))
+      .forEach(function (errorDiv: HTMLElement) {
         errorDiv.innerHTML = `<section class="alert alert-danger"><h4>Outdated Browser</h4>
         Your web browser is unsupported. Please open the application on a modern web browser.
       </section>`;
-      }
-    );
+      });
     throw new UnsupportedBrowserError("old browser!");
   }
   return ie;
