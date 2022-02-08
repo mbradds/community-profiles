@@ -30,11 +30,9 @@
   "author": "Grant Moss",
   "license": "MIT",
   "devDependencies": {
-    "@babel/core": "^7.17.0",
-    "@babel/plugin-transform-runtime": "^7.17.0",
-    "@babel/preset-env": "^7.16.11",
     "@types/point-in-polygon": "^1.1.1",
-    "babel-loader": "^8.2.3",
+    "@typescript-eslint/eslint-plugin": "^5.11.0",
+    "@typescript-eslint/parser": "^5.11.0",
     "clean-webpack-plugin": "^4.0.0",
     "copy-webpack-plugin": "^10.2.4",
     "css-loader": "^6.6.0",

@@ -235,7 +235,7 @@ export function addCommunityLayer(
               (circle.electionDate.getTime() - currentDate) /
               (1000 * 3600 * 24);
             if (
-              daysUntilElection <= parseInt(dayRange, 10) &&
+              daysUntilElection <= parseInt(dayRange) &&
               daysUntilElection > 0
             ) {
               insideRange = true;
@@ -377,7 +377,7 @@ export function addCommunityLayer(
           let foundId;
           Array.from(listItems.options).forEach((item) => {
             if (item.value === listObj.value) {
-              foundId = parseInt(item.getAttribute("data-id"), 10);
+              foundId = parseInt(item.getAttribute("data-id"));
             }
           });
           if (foundId) {

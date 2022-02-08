@@ -10,13 +10,8 @@ declare global {
 interface MapLegendControl extends L.Control {
   addItem?: Function;
   removeItem?: Function;
+  _div?: HTMLElement;
 }
-
-// interface userMarker extends L.Marker {
-//   id?: string;
-//   _latlng: number[];
-//   getPosition: Function;
-// }
 
 interface CustomControl extends L.Control {
   updateHtml?: Function;
@@ -24,6 +19,7 @@ interface CustomControl extends L.Control {
   fixScroll?: Function;
   closeBtnListener?: Function;
   addSection?: Function;
+  _div?: HTMLElement;
 }
 
 export const cerPalette = {
@@ -189,13 +185,7 @@ export function lengthUnits(val: any): [string, string] {
  * @returns Pixel width of ther users window
  */
 export function setUpHeight(): number {
-  let dbHeight = document.getElementById("map-panel").clientHeight;
-  const userWidth = window.screen.width;
-  if (!dbHeight || dbHeight === 0) {
-    // set dashboard to 700 pixels if I cant access client screen size
-    dbHeight = 700;
-  }
-  return userWidth;
+  return window.screen.width;
 }
 
 /**
@@ -273,13 +263,13 @@ export function mapLegend(
     return this._div;
   };
   info.addItem = function addItem(
-    entry: string = "incidents",
+    entry = "incidents",
     spread: any = undefined,
     color: any = undefined
   ) {
-    if (entry === "incidents") {
+    if (entry === "incidents" && this._div) {
       this._div.innerHTML += `<h4 class="legend-temp" style='color:${featureStyles.incident.fillColor};'>&#11044; Incident</h4>`;
-    } else if (entry === "spread") {
+    } else if (entry === "spread" && this._div) {
       this._div.innerHTML += `<h4 class="legend-temp" style='color:${color};'>&#11044; Spread ${spread} communities</h4>`;
     }
   };
@@ -340,15 +330,18 @@ export function resetListener(
   geoLayer: any,
   communityLayer: CommunityLayer
 ) {
-  document.getElementById("reset-map").addEventListener("click", () => {
-    resetZoom(map, geoLayer, communityLayer, true);
-    removeIncidents(map);
-    map.closePopup();
-    map.youAreOn.removeHtml();
-    if (communityLayer) {
-      communityLayer.reset();
-    }
-  });
+  const resetMapElement = document.getElementById("reset-map");
+  if (resetMapElement) {
+    resetMapElement.addEventListener("click", () => {
+      resetZoom(map, geoLayer, communityLayer, true);
+      removeIncidents(map);
+      map.closePopup();
+      map.youAreOn.removeHtml();
+      if (communityLayer) {
+        communityLayer.reset();
+      }
+    });
+  }
 }
 
 /**
@@ -386,13 +379,14 @@ export async function findUser(map: any) {
  * @param err
  */
 export function appError(header: string, err: any) {
-  document.getElementById(
-    "error-container"
-  ).innerHTML = `<section class="alert alert-danger">
-  <h3>${header}</h3>
-  <p>Please try refreshing the page. If the problem persists, please submit an issue using the email below, with the following error message attached:</p>
-  ${JSON.stringify(err.message)}
-</section>`;
+  const errorDiv = document.getElementById("error-container");
+  if (errorDiv) {
+    errorDiv.innerHTML = `<section class="alert alert-danger">
+       <h3>${header}</h3>
+       <p>Please try refreshing the page. If the problem persists, please submit an issue using the email below, with the following error message attached:</p>
+       ${JSON.stringify(err.message)}
+    </section>`;
+  }
 }
 
 /**
@@ -410,10 +404,14 @@ export function addCustomControl(position: L.ControlPosition, map: IamcMap) {
     return this._div;
   };
   info.updateHtml = function updateHtml(html: string) {
-    this._div.innerHTML = html;
+    if (this._div) {
+      this._div.innerHTML = html;
+    }
   };
   info.removeHtml = function removeHtml() {
-    this._div.innerHTML = "";
+    if (this._div) {
+      this._div.innerHTML = "";
+    }
   };
   info.fixScroll = function fixScroll(popUpId: string) {
     L.DomEvent.on(
@@ -423,9 +421,12 @@ export function addCustomControl(position: L.ControlPosition, map: IamcMap) {
     );
   };
   info.closeBtnListener = function closeBtnListener(closeId: string) {
-    document.getElementById(closeId).addEventListener("click", () => {
-      this.removeHtml();
-    });
+    const closeBtn = document.getElementById(closeId);
+    if (closeBtn) {
+      closeBtn.addEventListener("click", () => {
+        this.removeHtml();
+      });
+    }
   };
   /**
    * Add a wet4 info section to the control
