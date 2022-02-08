@@ -17,7 +17,7 @@ export function oldBrowserError() {
   if (ie) {
     [].slice
       .call(document.getElementsByClassName("container-fluid"))
-      .forEach(function (errorDiv: HTMLElement) {
+      .forEach((errorDiv: HTMLElement) => {
         errorDiv.innerHTML = `<section class="alert alert-danger"><h4>Outdated Browser</h4>
         Your web browser is unsupported. Please open the application on a modern web browser.
       </section>`;

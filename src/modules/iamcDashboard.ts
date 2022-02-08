@@ -17,9 +17,9 @@ import { tmAssets } from "./tmAssets";
 import { getCommunityData } from "./getCommunityData";
 import { oldBrowserError } from "./oldBrowserError";
 import territoryPolygons from "../company_data/community_profiles/indigenousTerritoriesCa.json";
+import { IamcMap, MapWarning, CommunityLayer } from "./interfaces";
 import "leaflet/dist/leaflet.css";
 import "../css/main.css";
-import { IamcMap, MapWarning, CommunityLayer } from "./interfaces";
 
 interface MetaData {
   company: string;
@@ -47,7 +47,6 @@ function dashboardTotals(
   } of regulated pipeline passes directly through ${addStyle(
     landFeature.features.length
   )} First Nations ${plural(landFeature.features.length, "reserve", true)}.`;
-  document.getElementById("overlap-meta-point").innerHTML = htmlLiOver;
 
   const incidentMeta = incidentFeature.meta;
   const htmlLiIncOn = `<div class="${flagClass(
@@ -68,8 +67,20 @@ function dashboardTotals(
     false
   )} within 15 km of First Nations Reserves.</p></div>`;
 
-  document.getElementById("incident-meta-point-on").innerHTML = htmlLiIncOn;
-  document.getElementById("incident-meta-point-off").innerHTML = htmlLiIncOff;
+  const overlapElement = document.getElementById("overlap-meta-point");
+  const incidentsOnElement = document.getElementById("incident-meta-point-on");
+  const incidentsNearElement = document.getElementById(
+    "incident-meta-point-off"
+  );
+  if (overlapElement) {
+    overlapElement.innerHTML = htmlLiOver;
+  }
+  if (incidentsOnElement) {
+    incidentsOnElement.innerHTML = htmlLiIncOn;
+  }
+  if (incidentsNearElement) {
+    incidentsNearElement.innerHTML = htmlLiIncOff;
+  }
 }
 
 /**

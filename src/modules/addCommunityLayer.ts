@@ -10,22 +10,27 @@ import { IamcMap, CommunityAttr, CommunityLayer } from "./interfaces";
 
 interface LandMarker extends L.CircleMarker {
   electionDate?: Date | null;
-  spreadNums?: number[];
-  communityName?: string;
-  contactInfo?: string;
+  spreadNums?: (number | null)[];
+  communityName?: string | null;
+  contactInfo?: string | null;
 }
 
 interface CommunityCircle extends L.CircleMarker {
-  communityName?: string;
+  communityName?: string | null;
   _leaflet_id?: number;
   electionDate: Date;
   spreadNums: number[];
-  contactInfo: string;
+  contactInfo: string | null;
+}
+
+interface CommunityName {
+  name: string | null | undefined;
+  id: number | null | undefined;
 }
 
 type ContactInfo = {
-  name: string;
-  contact: string;
+  name: string | null | undefined;
+  contact: string | null;
 };
 
 /**
@@ -141,9 +146,13 @@ export function addCommunityLayer(
         days === "All"
           ? days
           : `<strong style="color:${featureStyles.territoryElection.fillColor}";>${days} or less</strong>`;
-      document.getElementById(
+
+      const displayDaysElement = document.getElementById(
         "election-days-display"
-      ).innerHTML = `<span>Days to election: (${displayDays})</span>`;
+      );
+      if (displayDaysElement) {
+        displayDaysElement.innerHTML = `<span>Days to election: (${displayDays})</span>`;
+      }
     };
 
     const communityLayer: CommunityLayer = L.featureGroup(landCircles);
@@ -157,7 +166,7 @@ export function addCommunityLayer(
     };
 
     communityLayer.resetStyle = function resetStyle() {
-      Object.values(this._layers).forEach((circle: CommunityCircle) => {
+      this.eachLayer((circle: CommunityCircle) => {
         circle.setStyle({
           ...featureStyles.territory,
         });
@@ -167,18 +176,15 @@ export function addCommunityLayer(
 
     /**
      * Returns an alphabetically sorted list of all community names in the communityLayer
-     * @returns {Object[]} [{id: _leaflet_id, name: string}]
+     * @returns [{id: _leaflet_id, name: string}]
      */
-    communityLayer.getNames = function getNames(): {
-      name: string;
-      id: number;
-    }[] {
-      return Object.values(this._layers)
+    communityLayer.getNames = function getNames(): CommunityName[] {
+      return this.getLayers()
         .map((circle: CommunityCircle) => ({
           name: circle.communityName,
           id: circle._leaflet_id,
         }))
-        .sort((a, b) =>
+        .sort((a: CommunityName, b: CommunityName) =>
           a.name.toLowerCase().localeCompare(b.name.toLowerCase())
         );
     };
@@ -188,7 +194,7 @@ export function addCommunityLayer(
      * @param {number} id leaflet id of the selected community circle
      */
     communityLayer.zoomToId = function zoomToId(id: number) {
-      Object.values(this._layers).forEach((circle: CommunityCircle) => {
+      this.eachLayer((circle: CommunityCircle) => {
         if (circle._leaflet_id === id) {
           map.setView(circle.getLatLng(), 10);
           circle.setStyle({
@@ -228,7 +234,7 @@ export function addCommunityLayer(
       this._map.legend.removeItem();
       const currentDate = Date.now();
       if (dayRange !== "All") {
-        Object.values(this._layers).forEach((circle: CommunityCircle) => {
+        this.eachLayer((circle: CommunityCircle) => {
           let insideRange = false;
           if (circle.electionDate) {
             const daysUntilElection =
@@ -266,7 +272,7 @@ export function addCommunityLayer(
     communityLayer.resetSpreads = function resetSpreads() {
       map.warningMsg.removeWarning();
       this.contactControl.updateHtml("");
-      Object.values(this._layers).forEach((circle: CommunityCircle) => {
+      this.eachLayer((circle: CommunityCircle) => {
         circle.setStyle({
           ...featureStyles.territory,
         });
@@ -325,7 +331,7 @@ export function addCommunityLayer(
           `There are no communities identified for ${sprdName}`
         );
       if (selectedSpreads) {
-        Object.values(this._layers).forEach((circle: CommunityCircle) => {
+        this.eachLayer((circle: CommunityCircle) => {
           if (selectedSpreads.some((r) => circle.spreadNums.includes(r))) {
             contactInfo.push({
               name: circle.communityName,
@@ -358,16 +364,22 @@ export function addCommunityLayer(
       this.getNames().forEach((name: { id: number; name: string }) => {
         options += `<option data-id=${name.id} label="" value="${name.name}"></option>`;
       });
-      document.getElementById("find-communities-container").innerHTML = `
-      <input type="text" id="community-search" name="community-search" list="suggestions" />
-      <button class="btn btn-primary btn-xs header-btn" id="find-communities-btn">Find Community</button>
-      <datalist id="suggestions">
-      ${options}
-      </datalist>
-      <div id="community-search-error"></div>`;
-      document
-        .getElementById("find-communities-btn")
-        .addEventListener("click", () => {
+      const findCommunitiesElement = document.getElementById(
+        "find-communities-container"
+      );
+      if (findCommunitiesElement) {
+        findCommunitiesElement.innerHTML = `
+        <input type="text" id="community-search" name="community-search" list="suggestions" />
+        <button class="btn btn-primary btn-xs header-btn" id="find-communities-btn">Find Community</button>
+        <datalist id="suggestions">
+        ${options}
+        </datalist>
+        <div id="community-search-error"></div>`;
+      }
+
+      const findComBtnElement = document.getElementById("find-communities-btn");
+      if (findComBtnElement) {
+        findComBtnElement.addEventListener("click", () => {
           const listItems = <HTMLSelectElement>(
             document.getElementById("suggestions")
           );
@@ -387,6 +399,7 @@ export function addCommunityLayer(
             this.searchError("Cant find community");
           }
         });
+      }
     };
 
     /**
@@ -394,13 +407,21 @@ export function addCommunityLayer(
      * @param message
      */
     communityLayer.searchError = function searchError(message: string) {
-      document.getElementById(
+      const comSearchErrElement = document.getElementById(
         "community-search-error"
-      ).innerHTML = `<div class="alert alert-danger"><span>${message}</span></div>`;
+      );
+      if (comSearchErrElement) {
+        comSearchErrElement.innerHTML = `<div class="alert alert-danger"><span>${message}</span></div>`;
+      }
     };
 
     communityLayer.resetSearchError = function resetSearchError() {
-      document.getElementById("community-search-error").innerHTML = "";
+      const comSearchErrElement = document.getElementById(
+        "community-search-error"
+      );
+      if (comSearchErrElement) {
+        comSearchErrElement.innerHTML = "";
+      }
     };
 
     communityLayer.resetSearch = function resetSearch() {

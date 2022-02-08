@@ -28,8 +28,7 @@
       "error",
       {
         "js": "always",
-        "json": "always",
-        "ts": "off",
+        "json": "always"
       }
     ],
     "@typescript-eslint/ban-types": [

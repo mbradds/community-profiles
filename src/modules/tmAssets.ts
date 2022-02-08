@@ -1,8 +1,8 @@
 import * as L from "leaflet";
 import { GeoJsonObject } from "geojson";
 import { cerPalette, featureStyles, toolTipHtml } from "./util";
-import tmxSpreads from "../company_data/trans_mountain_files/pipeline-spread-geometries.json";
-import mainline from "../company_data/trans_mountain_files/existing-pipeline.json";
+import tmxSpreads from "../company_data/trans_mountain_files/pipeline-spread-geometries.min.json";
+import mainline from "../company_data/trans_mountain_files/existing-pipeline.min.json";
 import { IamcMap, CommunityLayer } from "./interfaces";
 
 interface ToolTipLayer extends L.Layer {

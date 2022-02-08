@@ -76,7 +76,7 @@ export function htmlTableRow(text: string, value: string | number): string {
  * @returns HTML table
  */
 export function toolTipHtml(
-  headText: string | number,
+  headText: string | number | null,
   midText: string | number | boolean,
   footText: string | number,
   color = false
@@ -355,7 +355,6 @@ export async function findUser(map: any) {
         watch: false,
       })
       .on("locationfound", (e: any) => {
-        console.log(e);
         const marker: L.Marker = L.marker([e.latitude, e.longitude], {
           draggable: true,
         }).bindPopup("Click and drag to move locations");
