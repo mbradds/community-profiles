@@ -15,6 +15,7 @@ import { addCommunityLayer } from "./addCommunityLayer";
 import { addReserveLayer } from "./addReserveLayer";
 import { tmAssets } from "./tmAssets";
 import { getCommunityData } from "./getCommunityData";
+import { oldBrowserError } from "./oldBrowserError";
 import territoryPolygons from "../company_data/community_profiles/indigenousTerritoriesCa.json";
 import "leaflet/dist/leaflet.css";
 import "../css/main.css";
@@ -275,6 +276,7 @@ export function iamcDashboard(
   meta: MetaData
 ) {
   function main() {
+    oldBrowserError();
     async function buildPage() {
       const mapHeight = document.getElementById("map").clientHeight;
       const user = loadNonMap(landFeature, incidentFeature, meta);
