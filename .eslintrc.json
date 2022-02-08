@@ -29,7 +29,7 @@
       {
         "js": "always",
         "json": "always",
-        "ts": "off"
+        "ts": "off",
       }
     ],
     "@typescript-eslint/ban-types": [
@@ -39,6 +39,14 @@
           "Function": false
         }
       }
-    ]
+    ],
+    "import/no-extraneous-dependencies":[
+      "error",
+      {
+         "devDependencies":[
+            "**/webpack.*.ts"
+         ]
+      }
+   ]
   }
 }

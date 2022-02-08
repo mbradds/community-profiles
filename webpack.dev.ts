@@ -1,6 +1,7 @@
 import { merge } from "webpack-merge";
 import webpack from "webpack";
-import common from "./webpack.common.js";
+import common from "./webpack.common";
+import 'webpack-dev-server';
 
 export default merge(common, {
   mode: "development",

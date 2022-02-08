@@ -2,7 +2,6 @@
   "name": "community-profiles",
   "version": "1.0.0",
   "sideEffects": false,
-  "type": "module",
   "engines": {
     "node": "16.x",
     "npm": "8.x"
@@ -10,12 +9,12 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "node server.js",
-    "images": "node scripts/convert_images.js",
+    "start": "node --experimental-modules server.js",
+    "images": "node scripts/convert_images.mjs",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "set NODE_OPTIONS=--max_old_space_size=15192 && webpack --config webpack.prod.js",
+    "build": "webpack --config webpack.prod.ts",
     "analyze-build": "webpack --config webpack.analyze.js",
-    "dev": "set NODE_OPTIONS=--max_old_space_size=15192 && webpack serve --config webpack.dev.js",
+    "dev": "set NODE_OPTIONS=--max_old_space_size=15192 && webpack serve --config webpack.dev.ts",
     "minify-maps": "sh ./scripts/maps_min.sh",
     "get-map-data": "conda run -n community-profiles python src/data_management/get_map_files.py",
     "get-cer-data": "conda run -n community-profiles python src/data_management/get_cer_files.py",
@@ -30,7 +29,10 @@
   "author": "Grant Moss",
   "license": "MIT",
   "devDependencies": {
+    "@types/node": "^17.0.16",
     "@types/point-in-polygon": "^1.1.1",
+    "@types/webpack": "^5.28.0",
+    "@types/webpack-dev-server": "^4.7.2",
     "@typescript-eslint/eslint-plugin": "^5.11.0",
     "@typescript-eslint/parser": "^5.11.0",
     "clean-webpack-plugin": "^4.0.0",
@@ -49,6 +51,7 @@
     "prettier": "2.5.1",
     "style-loader": "^3.3.1",
     "ts-loader": "^9.2.6",
+    "ts-node": "^10.5.0",
     "typescript": "^4.5.5",
     "webpack": "^5.68.0",
     "webpack-bundle-analyzer": "^4.5.0",

@@ -1,10 +1,10 @@
-import express from "express";
-import compression from "compression";
-import path from "path";
-import { fileURLToPath } from "url";
+// import express from "express";
+// import compression from "compression";
+// import path from "path";
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+const express = require("express");
+const compression = require("compression");
+const path = require("path");
 
 const port = process.env.PORT || 8080;
 const app = express();
