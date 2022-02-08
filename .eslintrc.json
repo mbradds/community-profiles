@@ -1,5 +1,9 @@
 {
-  "extends": ["airbnb-base", "prettier"],
+  "extends": ["airbnb-base", "prettier", "plugin:@typescript-eslint/eslint-recommended", "plugin:@typescript-eslint/recommended"],
+  "parser": "@typescript-eslint/parser",
+  "plugins": [
+    "@typescript-eslint"
+  ],
   "env": {
     "browser": true
   },
@@ -18,11 +22,22 @@
     "no-underscore-dangle": "warn",
     "new-cap": "warn",
     "no-param-reassign": ["error", { "props": false }],
+    "radix": ["error", "as-needed"],
+    "import/no-unresolved": "off",
     "import/extensions": [
       "error",
       {
         "js": "always",
-        "json": "always"
+        "json": "always",
+        "ts": "off"
+      }
+    ],
+    "@typescript-eslint/ban-types": [
+      "error",
+      {
+        "types": {
+          "Function": false
+        }
       }
     ]
   }

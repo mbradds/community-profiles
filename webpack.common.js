@@ -15,8 +15,8 @@ const webpackOutputs = (function () {
   function entryJs() {
     const paths = {};
     filenames.forEach((name) => {
-      paths[`js/iamc/${name}`] = `./src/entry_points/${name}.js`;
-      paths[`js/iamc/tutorial`] = `./src/entry_points/tutorial.js`;
+      paths[`js/iamc/${name}`] = `./src/entry_points/${name}.ts`;
+      paths[`js/iamc/tutorial`] = `./src/entry_points/tutorial.ts`;
     });
     return paths;
   }
@@ -59,6 +59,7 @@ export default {
     publicPath: "/",
     filename: "[name].[contenthash].js",
   },
+  // devtool: "inline-source-map",
 
   plugins: [
     ...webpackOutputs.outputHtml(),
@@ -103,11 +104,9 @@ export default {
   module: {
     rules: [
       {
-        test: /\.(js)$/,
+        test: /\.ts?$/,
+        use: "ts-loader",
         exclude: /node_modules/,
-        use: {
-          loader: "babel-loader",
-        },
       },
       {
         test: /\.css$/i,
@@ -154,7 +153,7 @@ export default {
   },
 
   resolve: {
-    extensions: ["*", ".js"],
+    extensions: [".tsx", ".ts", ".js"],
   },
 
   optimization: {

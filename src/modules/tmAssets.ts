@@ -1,13 +1,20 @@
 import * as L from "leaflet";
-import { cerPalette, featureStyles, toolTipHtml } from "./util.js";
+import { GeoJsonObject } from "geojson";
+import { cerPalette, featureStyles, toolTipHtml } from "./util";
 import tmxSpreads from "../company_data/trans_mountain_files/pipeline-spread-geometries.json";
 import mainline from "../company_data/trans_mountain_files/existing-pipeline.json";
+import { IamcMap, CommunityLayer } from "./interfaces";
 
-export function tmAssets(map, communityLayer) {
-  const mainlineLayer = L.geoJSON(mainline, {
+interface ToolTipLayer extends L.Layer {
+  feature: { id: number };
+  options: { color: boolean };
+}
+
+export function tmAssets(map: IamcMap, communityLayer: CommunityLayer) {
+  const mainlineLayer = L.geoJSON(mainline as GeoJsonObject, {
     style: featureStyles.mainline,
   }).addTo(map);
-  const tmSpreadLayer = L.geoJSON(tmxSpreads, {
+  const tmSpreadLayer = L.geoJSON(tmxSpreads as GeoJsonObject, {
     style(feature) {
       switch (feature.id) {
         case "spread-1":
@@ -30,7 +37,7 @@ export function tmAssets(map, communityLayer) {
     },
   })
     .bindTooltip(
-      (layer) =>
+      (layer: ToolTipLayer) =>
         toolTipHtml(
           layer.feature.id,
           false,

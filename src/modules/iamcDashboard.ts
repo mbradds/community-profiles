@@ -1,4 +1,3 @@
-import "core-js/modules/es.promise.js";
 import * as L from "leaflet";
 import pointInPolygon from "point-in-polygon";
 import {
@@ -11,25 +10,35 @@ import {
   plural,
   findUser,
   addCustomControl,
-  ifIEShowError,
-} from "./util.js";
-import { addCommunityLayer } from "./addCommunityLayer.js";
-import { addReserveLayer } from "./addReserveLayer.js";
-import { tmAssets } from "./tmAssets.js";
-import { getCommunityData } from "./getCommunityData.js";
+} from "./util";
+import { addCommunityLayer } from "./addCommunityLayer";
+import { addReserveLayer } from "./addReserveLayer";
+import { tmAssets } from "./tmAssets";
+import { getCommunityData } from "./getCommunityData";
+import { oldBrowserError } from "./oldBrowserError";
 import territoryPolygons from "../company_data/community_profiles/indigenousTerritoriesCa.json";
 import "leaflet/dist/leaflet.css";
 import "../css/main.css";
+import { IamcMap, MapWarning, CommunityLayer } from "./interfaces";
+
+interface MetaData {
+  company: string;
+  totalLength: number;
+}
 
 /**
  * Sets the summary statistics above the map
- * @param {Object} landFeature First Nations Reserve geojson
- * @param {Object} incidentFeature Corresponding incident info for each reserve
- * @param {Object} meta Company name and total reserve overlap length
+ * @param landFeature First Nations Reserve geojson
+ * @param incidentFeature Corresponding incident info for each reserve
+ * @param meta Company name and total reserve overlap length
  */
-function dashboardTotals(landFeature, incidentFeature, meta) {
-  const addStyle = (val) => `<strong>${val}</strong>`;
-  const flagClass = (val) =>
+function dashboardTotals(
+  landFeature: any,
+  incidentFeature: any,
+  meta: MetaData
+) {
+  const addStyle = (val: number | string) => `<strong>${val}</strong>`;
+  const flagClass = (val: number) =>
     val > 0 ? "alert alert-danger" : "alert alert-success";
 
   const lengthInfo = lengthUnits(meta.totalLength);
@@ -65,10 +74,10 @@ function dashboardTotals(landFeature, incidentFeature, meta) {
 
 /**
  * Adds a leaflet control object for the "Reset Map" button
- * @param {Object} map leaflet map object
+ * @param map leaflet map object
  */
-function addResetBtn(map) {
-  const info = L.control({ position: "bottomleft" });
+function addResetBtn(map: IamcMap) {
+  const info: L.Control = new L.Control({ position: "bottomleft" });
   info.onAdd = function () {
     this._div = L.DomUtil.create("div");
     this._div.innerHTML = `<button type="button" id="find-me" class="btn btn-primary btn-block btn-lg">Find Me</button><button type="button" id="reset-map" class="btn btn-primary btn-block btn-lg">Reset Map</button>`;
@@ -80,10 +89,10 @@ function addResetBtn(map) {
 /**
  * Evaluates the users location against the traditional territory polygons.
  * TODO: extend this function to find communities near the user.
- * @param {Object} map leaflet map object
+ * @param map leaflet map object
  */
-function nearbyStuff(map) {
-  const onTerritories = [];
+function nearbyStuff(map: IamcMap) {
+  const onTerritories: any[] = [];
   territoryPolygons.features.forEach((polygon) => {
     const inside = pointInPolygon(
       [map.user.lng, map.user.lat],
@@ -112,9 +121,9 @@ function nearbyStuff(map) {
 
 /**
  * Evaluates the users location against traditional territory's
- * @param {Object} map leaflet map object
+ * @param map leaflet map object
  */
-function onLand(map, communityLayer) {
+function onLand(map: IamcMap, communityLayer: CommunityLayer) {
   map.youAreOn = addCustomControl("bottomright", map);
   document.getElementById("find-me").addEventListener("click", () => {
     communityLayer.contactControl.updateHtml("");
@@ -138,16 +147,17 @@ function onLand(map, communityLayer) {
 
 /**
  * Adds a leaflet map control to the bottom right corner
- * @param {Object} map leaflet map object
+ * @param map leaflet map object
  */
-function mapWarning(map) {
-  const info = L.control({ position: "bottomright" });
+function mapWarning(map: IamcMap) {
+  const info: MapWarning = new L.Control({ position: "bottomright" });
+  info.setPosition("bottomright");
   info.onAdd = function onAdd() {
     this._div = L.DomUtil.create("div");
     this._div.innerHTML = ``;
     return this._div;
   };
-  info.addWarning = function addWarning(text) {
+  info.addWarning = function addWarning(text: string) {
     this._div.innerHTML = `<div class="alert alert-danger"><span class="h3 mrgn-bttm-0">${text}</span></div>`;
   };
   info.removeWarning = function removeWarning() {
@@ -159,34 +169,35 @@ function mapWarning(map) {
 
 /**
  * Adds a layer control filter to the map
- * @param {Object[]} layers list of all the map layers to be added to the filter
- * @param {Object} map leaflet map object
+ * @param layers list of all the map layers to be added to the filter
+ * @param map leaflet map object
  */
-function addLayerControl(layers, map) {
-  const layerControl = { single: {}, multi: {} };
+function addLayerControl(
+  layers: { display: string; layer: L.Layer }[],
+  map: IamcMap
+) {
+  const layerControl: { [key: string]: L.Layer } = {};
   layers.forEach((layer) => {
-    layerControl.multi[layer.display] = layer.layer;
+    layerControl[layer.display] = layer.layer;
   });
-  L.control
-    .layers(layerControl.single, layerControl.multi, { position: "topleft" })
-    .addTo(map);
+  L.control.layers(undefined, layerControl, { position: "topleft" }).addTo(map);
 }
 
 /**
  * Loads the basemap and all the map layers
- * @param {number} mapHeight height of the map container
- * @param {number} userWidth width of the users screen
- * @param {Object} landFeature First Nations Reserve geojson
- * @param {Object} landInfo Information on overlaps for each First Nations Reserve
- * @param {Object} incidentFeature Information on incidents for each First Nations Reserve
- * @returns {Object} leaflet map object
+ * @param mapHeight height of the map container
+ * @param userWidth width of the users screen
+ * @param landFeature First Nations Reserve geojson
+ * @param landInfo Information on overlaps for each First Nations Reserve
+ * @param incidentFeature Information on incidents for each First Nations Reserve
+ * @returns leaflet map object
  */
 async function loadMap(
-  mapHeight,
-  userWidth,
-  landFeature,
-  landInfo,
-  incidentFeature
+  mapHeight: number,
+  userWidth: number,
+  landFeature: any,
+  landInfo: any,
+  incidentFeature: any
 ) {
   const communityData = await getCommunityData();
   const map = leafletBaseMap({
@@ -240,12 +251,12 @@ async function loadMap(
 
 /**
  * Loads non map components (totals, treaty overlaps)
- * @param {*} landFeature
- * @param {*} incidentFeature
- * @param {*} meta
+ * @param landFeature
+ * @param incidentFeature
+ * @param meta
  * @returns
  */
-function loadNonMap(landFeature, incidentFeature, meta) {
+function loadNonMap(landFeature: any, incidentFeature: any, meta: MetaData) {
   dashboardTotals(landFeature, incidentFeature, meta);
   const user = setUpHeight();
   return user;
@@ -253,14 +264,19 @@ function loadNonMap(landFeature, incidentFeature, meta) {
 
 /**
  * Loads the main dashboard
- * @param {*} landFeature
- * @param {*} landInfo
- * @param {*} incidentFeature
- * @param {*} meta
+ * @param landFeature
+ * @param landInfo
+ * @param incidentFeature
+ * @param meta
  */
-export function iamcDashboard(landFeature, landInfo, incidentFeature, meta) {
+export function iamcDashboard(
+  landFeature: any,
+  landInfo: any,
+  incidentFeature: any,
+  meta: MetaData
+) {
   function main() {
-    ifIEShowError();
+    oldBrowserError();
     async function buildPage() {
       const mapHeight = document.getElementById("map").clientHeight;
       const user = loadNonMap(landFeature, incidentFeature, meta);
@@ -275,10 +291,11 @@ export function iamcDashboard(landFeature, landInfo, incidentFeature, meta) {
     }
 
     buildPage().then(() => {
-      Array.from(document.getElementsByClassName("loader")).forEach((div) => {
-        const divToHide = div;
-        divToHide.style.display = "none";
-      });
+      Array.from(document.getElementsByClassName("loader")).forEach(
+        (div: HTMLInputElement) => {
+          div.style.display = "none";
+        }
+      );
     });
   }
   main();

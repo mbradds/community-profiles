@@ -1,3 +1,4 @@
+import * as L from "leaflet";
 import {
   getSum,
   lengthUnits,
@@ -5,15 +6,16 @@ import {
   plural,
   featureStyles,
   removeIncidents,
-} from "./util.js";
+} from "./util";
+
+import { IamcMap } from "./interfaces";
 
 /**
  * TODO: maybe split this method between iamc and profiles. IAMC might need more event info vs profiles.
- * @param {*} event
- * @returns
+ * @param event
  */
-function eventTooltip(event) {
-  const listify = (str) => {
+function eventTooltip(event: any): string {
+  const listify = (str: string) => {
     if (str.includes(",")) {
       let listHtml = `<ul>`;
       str.split(",").forEach((li) => {
@@ -46,23 +48,22 @@ function eventTooltip(event) {
   return toolText;
 }
 
-function addIncidents(map, name, incidentFeature) {
+function addIncidents(map: IamcMap, name: string, incidentFeature: any) {
   removeIncidents(map);
   const incidents = incidentFeature[name];
-  const addCircle = (x, y, eventInfo) =>
+  const addCircle = (x: number, y: number, eventInfo: any) =>
     L.circle([x, y], {
       color: featureStyles.incident.color,
       fillColor: featureStyles.incident.fillColor,
       fillOpacity: featureStyles.incident.fillOpacity,
       radius: featureStyles.incident.radius,
       weight: featureStyles.incident.weight,
-      type: "incident",
     }).bindTooltip(eventTooltip(eventInfo));
 
   const proximityCount = { on: 0, close: 0 };
   if (incidents) {
     map.legend.addItem();
-    const points = incidents.map((p) => {
+    const points = incidents.map((p: any) => {
       if (p.distance === 0) {
         proximityCount.on += 1;
       } else {
@@ -75,7 +76,7 @@ function addIncidents(map, name, incidentFeature) {
   return proximityCount;
 }
 
-function reserveTooltip(layer, landInfo) {
+function reserveTooltip(layer: any, landInfo: any) {
   const layerInfo = landInfo[layer.NAME1];
   let table = `<table class="map-tooltip"><caption><b>${layer.NAME1}</b></caption>`;
   table += htmlTableRow("Land Type:&nbsp", layerInfo.meta.altype);
@@ -88,8 +89,8 @@ function reserveTooltip(layer, landInfo) {
   return table;
 }
 
-function reservePopUp(reserve) {
-  const alertClass = (val, type) => {
+function reservePopUp(reserve: any, landInfo: any, incidentFeature: any) {
+  const alertClass = (val: number, type: string) => {
     if (type === "on" && val > 0) {
       return "alert alert-danger";
     }
@@ -99,10 +100,7 @@ function reservePopUp(reserve) {
     return "alert alert-success";
   };
 
-  const { landInfo } = reserve.defaultOptions;
-  const { incidentFeature } = reserve.defaultOptions;
   const layerInfo = landInfo[reserve.feature.properties.NAME1];
-
   const proximityCount = addIncidents(
     reserve._map,
     reserve.feature.properties.NAME1,
@@ -114,7 +112,7 @@ function reservePopUp(reserve) {
   // first table: pipeline overlaps
   popHtml += `<table class="table" style="margin-bottom:0px"><h3 class="center-header">Pipeline Overlaps</h3><tbody>`;
 
-  layerInfo.overlaps.forEach((overlap) => {
+  layerInfo.overlaps.forEach((overlap: any) => {
     const l = lengthUnits(overlap.length);
     popHtml += htmlTableRow(
       `${overlap.plname} (${overlap.status})`,
@@ -144,13 +142,20 @@ function reservePopUp(reserve) {
   return popHtml;
 }
 
-export function addReserveLayer(map, landFeature, landInfo, incidentFeature) {
-  return L.geoJSON(landFeature, {
+export function addReserveLayer(
+  map: IamcMap,
+  landFeature: any,
+  landInfo: any,
+  incidentFeature: any
+) {
+  const landGeoJson = L.geoJSON(landFeature, {
     style: featureStyles.reserveOverlap,
-    landInfo,
-    incidentFeature,
   })
-    .bindTooltip((layer) => reserveTooltip(layer.feature.properties, landInfo))
-    .bindPopup((layer) => reservePopUp(layer))
+    .bindTooltip((layer: any) =>
+      reserveTooltip(layer.feature.properties, landInfo)
+    )
+    .bindPopup((layer) => reservePopUp(layer, landInfo, incidentFeature))
     .addTo(map);
+
+  return landGeoJson;
 }
