@@ -31,6 +31,7 @@
   "license": "MIT",
   "devDependencies": {
     "@types/compression": "^1.7.2",
+    "@types/haversine": "^1.1.5",
     "@types/imagemin": "^8.0.0",
     "@types/node": "^17.0.16",
     "@types/point-in-polygon": "^1.1.1",
@@ -68,6 +69,7 @@
     "core-js": "^3.21.0",
     "express": "^4.17.2",
     "geojson": "^0.5.0",
+    "haversine": "^1.1.1",
     "imagemin": "^8.0.1",
     "imagemin-pngquant": "^9.0.2",
     "leaflet": "^1.7.1",

@@ -6,21 +6,18 @@ import {
   addCustomControl,
 } from "./util";
 
-import { IamcMap, CommunityAttr, CommunityLayer } from "./interfaces";
+import {
+  IamcMap,
+  CommunityAttr,
+  CommunityLayer,
+  CommunityCircle,
+} from "./interfaces";
 
 interface LandMarker extends L.CircleMarker {
   electionDate?: Date | null;
   spreadNums?: (number | null)[];
   communityName?: string | null;
   contactInfo?: string | null;
-}
-
-interface CommunityCircle extends L.CircleMarker {
-  communityName?: string | null;
-  _leaflet_id?: number;
-  electionDate: Date;
-  spreadNums: number[];
-  contactInfo: string | null;
 }
 
 interface CommunityName {
