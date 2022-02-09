@@ -3,7 +3,6 @@ import HtmlWebpackPlugin from "html-webpack-plugin";
 import CopyWebpackPlugin from "copy-webpack-plugin";
 import MiniCssExtractPlugin from "mini-css-extract-plugin";
 import { CleanWebpackPlugin } from "clean-webpack-plugin";
-import { Configuration } from "webpack";
 import { tutorialText } from "./src/components/tutorialText.js";
 
 const __dirname = path.resolve();
@@ -12,7 +11,7 @@ const webpackOutputs = (function () {
   const filenames = ["trans_mountain"];
 
   function entryJs() {
-    const paths: { [index: string]: any } = {};
+    const paths = {};
     filenames.forEach((name) => {
       paths[`js/iamc/${name}`] = `./src/entry_points/${name}.ts`;
       paths[`js/iamc/tutorial`] = `./src/entry_points/tutorial.ts`;
@@ -51,14 +50,13 @@ const webpackOutputs = (function () {
   };
 })();
 
-const config: Configuration = {
+export default {
   entry: webpackOutputs.entryJs(),
   output: {
     path: path.resolve(__dirname, "dist"),
     publicPath: "/",
     filename: "[name].[contenthash].js",
   },
-  // devtool: "inline-source-map",
 
   plugins: [
     ...webpackOutputs.outputHtml(),
@@ -173,5 +171,3 @@ const config: Configuration = {
     },
   },
 };
-
-export default config;
