@@ -10,7 +10,7 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "start": "node --experimental-modules server.js",
+    "start": "node --loader ts-node/esm server.ts",
     "images": "node --loader ts-node/esm scripts/convertImages.ts",
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "webpack --config webpack.prod.js",
@@ -30,6 +30,7 @@
   "author": "Grant Moss",
   "license": "MIT",
   "devDependencies": {
+    "@types/compression": "^1.7.2",
     "@types/imagemin": "^8.0.0",
     "@types/node": "^17.0.16",
     "@types/point-in-polygon": "^1.1.1",

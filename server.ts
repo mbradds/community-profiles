@@ -1,15 +1,12 @@
-// import express from "express";
-// import compression from "compression";
-// import path from "path";
+import express from "express";
+import compression from "compression";
+import path from "path";
 
-const express = require("express");
-const compression = require("compression");
-const path = require("path");
-
+const __dirname = path.resolve();
 const port = process.env.PORT || 8080;
 const app = express();
 
-function shouldCompress(req, res) {
+function shouldCompress(req: any, res: any) {
   if (req.headers["x-no-compression"]) {
     // don't compress responses with this request header
     return false;
@@ -18,7 +15,7 @@ function shouldCompress(req, res) {
   return compression.filter(req, res);
 }
 
-function cachePolicy(req, res, next) {
+function cachePolicy(req: any, res: any, next: any) {
   const periodLong = 31536000; // 1 year
   const contentHash = new RegExp("\\.[0-9a-f]{20}\\.");
   if (req.method === "GET") {

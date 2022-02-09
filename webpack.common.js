@@ -3,7 +3,9 @@ import HtmlWebpackPlugin from "html-webpack-plugin";
 import CopyWebpackPlugin from "copy-webpack-plugin";
 import MiniCssExtractPlugin from "mini-css-extract-plugin";
 import { CleanWebpackPlugin } from "clean-webpack-plugin";
-import { tutorialText } from "./src/components/tutorialText.js";
+import { createRequire } from "module";
+const require = createRequire(import.meta.url);
+const tutorialText = require("./src/components/tutorialText.json");
 
 const __dirname = path.resolve();
 
