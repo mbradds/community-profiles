@@ -2,9 +2,10 @@ import path from "path";
 import fs from "fs";
 import { execSync } from "child_process";
 
+const __dirname = path.resolve();
+
 const pathToTm = path.resolve(
   __dirname,
-  "..",
   "src",
   "company_data",
   "trans_mountain_files"
@@ -15,7 +16,6 @@ const tmPrecision = 0.0001;
 
 const pathToLand = path.resolve(
   __dirname,
-  "..",
   "src",
   "company_data",
   "TransMountainPipelineULC"

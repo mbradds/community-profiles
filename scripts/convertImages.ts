@@ -15,9 +15,10 @@ const options = {
   height: 700,
   savePath: stageLocation,
   format: "png",
+  saveFilename: "",
 };
 
-function deleteDirContents(dir) {
+function deleteDirContents(dir: string) {
   fs.readdir(dir, (err, files) => {
     if (err) throw err;
     files.forEach((file) => {
@@ -28,7 +29,7 @@ function deleteDirContents(dir) {
   });
 }
 
-async function stageMaps(dir) {
+async function stageMaps(dir: string) {
   deleteDirContents(stageLocation);
   const files = fs.readdirSync(dir);
   return files.map((file) => {

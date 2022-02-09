@@ -4,7 +4,7 @@ import CopyWebpackPlugin from "copy-webpack-plugin";
 import MiniCssExtractPlugin from "mini-css-extract-plugin";
 import { CleanWebpackPlugin } from "clean-webpack-plugin";
 import { Configuration } from "webpack";
-import { tutorialText } from "./src/components/tutorialText";
+import { tutorialText } from "./src/components/tutorialText.js";
 
 const __dirname = path.resolve();
 
