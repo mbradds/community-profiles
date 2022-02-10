@@ -15,7 +15,7 @@
 }
 
 .leaflet-control .panel-body {
-  max-height: 250px;
+  max-height: 220px;
   width: 100%;
   overflow-y: auto;
   margin: 0px !important;

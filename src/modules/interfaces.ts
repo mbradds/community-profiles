@@ -56,3 +56,11 @@ export interface CommunityLayer extends L.FeatureGroup {
   resetSearch?: Function;
   reset?: Function;
 }
+
+export interface CommunityCircle extends L.CircleMarker {
+  communityName?: string | null;
+  _leaflet_id?: number;
+  electionDate: Date;
+  spreadNums: number[];
+  contactInfo: string | null;
+}

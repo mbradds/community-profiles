@@ -53,6 +53,9 @@ responsive style options
   .map-col {
     padding: 0px;
   }
+  .leaflet-bottom.leaflet-right .leaflet-control {
+    max-width: 50% !important;
+  }
 }
 
 /* medium screen tablet */
@@ -70,6 +73,9 @@ responsive style options
   }
   .map-col {
     padding: 0px;
+  }
+  .leaflet-bottom.leaflet-right .leaflet-control {
+    max-width: 50% !important;
   }
 }
 

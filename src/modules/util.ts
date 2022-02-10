@@ -348,7 +348,7 @@ export function resetListener(
  * Finds the user's location, adds a market, and saves location info in map object
  * @param map leaflet map object
  */
-export async function findUser(map: any) {
+export async function findUser(map: IamcMap) {
   return new Promise((resolve, reject) => {
     map
       .locate({
