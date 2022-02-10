@@ -89,6 +89,9 @@ responsive style options
     margin-right: 0px !important;
   }
   .leaflet-control .panel-body {
-    max-height: 180px;
+    max-height: 170px;
+  }
+  .leaflet-control .panel {
+    margin-bottom: 0px;
   }
 }

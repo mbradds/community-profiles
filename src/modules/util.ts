@@ -232,7 +232,7 @@ export function plural(val: number, type: string, cap = false): string {
     return capitalize(val > 1 ? "reserves" : "reserve", cap);
   }
   if (type === "communities" || type === "community") {
-    return capitalize(val > 1 ? "communities" : "community", cap);
+    return capitalize(val > 1 || val === 0 ? "communities" : "community", cap);
   }
   return type;
 }

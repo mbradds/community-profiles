@@ -1,3 +1,7 @@
+'''
+Deprecated. Community data has been moved to cp-admin api
+'''
+
 import os
 import json
 import pandas as pd
@@ -38,7 +42,7 @@ def next_election(df, col="Leadership"):
     return df
 
 
-def processTerritoryInfo():
+def processTerritoryInfo(save=False):
     bc = pd.read_excel(os.path.join(os.getcwd(),
                                     "raw_data",
                                     "traditional_territory",
@@ -181,8 +185,9 @@ def processTerritoryInfo():
             land[landKey] = {"loc": [row["Lat"], row["Long"]],
                              "info": [addInfo(row)]}
 
-    with open('../company_data/community_profiles/community_info.json', 'w') as fp:
-        json.dump(land, fp)
+    if save:
+        with open('../company_data/community_profiles/community_info.json', 'w') as fp:
+            json.dump(land, fp)
     return df
 
 

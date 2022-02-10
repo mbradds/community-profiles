@@ -4,16 +4,17 @@ import { execSync } from "child_process";
 
 const __dirname = path.resolve();
 
+// Trans Mountain asset data
 const pathToTm = path.resolve(
   __dirname,
   "src",
   "company_data",
   "trans_mountain_files"
 );
-
 const tmSimplify = 50;
 const tmPrecision = 0.0001;
 
+// First Nations Reserve data
 const pathToLand = path.resolve(
   __dirname,
   "src",
@@ -23,6 +24,17 @@ const pathToLand = path.resolve(
 
 const landSimplify = 50;
 const landPrecision = 0.0001;
+
+// Traditional Territory data
+const pathToTerr = path.resolve(
+  __dirname,
+  "src",
+  "company_data",
+  "community_profiles"
+);
+
+const terrSimplify = 60;
+const terrPrecision = 0.01;
 
 function simplifyMaps(
   pathToFiles: string,
@@ -52,3 +64,4 @@ function simplifyMaps(
 
 simplifyMaps(pathToTm, tmSimplify, tmPrecision);
 simplifyMaps(pathToLand, landSimplify, landPrecision, ["poly1.json"]);
+simplifyMaps(pathToTerr, terrSimplify, terrPrecision, ["indigenousTerritoriesCa.json"]);

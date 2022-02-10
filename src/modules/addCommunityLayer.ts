@@ -16,17 +16,17 @@ import {
 interface LandMarker extends L.CircleMarker {
   electionDate?: Date | null;
   spreadNums?: (number | null)[];
-  communityName?: string | null;
+  communityName?: string;
   contactInfo?: string | null;
 }
 
 interface CommunityName {
-  name: string | null | undefined;
+  name: string;
   id: number | null | undefined;
 }
 
 type ContactInfo = {
-  name: string | null | undefined;
+  name: string;
   contact: string | null;
 };
 

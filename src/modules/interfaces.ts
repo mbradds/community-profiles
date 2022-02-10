@@ -25,7 +25,7 @@ export interface CommunityAttr {
   MapFile: string | null;
   MapLink: string | null;
   MapSource: string | null;
-  Name: string | null;
+  Name: string;
   NextElection: string | null;
   ProjectSpreadNumber: number | null;
   ProjectSpreads: string | null;
@@ -58,7 +58,7 @@ export interface CommunityLayer extends L.FeatureGroup {
 }
 
 export interface CommunityCircle extends L.CircleMarker {
-  communityName?: string | null;
+  communityName: string;
   _leaflet_id?: number;
   electionDate: Date;
   spreadNums: number[];

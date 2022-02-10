@@ -1,6 +1,6 @@
 import pointInPolygon from "point-in-polygon";
 import haversine from "haversine";
-import territoryPolygons from "../company_data/community_profiles/indigenousTerritoriesCa.json";
+import territoryPolygons from "../company_data/community_profiles/indigenousTerritoriesCa.min.json";
 import { findUser, addCustomControl, plural } from "./util";
 import { IamcMap, CommunityLayer, CommunityCircle } from "./interfaces";
 
@@ -35,17 +35,27 @@ function findNearbyCommunities(
 }
 
 function findNearbyTerritories(map: IamcMap) {
-  const onTerritories: any[] = [];
-  territoryPolygons.features.forEach((polygon) => {
-    const inside = pointInPolygon(
-      [map.user.lng, map.user.lat],
-      polygon.geometry.coordinates[0]
-    );
-    if (inside) {
-      onTerritories.push(polygon.properties);
-    }
-  });
-  return onTerritories;
+  try {
+    const onTerritories: any[] = [];
+    territoryPolygons.features.forEach((polygon) => {
+      const inside = pointInPolygon(
+        [map.user.lng, map.user.lat],
+        polygon.geometry.coordinates[0]
+      );
+      if (inside) {
+        onTerritories.push(polygon.properties);
+      }
+    });
+
+    let territoryHtmlList = `<h3>You are on ${onTerritories.length} Traditional Territories</h3><ul>`;
+    onTerritories.forEach((land) => {
+      territoryHtmlList += `<li><a href="${land.description}" target="_blank">${land.Name}</a></li>`;
+    });
+    territoryHtmlList += "</ul>";
+    return territoryHtmlList;
+  } catch (err) {
+    return `<p>Cant access traditional territory data. Please check back later.</p>`;
+  }
 }
 
 /**
@@ -62,7 +72,6 @@ function nearbyStuff(map: IamcMap, communityLayer: CommunityLayer) {
     communityLayer,
     50
   );
-  const nearbyTerritories = findNearbyTerritories(map);
 
   // build the pop-up section
   const addFindButton = (community: WithinList) =>
@@ -85,11 +94,6 @@ function nearbyStuff(map: IamcMap, communityLayer: CommunityLayer) {
     nearbyTable += `</tbody></table>`;
   }
 
-  let territoryHtmlList = `<h3>You are on ${nearbyTerritories.length} Traditional Territories</h3><ul>`;
-  nearbyTerritories.forEach((land) => {
-    territoryHtmlList += `<li><a href="${land.description}" target="_blank">${land.Name}</a></li>`;
-  });
-  territoryHtmlList += "</ul>";
   map.youAreOn.addSection(
     "ur-on",
     "close-you-are-on",
@@ -98,7 +102,7 @@ function nearbyStuff(map: IamcMap, communityLayer: CommunityLayer) {
       "community",
       false
     )}`,
-    `${nearbyTable} ${territoryHtmlList}`,
+    `${nearbyTable} ${findNearbyTerritories(map)}`,
     "Move the blue marker to a new area and click <i>Find Me</i> again to view other locations."
   );
   map.youAreOn.fixScroll("ur-on");
@@ -129,10 +133,17 @@ export function proximity(map: IamcMap, communityLayer: CommunityLayer) {
           // check polygons for user
           nearbyStuff(map, communityLayer);
         })
-        .catch(() => {
-          map.youAreOn.updateHtml(
-            `<div class="alert alert-danger"><h3 style="margin-bottom:0;">Cant access your location. Try enabling location services and refresh the page.</h3></div>`
-          );
+        .catch((err) => {
+          if (
+            {}.propertyIsEnumerable.call(err, "type") &&
+            err.type === "locationerror"
+          ) {
+            map.youAreOn.updateHtml(
+              `<div class="alert alert-danger"><h3 style="margin-bottom:0;">Cant access your location. Try enabling location services and refresh the page.</h3></div>`
+            );
+          } else {
+            throw err;
+          }
         });
     } else {
       // check polygons for user

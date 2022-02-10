@@ -88,12 +88,14 @@ This overlays the First Nations Reserve boundary file with the Trans Mountain as
 2.
 
 ```bash
-npm run community-update && npm run images
+npm run images
 ```
 
-This gets the latest community data `src/data_management/raw_data/traditional_territory/*.xlsx` for Alberta and BC. The data is prepared into a json file here: `src/company_data/community_profiles/community_info.json`. The raw traditional territory images `src/data_management/raw_data/traditional_territory/input_maps` are minimized and sized properly for use in the app.
+The raw traditional territory images `src/data_management/raw_data/traditional_territory/input_maps` are minimized and sized properly for use in the app.
 
 ### Step 2 - set up frontend map
+
+Set your node env to production to read community data from the cp-admin api.
 
 ```bash
 npm install
