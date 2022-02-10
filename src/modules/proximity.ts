@@ -72,7 +72,7 @@ function nearbyStuff(map: IamcMap, communityLayer: CommunityLayer) {
     nearbyTable += `<table class="table"><thead>
     <tr>
       <th scope="col">Community</th>
-      <th scope="col">Est. Distance (km)</th>
+      <th scope="col">Est. Distance</th>
       <th scope="col"></th>
     </tr>
   </thead><tbody>`;
@@ -80,7 +80,7 @@ function nearbyStuff(map: IamcMap, communityLayer: CommunityLayer) {
     nearbyCommunities.forEach((community) => {
       nearbyTable += `<tr><td>${community.name}</td><td>${Math.round(
         community.distance
-      )}</td><td>${addFindButton(community)}</td></tr>`;
+      )}km</td><td>${addFindButton(community)}</td></tr>`;
     });
     nearbyTable += `</tbody></table>`;
   }
@@ -103,6 +103,16 @@ function nearbyStuff(map: IamcMap, communityLayer: CommunityLayer) {
   );
   map.youAreOn.fixScroll("ur-on");
   map.youAreOn.closeBtnListener("close-you-are-on");
+
+  const findButtons = document.querySelectorAll(".find-near-community");
+  findButtons.forEach((el) =>
+    el.addEventListener("click", (event) => {
+      const currentBtn = (<HTMLInputElement>event.target).value;
+      if (currentBtn) {
+        communityLayer.zoomToId(parseInt(currentBtn));
+      }
+    })
+  );
 }
 
 /**
