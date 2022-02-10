@@ -11,7 +11,7 @@ const pathToTm = path.resolve(
   "trans_mountain_files"
 );
 
-const tmSimplify = 100;
+const tmSimplify = 50;
 const tmPrecision = 0.0001;
 
 const pathToLand = path.resolve(
@@ -21,7 +21,7 @@ const pathToLand = path.resolve(
   "TransMountainPipelineULC"
 );
 
-const landSimplify = 100;
+const landSimplify = 50;
 const landPrecision = 0.0001;
 
 function simplifyMaps(

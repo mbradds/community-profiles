@@ -36,7 +36,11 @@ type ContactInfo = {
  * @param {boolean} hasImage Specifies if the pop-up will have a traditional territory image
  * @returns {string} HTML partial to be added to the leaflet community pop-up
  */
-function popUpTable(imgHtml: string, landInfo: any, hasImage: boolean) {
+function popUpTable(
+  imgHtml: string,
+  landInfo: CommunityAttr,
+  hasImage: boolean
+) {
   let tableHtml = "";
   let subImageHtml = "";
   if (hasImage) {
@@ -63,6 +67,17 @@ function popUpTable(imgHtml: string, landInfo: any, hasImage: boolean) {
   if (landInfo.Website) {
     table += `<a class="center-header" href="${landInfo.Website}" target="_blank">Community Website</a>`;
   }
+  if (landInfo.updatedAt) {
+    const updatedAtDate = new Date(landInfo.updatedAt);
+    if (updatedAtDate.getFullYear() !== 1970) {
+      table += `<h3 class="center-header">Community data updated at: ${
+        updatedAtDate.getMonth() + 1
+      }/${updatedAtDate.getDate()}/${updatedAtDate.getFullYear()} (${Math.round(
+        (Date.now() - updatedAtDate.getTime()) / (1000 * 60 * 60 * 24)
+      )} days ago)</h3>`;
+    }
+  }
+
   [
     ["Leadership", landInfo.Leadership],
     ["Contact Person", landInfo.ContactPerson],
