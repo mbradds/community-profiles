@@ -464,3 +464,10 @@ export function addCustomControl(position: L.ControlPosition, map: IamcMap) {
   info.addTo(map);
   return info;
 }
+
+export function addHtmlLink(href: string, display: string, cls = "") {
+  if (cls !== "") {
+    return `<a class="${cls}" href="${href}" target="_blank">${display}</a>`;
+  }
+  return `<a href="${href}" target="_blank">${display}</a>`;
+}

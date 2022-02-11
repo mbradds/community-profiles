@@ -21,3 +21,11 @@
   margin: 0px !important;
   word-break: break-all;
 }
+
+#near-communities-table td {
+  min-width: 95px;
+}
+
+#near-communities-table td button {
+  float: right;
+}

@@ -1,7 +1,7 @@
 import pointInPolygon from "point-in-polygon";
 import haversine from "haversine";
 import territoryPolygons from "../company_data/community_profiles/indigenousTerritoriesCa.min.json";
-import { findUser, addCustomControl, plural } from "./util";
+import { findUser, addCustomControl, plural, addHtmlLink } from "./util";
 import { IamcMap, CommunityLayer, CommunityCircle } from "./interfaces";
 
 interface WithinList {
@@ -49,7 +49,10 @@ function findNearbyTerritories(map: IamcMap) {
 
     let territoryHtmlList = `<h3>You are on ${onTerritories.length} Traditional Territories</h3><ul>`;
     onTerritories.forEach((land) => {
-      territoryHtmlList += `<li><a href="${land.description}" target="_blank">${land.Name}</a></li>`;
+      territoryHtmlList += `<li>${addHtmlLink(
+        land.description,
+        land.name
+      )}</li>`;
     });
     territoryHtmlList += "</ul>";
     return territoryHtmlList;
@@ -78,7 +81,7 @@ function nearbyStuff(map: IamcMap, communityLayer: CommunityLayer) {
     `<button type="button" value="${community._leaflet_id}" class="btn btn-primary btn-xs find-near-community">Find</button>`;
   let nearbyTable = "";
   if (nearbyCommunities.length >= 1) {
-    nearbyTable += `<table class="table"><thead>
+    nearbyTable += `<table class="table" id="near-communities-table"><thead>
     <tr>
       <th scope="col">Community</th>
       <th scope="col">Est. Distance</th>

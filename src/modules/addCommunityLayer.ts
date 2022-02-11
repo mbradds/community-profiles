@@ -4,6 +4,7 @@ import {
   htmlTableRow,
   toolTipHtml,
   addCustomControl,
+  addHtmlLink,
 } from "./util";
 
 import {
@@ -32,9 +33,9 @@ type ContactInfo = {
 
 /**
  * Generates an HTML partial for the community pop-up information
- * @param {Object[]} landInfo Community information for the pop-up
- * @param {boolean} hasImage Specifies if the pop-up will have a traditional territory image
- * @returns {string} HTML partial to be added to the leaflet community pop-up
+ * @param landInfo Community information for the pop-up
+ * @param hasImage Specifies if the pop-up will have a traditional territory image
+ * @returns HTML partial to be added to the leaflet community pop-up
  */
 function popUpTable(
   imgHtml: string,
@@ -44,9 +45,11 @@ function popUpTable(
   let tableHtml = "";
   let subImageHtml = "";
   if (hasImage) {
-    // subImageHtml += `<h3 class="center-header">Traditional Territory</h3>`;
     if (landInfo.MapLink) {
-      subImageHtml += `<p>Image source:&nbsp;<a href="${landInfo.MapLink}" target="_blank">${landInfo.MapSource}</a></p>`;
+      subImageHtml += `<p>Image source:&nbsp;${addHtmlLink(
+        landInfo.MapLink,
+        landInfo.MapSource
+      )}</p>`;
     } else {
       subImageHtml += `<p>Image source:&nbsp;not available</p>`;
     }
@@ -65,7 +68,11 @@ function popUpTable(
     table += `<h3 class="center-header"><i>Pronounced: ${landInfo.Pronunciation}</i></h3>`;
   }
   if (landInfo.Website) {
-    table += `<a class="center-header" href="${landInfo.Website}" target="_blank">Community Website</a>`;
+    table += addHtmlLink(
+      landInfo.Website,
+      "Community Website",
+      "center-header"
+    );
   }
   if (landInfo.updatedAt) {
     const updatedAtDate = new Date(landInfo.updatedAt);
@@ -91,17 +98,31 @@ function popUpTable(
     table += htmlTableRow(row[0], `${row[1] ? row[1] : "Not available"}`);
   });
   table += `</tbody></table>`;
+
+  const resourceHtml = `<h3 class="center-header">Additional Resources</h3><dl class="dl-horizontal">
+  <dt>Active Construction:</dt>
+  <dd>${addHtmlLink(
+    "https://www.transmountain.com/all-communities?b=47.781%2C-128.966%2C54.646%2C-107.323",
+    "Trans Mountain Website"
+  )}</dd>
+  <dt>Secwépemc Communities Pronunciations (audio):</dt>
+  <dd>${addHtmlLink(
+    "https://www.tru.ca/indigenous/indigenous-education-team/pronunciations.html",
+    "Thompson Rivers University Website"
+  )}</dd>
+</dl`;
+
   tableHtml += table;
-  tableHtml += imgHtml + subImageHtml;
+  tableHtml += imgHtml + subImageHtml + resourceHtml;
   return tableHtml;
 }
 
 /**
  * Generates a leaflet featureLayer for the communities
- * @param {Object} map leaflet map object
- * @param {number} popHeight Height of the pop-up
- * @param {number} popWidth Width of the pop-up
- * @returns {Object} leaflet featureLayer for the communities
+ * @param map leaflet map object
+ * @param popHeight Height of the pop-up
+ * @param popWidth Width of the pop-up
+ * @returns leaflet featureLayer for the communities
  */
 export function addCommunityLayer(
   map: IamcMap,
@@ -203,12 +224,15 @@ export function addCommunityLayer(
 
     /**
      * Zooms to the selected community by finding the matching id
-     * @param {number} id leaflet id of the selected community circle
+     * @param id leaflet id of the selected community circle
      */
     communityLayer.zoomToId = function zoomToId(id: number) {
       this.eachLayer((circle: CommunityCircle) => {
         if (circle._leaflet_id === id) {
-          map.setView(circle.getLatLng(), 10);
+          map.setView(
+            circle.getLatLng(),
+            map.getZoom() > 10 ? map.getZoom() : 10
+          );
           circle.setStyle({
             color: featureStyles.foundCommunity.color,
             fillColor: featureStyles.foundCommunity.fillColor,
@@ -238,7 +262,7 @@ export function addCommunityLayer(
 
     /**
      * Evaluates each communities electionDate vs the current date
-     * @param {number|string} dayRange Number between 0 and 365 or "All"
+     * @param dayRange Number between 0 and 365 or "All"
      */
     communityLayer.filterElections = function filterElections(
       dayRange: string
@@ -279,22 +303,9 @@ export function addCommunityLayer(
     };
 
     /**
-     * Closes the map warning message, the contactControl popup and sets communities to the default color
-     */
-    communityLayer.resetSpreads = function resetSpreads() {
-      map.warningMsg.removeWarning();
-      this.contactControl.updateHtml("");
-      this.eachLayer((circle: CommunityCircle) => {
-        circle.setStyle({
-          ...featureStyles.territory,
-        });
-      });
-    };
-
-    /**
      * Adds a leaflet control popup with community contact info
-     * @param {Object[]} contacts [{name: string, contact: string}] contact info for the spread communities
-     * @param {string} sprdName display name of the selected spread
+     * @param contacts [{name: string, contact: string}] contact info for the spread communities
+     * @param sprdName display name of the selected spread
      */
     communityLayer.spreadContactPopUp = function spreadContactPopUp(
       contacts: ContactInfo[],
@@ -425,6 +436,19 @@ export function addCommunityLayer(
       if (comSearchErrElement) {
         comSearchErrElement.innerHTML = `<div class="alert alert-danger"><span>${message}</span></div>`;
       }
+    };
+
+    /**
+     * Closes the map warning message, the contactControl popup and sets communities to the default color
+     */
+    communityLayer.resetSpreads = function resetSpreads() {
+      map.warningMsg.removeWarning();
+      this.contactControl.updateHtml("");
+      this.eachLayer((circle: CommunityCircle) => {
+        circle.setStyle({
+          ...featureStyles.territory,
+        });
+      });
     };
 
     communityLayer.resetSearchError = function resetSearchError() {
