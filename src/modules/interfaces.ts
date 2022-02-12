@@ -26,7 +26,7 @@ export interface CommunityAttr {
   MapLink: string | null;
   MapSource: string | null;
   Name: string;
-  NextElection: string | null;
+  NextElection: string | null | Date;
   ProjectSpreadNumber: number | null;
   ProjectSpreads: string | null;
   Pronunciation: string | null;

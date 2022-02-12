@@ -36,7 +36,12 @@ function findNearbyCommunities(
 
 function findNearbyTerritories(map: IamcMap) {
   try {
-    const onTerritories: any[] = [];
+    const onTerritories: {
+      Name: string;
+      Slug: string;
+      color: string;
+      description: string;
+    }[] = [];
     territoryPolygons.features.forEach((polygon) => {
       const inside = pointInPolygon(
         [map.user.lng, map.user.lat],
@@ -51,7 +56,7 @@ function findNearbyTerritories(map: IamcMap) {
     onTerritories.forEach((land) => {
       territoryHtmlList += `<li>${addHtmlLink(
         land.description,
-        land.name
+        land.Name
       )}</li>`;
     });
     territoryHtmlList += "</ul>";

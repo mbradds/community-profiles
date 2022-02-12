@@ -471,3 +471,14 @@ export function addHtmlLink(href: string, display: string, cls = "") {
   }
   return `<a href="${href}" target="_blank">${display}</a>`;
 }
+
+export function calculateDaysUntil(inputDate: Date) {
+  return Math.round((inputDate.getTime() - Date.now()) / (1000 * 60 * 60 * 24));
+}
+
+export function formatDate(inputDate: Date): [string, number] {
+  const dateString = `${
+    inputDate.getMonth() + 1
+  }/${inputDate.getDate()}/${inputDate.getFullYear()}`;
+  return [dateString, calculateDaysUntil(inputDate)];
+}

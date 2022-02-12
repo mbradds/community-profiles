@@ -5,6 +5,8 @@ import {
   toolTipHtml,
   addCustomControl,
   addHtmlLink,
+  formatDate,
+  calculateDaysUntil,
 } from "./util";
 
 import {
@@ -77,17 +79,27 @@ function popUpTable(
   if (landInfo.updatedAt) {
     const updatedAtDate = new Date(landInfo.updatedAt);
     if (updatedAtDate.getFullYear() !== 1970) {
-      table += `<h3 class="center-header">Community data updated at: ${
-        updatedAtDate.getMonth() + 1
-      }/${updatedAtDate.getDate()}/${updatedAtDate.getFullYear()} (${Math.round(
-        (Date.now() - updatedAtDate.getTime()) / (1000 * 60 * 60 * 24)
+      const [dateStringUpdate, daysUntilUpdate] = formatDate(updatedAtDate);
+      table += `<h3 class="center-header">Community data updated at: ${dateStringUpdate} (${Math.abs(
+        daysUntilUpdate
       )} days ago)</h3>`;
     }
   }
 
+  const [dateStringElec, daysUntilElec] =
+    landInfo.NextElection instanceof Date
+      ? formatDate(landInfo.NextElection)
+      : ["", 0];
+
   [
     ["Leadership", landInfo.Leadership],
     ["Contact Person", landInfo.ContactPerson],
+    [
+      "Next Election",
+      dateStringElec !== ""
+        ? `${dateStringElec} (${daysUntilElec} days)`
+        : "Not available",
+    ],
     ["Contact Information", landInfo.ContactInformation],
     ["Address", landInfo.Address],
     ["Protocol", landInfo.Protocol],
@@ -149,9 +161,8 @@ export function addCommunityLayer(
         [com.Latitude, com.Longitude],
         featureStyles.territory
       );
-      landMarker.electionDate = com.NextElection
-        ? new Date(com.NextElection)
-        : null;
+      com.NextElection = com.NextElection ? new Date(com.NextElection) : null;
+      landMarker.electionDate = com.NextElection;
       landMarker.spreadNums = [com.ProjectSpreadNumber];
       landMarker.communityName = com.Name;
       landMarker.contactInfo = com.ContactInformation;
@@ -268,14 +279,11 @@ export function addCommunityLayer(
       dayRange: string
     ) {
       this._map.legend.removeItem();
-      const currentDate = Date.now();
       if (dayRange !== "All") {
         this.eachLayer((circle: CommunityCircle) => {
           let insideRange = false;
           if (circle.electionDate) {
-            const daysUntilElection =
-              (circle.electionDate.getTime() - currentDate) /
-              (1000 * 3600 * 24);
+            const daysUntilElection = calculateDaysUntil(circle.electionDate);
             if (
               daysUntilElection <= parseInt(dayRange) &&
               daysUntilElection > 0
