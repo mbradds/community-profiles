@@ -25,7 +25,7 @@
     "traditional-territory-update": "conda run -n community-profiles python src/data_management/digital_territory.py",
     "prettier-check": "npx prettier --check .",
     "prettier": "npx prettier --write .",
-    "lint": "npx eslint *.js"
+    "lint": "npx eslint . --ext .ts"
   },
   "author": "Grant Moss",
   "license": "MIT",

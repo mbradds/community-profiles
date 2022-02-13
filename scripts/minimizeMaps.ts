@@ -64,4 +64,6 @@ function simplifyMaps(
 
 simplifyMaps(pathToTm, tmSimplify, tmPrecision);
 simplifyMaps(pathToLand, landSimplify, landPrecision, ["poly1.json"]);
-simplifyMaps(pathToTerr, terrSimplify, terrPrecision, ["indigenousTerritoriesCa.json"]);
+simplifyMaps(pathToTerr, terrSimplify, terrPrecision, [
+  "indigenousTerritoriesCa.json",
+]);

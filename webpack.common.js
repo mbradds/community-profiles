@@ -4,12 +4,13 @@ import CopyWebpackPlugin from "copy-webpack-plugin";
 import MiniCssExtractPlugin from "mini-css-extract-plugin";
 import { CleanWebpackPlugin } from "clean-webpack-plugin";
 import { createRequire } from "module";
+
 const require = createRequire(import.meta.url);
 const tutorialText = require("./src/components/tutorialText.json");
 
 const __dirname = path.resolve();
 
-const webpackOutputs = (function () {
+const webpackOutputs = (function webpackOutputs() {
   const filenames = ["trans_mountain"];
 
   function entryJs() {
@@ -38,7 +39,6 @@ const webpackOutputs = (function () {
         page: JSON.parse(JSON.stringify(tutorialText)),
         filename: `tutorial.html`,
         template: "src/components/tutorial.hbs",
-        // inject: false,
         chunks: [`js/iamc/tutorial`],
         minify: true,
       })
@@ -144,8 +144,6 @@ export default {
             strict: true,
             knownHelpersOnly: false,
           },
-          // runtime: path.resolve(__dirname, "src/components/helpers.cjs"),
-          // knownHelpersOnly: false,
         },
       },
     ],

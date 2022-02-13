@@ -78,7 +78,7 @@ function popUpTable(
   }
   if (landInfo.updatedAt) {
     const updatedAtDate = new Date(landInfo.updatedAt);
-    if (updatedAtDate.getFullYear() !== 1970) {
+    if (updatedAtDate.getFullYear() >= 2022) {
       const [dateStringUpdate, daysUntilUpdate] = formatDate(updatedAtDate);
       table += `<h3 class="center-header">Community data updated at: ${dateStringUpdate} (${Math.abs(
         daysUntilUpdate
