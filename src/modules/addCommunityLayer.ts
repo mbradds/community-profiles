@@ -16,13 +16,6 @@ import {
   CommunityCircle,
 } from "./interfaces";
 
-interface LandMarker extends L.CircleMarker {
-  electionDate?: Date | null;
-  spreadNums?: (number | null)[];
-  communityName?: string;
-  contactInfo?: string | null;
-}
-
 interface CommunityName {
   name: string;
   id: number | null | undefined;
@@ -157,7 +150,7 @@ export function addCommunityLayer(
   async function addCircles() {
     const landCircles = communityData.map((community) => {
       const com = community.attributes;
-      const landMarker: LandMarker = L.circleMarker(
+      const landMarker: CommunityCircle = L.circleMarker(
         [com.Latitude, com.Longitude],
         featureStyles.territory
       );
@@ -210,10 +203,8 @@ export function addCommunityLayer(
     };
 
     communityLayer.resetStyle = function resetStyle() {
-      this.eachLayer((circle: CommunityCircle) => {
-        circle.setStyle({
-          ...featureStyles.territory,
-        });
+      this.setStyle({
+        ...featureStyles.territory,
       });
       this.resetSlider();
     };

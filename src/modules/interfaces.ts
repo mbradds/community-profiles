@@ -58,9 +58,9 @@ export interface CommunityLayer extends L.FeatureGroup {
 }
 
 export interface CommunityCircle extends L.CircleMarker {
-  communityName: string;
+  communityName?: string;
   _leaflet_id?: number;
-  electionDate: Date;
-  spreadNums: number[];
-  contactInfo: string | null;
+  electionDate?: Date;
+  spreadNums?: number[];
+  contactInfo?: string | null;
 }
