@@ -40,7 +40,7 @@ function popUpTable(
   let tableHtml = "";
   let subImageHtml = "";
   if (hasImage) {
-    if (landInfo.MapLink) {
+    if (landInfo.MapLink && landInfo.MapSource) {
       subImageHtml += `<p>Image source:&nbsp;${addHtmlLink(
         landInfo.MapLink,
         landInfo.MapSource
@@ -99,7 +99,7 @@ function popUpTable(
     ["Project Spreads", landInfo.ProjectSpreads],
     ["Concerns - Issues", landInfo.ConcernsOrIssues],
     ["About Us", landInfo.History],
-  ].forEach((row) => {
+  ].forEach((row: [string, string | null]) => {
     table += htmlTableRow(row[0], `${row[1] ? row[1] : "Not available"}`);
   });
   table += `</tbody></table>`;
@@ -443,10 +443,8 @@ export function addCommunityLayer(
     communityLayer.resetSpreads = function resetSpreads() {
       map.warningMsg.removeWarning();
       this.contactControl.updateHtml("");
-      this.eachLayer((circle: CommunityCircle) => {
-        circle.setStyle({
-          ...featureStyles.territory,
-        });
+      this.setStyle({
+        ...featureStyles.territory,
       });
     };
 

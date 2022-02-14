@@ -1,5 +1,5 @@
 import * as L from "leaflet";
-import { CommunityLayer, IamcMap } from "./interfaces";
+import { CommunityLayer, IamcMap, MapControl } from "./interfaces";
 
 declare global {
   interface Window {
@@ -7,19 +7,17 @@ declare global {
   }
 }
 
-interface MapLegendControl extends L.Control {
+interface MapLegendControl extends MapControl {
   addItem?: Function;
   removeItem?: Function;
-  _div?: HTMLElement;
 }
 
-interface CustomControl extends L.Control {
+interface CustomControl extends MapControl {
   updateHtml?: Function;
   removeHtml?: Function;
   fixScroll?: Function;
   closeBtnListener?: Function;
   addSection?: Function;
-  _div?: HTMLElement;
 }
 
 export const cerPalette = {
@@ -337,7 +335,7 @@ export function resetListener(
       removeIncidents(map);
       map.closePopup();
       map.youAreOn.removeHtml();
-      if (communityLayer) {
+      if (communityLayer.reset) {
         communityLayer.reset();
       }
     });

@@ -14,7 +14,7 @@ import { tmAssets } from "./tmAssets";
 import { getCommunityData } from "./getCommunityData";
 import { oldBrowserError } from "./oldBrowserError";
 import { proximity } from "./proximity";
-import { IamcMap, MapWarning } from "./interfaces";
+import { IamcMap, MapWarning, MapControl } from "./interfaces";
 import "leaflet/dist/leaflet.css";
 import "../css/main.css";
 
@@ -85,7 +85,7 @@ function dashboardTotals(
  * @param map leaflet map object
  */
 function addResetBtn(map: IamcMap) {
-  const info: L.Control = new L.Control({ position: "bottomleft" });
+  const info: MapControl = new L.Control({ position: "bottomleft" });
   info.onAdd = function () {
     this._div = L.DomUtil.create("div");
     this._div.innerHTML = `<button type="button" id="find-me" class="btn btn-primary btn-block btn-lg">Find Me</button><button type="button" id="reset-map" class="btn btn-primary btn-block btn-lg">Reset Map</button>`;
@@ -240,11 +240,13 @@ export function iamcDashboard(
     }
 
     buildPage().then(() => {
-      Array.from(document.getElementsByClassName("loader")).forEach(
-        (div: HTMLInputElement) => {
-          div.style.display = "none";
-        }
-      );
+      Array.from(
+        document.getElementsByClassName(
+          "loader"
+        ) as HTMLCollectionOf<HTMLElement>
+      ).forEach((div) => {
+        div.style.display = "none";
+      });
     });
   }
   main();

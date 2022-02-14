@@ -1,4 +1,8 @@
-export interface MapWarning extends L.Control {
+export interface MapControl extends L.Control {
+  _div?: HTMLElement;
+}
+
+export interface MapWarning extends MapControl {
   addWarning?: Function;
   removeWarning?: Function;
 }
@@ -60,7 +64,7 @@ export interface CommunityLayer extends L.FeatureGroup {
 export interface CommunityCircle extends L.CircleMarker {
   communityName?: string;
   _leaflet_id?: number;
-  electionDate?: Date;
-  spreadNums?: number[];
+  electionDate?: Date | null;
+  spreadNums?: (number | null)[];
   contactInfo?: string | null;
 }
