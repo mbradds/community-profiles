@@ -168,7 +168,7 @@ async function loadMap(
 
   addLayerControl(
     [
-      { layer: communityLayer, display: "Communities" },
+      { layer: communityLayer.featureGroup, display: "Communities" },
       { layer: tmSpreadLayer, display: "TMX" },
       { layer: mainlineLayer, display: "Existing Mainline" },
       { layer: reserveLayer, display: "First Nations Reserves" },

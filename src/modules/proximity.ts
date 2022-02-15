@@ -1,9 +1,10 @@
 import pointInPolygon from "point-in-polygon";
 import haversine from "haversine";
 import territoryPolygons from "../company_data/community_profiles/indigenousTerritoriesCa.min.json";
+import { CommunityFeature } from "./mapClasses/CommunityFeature";
 import { findUser, plural, addHtmlLink } from "./util";
 import { HtmlControl } from "./mapClasses/MapControl";
-import { IamcMap, CommunityLayer, CommunityCircle } from "./interfaces";
+import { IamcMap, CommunityCircle } from "./interfaces";
 
 interface WithinList {
   name: string;
@@ -13,11 +14,11 @@ interface WithinList {
 
 function findNearbyCommunities(
   map: IamcMap,
-  communityLayer: CommunityLayer,
+  communityLayer: CommunityFeature,
   withinDistance: number
 ): WithinList[] {
   const withinList: WithinList[] = [];
-  communityLayer.eachLayer((circle: CommunityCircle) => {
+  communityLayer.featureGroup.eachLayer((circle: CommunityCircle) => {
     const circleLocation = circle.getLatLng();
     const distance = haversine(
       { latitude: map.user.lat, longitude: map.user.lng },
@@ -72,7 +73,7 @@ function findNearbyTerritories(map: IamcMap) {
  * TODO: extend this function to find communities near the user.
  * @param map leaflet map object
  */
-function nearbyStuff(map: IamcMap, communityLayer: CommunityLayer) {
+function nearbyStuff(map: IamcMap, communityLayer: CommunityFeature) {
   map.panTo(map.user);
 
   // find communities and territories near the user
@@ -132,7 +133,7 @@ function nearbyStuff(map: IamcMap, communityLayer: CommunityLayer) {
  * Evaluates the users location against traditional territory's
  * @param map leaflet map object
  */
-export function proximity(map: IamcMap, communityLayer: CommunityLayer) {
+export function proximity(map: IamcMap, communityLayer: CommunityFeature) {
   map.youAreOn = new HtmlControl("bottomright", map);
   const findMeBtn = document.getElementById("find-me");
   if (findMeBtn) {

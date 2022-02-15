@@ -10,8 +10,8 @@
     "resolveJsonModule": true,
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
-    "strict": true,
-    "strictNullChecks": true
+    "strict": false,
+    "strictNullChecks": false
   },
   "ts-node": {
     "compilerOptions": {

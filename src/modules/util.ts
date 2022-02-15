@@ -1,5 +1,6 @@
 import * as L from "leaflet";
-import { CommunityLayer, IamcMap } from "./interfaces";
+import { CommunityFeature } from "./mapClasses/CommunityFeature";
+import { IamcMap } from "./interfaces";
 
 declare global {
   interface Window {
@@ -235,7 +236,7 @@ export function plural(val: number, type: string, cap = false): string {
  */
 export function mapLegend(
   map: IamcMap,
-  communityLayer: CommunityLayer
+  communityLayer: CommunityFeature
 ): MapLegendControl {
   let legend = `<h4><span class="region-click-text" 
   style="height: 10px; background-color: ${featureStyles.reserveOverlap.fillColor}">
@@ -284,13 +285,13 @@ export function mapLegend(
 export function resetZoom(
   map: IamcMap,
   geoLayer: any,
-  communityLayer: CommunityLayer,
+  communityLayer: CommunityFeature,
   fly = false
 ) {
   let padd = new L.Point(25, 25);
   let fullBounds = geoLayer.getBounds();
   if (communityLayer) {
-    fullBounds = fullBounds.extend(communityLayer.getBounds());
+    fullBounds = fullBounds.extend(communityLayer.featureGroup.getBounds());
   }
 
   if (Object.keys(geoLayer._layers).length === 1) {
@@ -318,7 +319,7 @@ export function resetZoom(
 export function resetListener(
   map: IamcMap,
   geoLayer: any,
-  communityLayer: CommunityLayer
+  communityLayer: CommunityFeature
 ) {
   const resetMapElement = document.getElementById("reset-map");
   if (resetMapElement) {
@@ -327,9 +328,7 @@ export function resetListener(
       removeIncidents(map);
       map.closePopup();
       map.youAreOn.removeHtml();
-      if (communityLayer.reset) {
-        communityLayer.reset();
-      }
+      communityLayer.reset();
     });
   }
 }

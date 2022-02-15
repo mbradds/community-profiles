@@ -36,24 +36,6 @@ export interface CommunityAttr {
   updatedAt: string | null;
 }
 
-export interface CommunityLayer extends L.FeatureGroup {
-  contactControl?: any;
-  resetSlider?: Function;
-  resetStyle?: Function;
-  getNames?: Function;
-  zoomToId?: Function;
-  electionRangeListener?: Function;
-  filterElections?: Function;
-  resetSpreads?: Function;
-  spreadContactPopUp?: Function;
-  findSpreads?: Function;
-  searchCommunities?: Function;
-  searchError?: Function;
-  resetSearchError?: Function;
-  resetSearch?: Function;
-  reset?: Function;
-}
-
 export interface CommunityCircle extends L.CircleMarker {
   communityName?: string;
   _leaflet_id?: number;
