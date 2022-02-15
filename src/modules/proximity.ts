@@ -7,8 +7,8 @@ import { HtmlControl } from "./mapClasses/MapControl";
 import { IamcMap, CommunityCircle } from "./interfaces";
 
 interface WithinList {
-  name: string;
-  _leaflet_id: number;
+  name: string | undefined;
+  _leaflet_id: number | undefined;
   distance: number;
 }
 

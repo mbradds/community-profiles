@@ -8,7 +8,6 @@ import {
 } from "./util";
 
 import { CommunityFeature } from "./mapClasses/CommunityFeature";
-
 import { IamcMap, CommunityAttr, CommunityCircle } from "./interfaces";
 
 /**

@@ -212,7 +212,8 @@ export function iamcDashboard(
   function main() {
     oldBrowserError();
     async function buildPage() {
-      const mapHeight = document.getElementById("map").clientHeight;
+      const mapDiv = document.getElementById("map");
+      const mapHeight = mapDiv ? mapDiv.clientHeight : 700;
       const user = loadNonMap(landFeature, incidentFeature, meta);
       const map = await loadMap(
         mapHeight,

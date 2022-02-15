@@ -9,6 +9,7 @@ declare global {
 }
 
 interface MapLegendControl extends L.Control {
+  _div?: HTMLDivElement;
   addItem?: Function;
   removeItem?: Function;
 }
@@ -356,6 +357,7 @@ export async function findUser(map: IamcMap) {
         resolve(marker);
       })
       .on("locationerror", (err: any) => {
+        map.user = undefined;
         reject(err);
       });
   });
