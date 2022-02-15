@@ -1,14 +1,7 @@
-export interface MapControl extends L.Control {
-  _div?: HTMLElement;
-}
-
-export interface MapWarning extends MapControl {
-  addWarning?: Function;
-  removeWarning?: Function;
-}
+import { HtmlControl } from "./mapClasses/MapControl";
 
 export interface IamcMap extends L.Map {
-  warningMsg?: MapWarning;
+  warningMsg?: HtmlControl;
   legend?: any;
   youAreOn?: any;
   user?: L.LatLng;

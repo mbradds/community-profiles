@@ -1,5 +1,5 @@
 import * as L from "leaflet";
-import { CommunityLayer, IamcMap, MapControl } from "./interfaces";
+import { CommunityLayer, IamcMap } from "./interfaces";
 
 declare global {
   interface Window {
@@ -7,17 +7,9 @@ declare global {
   }
 }
 
-interface MapLegendControl extends MapControl {
+interface MapLegendControl extends L.Control {
   addItem?: Function;
   removeItem?: Function;
-}
-
-interface CustomControl extends MapControl {
-  updateHtml?: Function;
-  removeHtml?: Function;
-  fixScroll?: Function;
-  closeBtnListener?: Function;
-  addSection?: Function;
 }
 
 export const cerPalette = {
@@ -384,83 +376,6 @@ export function appError(header: string, err: any) {
        ${JSON.stringify(err.message)}
     </section>`;
   }
-}
-
-/**
- *
- * @param position leaflet position for the control
- * @param map leaflet map object
- * @returns leaflet control object
- */
-export function addCustomControl(position: L.ControlPosition, map: IamcMap) {
-  const info: CustomControl = new L.Control({ position });
-  info.setPosition(position);
-  info.onAdd = function onAdd() {
-    this._div = L.DomUtil.create("div");
-    this._div.innerHTML = ``;
-    return this._div;
-  };
-  info.updateHtml = function updateHtml(html: string) {
-    if (this._div) {
-      this._div.innerHTML = html;
-    }
-  };
-  info.removeHtml = function removeHtml() {
-    if (this._div) {
-      this._div.innerHTML = "";
-    }
-  };
-  info.fixScroll = function fixScroll(popUpId: string) {
-    L.DomEvent.on(
-      L.DomUtil.get(popUpId),
-      "mousewheel",
-      L.DomEvent.stopPropagation
-    );
-  };
-  info.closeBtnListener = function closeBtnListener(closeId: string) {
-    const closeBtn = document.getElementById(closeId);
-    if (closeBtn) {
-      closeBtn.addEventListener("click", () => {
-        this.removeHtml();
-      });
-    }
-  };
-  /**
-   * Add a wet4 info section to the control
-   * @param sectionId HTML id for the section
-   * @param closeBtnId HTML id for the close button
-   * @param header Section header text
-   * @param bodyHtml HTML partial for the panel body
-   * @param footer Optional paragraph text below the bodyHtml
-   */
-  info.addSection = function addSection(
-    sectionId: string,
-    closeBtnId: string,
-    header: string,
-    bodyHtml: string,
-    footer: string
-  ) {
-    this.updateHtml(`<section class="panel panel-default" id="${sectionId}">
-    <header class="panel-heading">
-     <h5 class="panel-title header-text">${header}</h5>
-     <div class="pull-right header-btn">
-     <button
-       type="button"
-       class="btn btn-primary btn-xs"
-       id="${closeBtnId}"
-     >
-     Close
-     </button>
-   </div>
-    </header>
-    <div class="panel-body">
-     ${bodyHtml}
-     <p style="margin-bottom:0px;">${footer}</p>
-    </div>
-  </section>`);
-  };
-  info.addTo(map);
-  return info;
 }
 
 export function addHtmlLink(href: string, display: string, cls = "") {

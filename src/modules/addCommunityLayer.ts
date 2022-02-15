@@ -3,11 +3,13 @@ import {
   featureStyles,
   htmlTableRow,
   toolTipHtml,
-  addCustomControl,
+  // addCustomControl,
   addHtmlLink,
   formatDate,
   calculateDaysUntil,
 } from "./util";
+
+import { HtmlControl } from "./mapClasses/MapControl";
 
 import {
   IamcMap,
@@ -99,7 +101,7 @@ function popUpTable(
     ["Project Spreads", landInfo.ProjectSpreads],
     ["Concerns - Issues", landInfo.ConcernsOrIssues],
     ["About Us", landInfo.History],
-  ].forEach((row: [string, string | null]) => {
+  ].forEach((row: any) => {
     table += htmlTableRow(row[0], `${row[1] ? row[1] : "Not available"}`);
   });
   table += `</tbody></table>`;
@@ -193,7 +195,7 @@ export function addCommunityLayer(
     };
 
     const communityLayer: CommunityLayer = L.featureGroup(landCircles);
-    communityLayer.contactControl = addCustomControl("bottomright", map);
+    communityLayer.contactControl = new HtmlControl("bottomright", map);
 
     communityLayer.resetSlider = function resetSlider() {
       (<HTMLInputElement>(
@@ -328,7 +330,7 @@ export function addCommunityLayer(
         contactsTable,
         ""
       );
-      this.contactControl.fixScroll("spread-contacts");
+      HtmlControl.fixScroll("spread-contacts");
       this.contactControl.closeBtnListener("close-spread-contacts");
     };
 
@@ -345,7 +347,7 @@ export function addCommunityLayer(
     ) {
       this.resetSlider();
       map.legend.removeItem();
-      map.warningMsg.removeWarning();
+      map.warningMsg.removeHtml();
       const zoomToLayer: CommunityCircle[] = [];
       const contactInfo: ContactInfo[] = [];
       const noCommunities = () =>
@@ -441,7 +443,7 @@ export function addCommunityLayer(
      * Closes the map warning message, the contactControl popup and sets communities to the default color
      */
     communityLayer.resetSpreads = function resetSpreads() {
-      map.warningMsg.removeWarning();
+      map.warningMsg.removeHtml();
       this.contactControl.updateHtml("");
       this.setStyle({
         ...featureStyles.territory,
