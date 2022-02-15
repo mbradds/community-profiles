@@ -1,6 +1,7 @@
 import * as L from "leaflet";
 import { featureStyles, calculateDaysUntil } from "../util";
-import { IamcMap, CommunityCircle } from "../interfaces";
+import { IamcMap } from "../interfaces";
+import { CommunityCircle } from "./CommunityCircle";
 import { HtmlControl } from "./MapControl";
 
 interface CommunityName {
@@ -68,10 +69,10 @@ export class CommunityFeature {
   getNames(): CommunityName[] {
     return this.featureGroup
       .getLayers()
-      .map((circle: CommunityCircle) => ({
-        name: circle.communityName,
-        id: circle._leaflet_id,
-      }))
+      .map((communityCircle) => {
+        const circle = communityCircle as CommunityCircle;
+        return { name: circle.communityName, id: circle._leaflet_id };
+      })
       .sort((a: CommunityName, b: CommunityName) =>
         a.name.toLowerCase().localeCompare(b.name.toLowerCase())
       );
@@ -82,7 +83,8 @@ export class CommunityFeature {
    * @param id leaflet id of the selected community circle
    */
   zoomToId(id: number) {
-    this.featureGroup.eachLayer((circle: CommunityCircle) => {
+    this.featureGroup.eachLayer((communityCircle) => {
+      const circle = communityCircle as CommunityCircle;
       if (circle._leaflet_id === id) {
         this.map.setView(
           circle.getLatLng(),
@@ -106,9 +108,10 @@ export class CommunityFeature {
   filterElections(dayRange: string) {
     this.map.legend.removeItem();
     if (dayRange !== "All") {
-      this.featureGroup.eachLayer((circle: CommunityCircle) => {
+      this.featureGroup.eachLayer((communityCircle) => {
+        const circle = communityCircle as CommunityCircle;
         let insideRange = false;
-        if (circle.electionDate) {
+        if (circle.electionDate instanceof Date) {
           const daysUntilElection = calculateDaysUntil(circle.electionDate);
           if (
             daysUntilElection <= parseInt(dayRange) &&
@@ -196,7 +199,8 @@ export class CommunityFeature {
         `There are no communities identified for ${sprdName}`
       );
     if (selectedSpreads) {
-      this.featureGroup.eachLayer((circle: CommunityCircle) => {
+      this.featureGroup.eachLayer((communityCircle) => {
+        const circle = communityCircle as CommunityCircle;
         if (selectedSpreads.some((r) => circle.spreadNums.includes(r))) {
           contactInfo.push({
             name: circle.communityName,

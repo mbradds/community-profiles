@@ -4,7 +4,8 @@ import territoryPolygons from "../company_data/community_profiles/indigenousTerr
 import { CommunityFeature } from "./mapClasses/CommunityFeature";
 import { findUser, plural, addHtmlLink } from "./util";
 import { HtmlControl } from "./mapClasses/MapControl";
-import { IamcMap, CommunityCircle } from "./interfaces";
+import { CommunityCircle } from "./mapClasses/CommunityCircle";
+import { IamcMap } from "./interfaces";
 
 interface WithinList {
   name: string | undefined;
@@ -18,7 +19,8 @@ function findNearbyCommunities(
   withinDistance: number
 ): WithinList[] {
   const withinList: WithinList[] = [];
-  communityLayer.featureGroup.eachLayer((circle: CommunityCircle) => {
+  communityLayer.featureGroup.eachLayer((communityCircle) => {
+    const circle = communityCircle as CommunityCircle;
     const circleLocation = circle.getLatLng();
     const distance = haversine(
       { latitude: map.user.lat, longitude: map.user.lng },

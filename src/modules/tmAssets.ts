@@ -7,8 +7,8 @@ import { CommunityFeature } from "./mapClasses/CommunityFeature";
 import { IamcMap } from "./interfaces";
 
 interface ToolTipLayer extends L.Layer {
-  feature: { id: number };
-  options: { color: boolean };
+  feature?: { id: number };
+  options?: { color: boolean };
 }
 
 export function tmAssets(map: IamcMap, communityLayer: CommunityFeature) {

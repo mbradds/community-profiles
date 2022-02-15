@@ -35,11 +35,3 @@ export interface CommunityAttr {
   publishedAt: string | null;
   updatedAt: string | null;
 }
-
-export interface CommunityCircle extends L.CircleMarker {
-  communityName?: string;
-  _leaflet_id?: number;
-  electionDate?: Date | null;
-  spreadNums?: (number | null)[];
-  contactInfo?: string | null;
-}

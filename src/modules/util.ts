@@ -267,7 +267,7 @@ export function mapLegend(
   };
   info.removeItem = function removeItem() {
     Array.from(this._div.getElementsByClassName("legend-temp")).forEach(
-      (toHide: HTMLInputElement) => {
+      (toHide: any) => {
         toHide.parentNode.removeChild(toHide);
       }
     );

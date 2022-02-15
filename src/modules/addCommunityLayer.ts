@@ -8,7 +8,8 @@ import {
 } from "./util";
 
 import { CommunityFeature } from "./mapClasses/CommunityFeature";
-import { IamcMap, CommunityAttr, CommunityCircle } from "./interfaces";
+import { CommunityCircle } from "./mapClasses/CommunityCircle";
+import { IamcMap, CommunityAttr } from "./interfaces";
 
 /**
  * Generates an HTML partial for the community pop-up information
@@ -134,15 +135,12 @@ export function addCommunityLayer(
   async function addCircles() {
     const landCircles = communityData.map((community) => {
       const com = community.attributes;
-      const landMarker: CommunityCircle = L.circleMarker(
-        [com.Latitude, com.Longitude],
-        featureStyles.territory
-      );
       com.NextElection = com.NextElection ? new Date(com.NextElection) : null;
-      landMarker.electionDate = com.NextElection;
-      landMarker.spreadNums = [com.ProjectSpreadNumber];
-      landMarker.communityName = com.Name;
-      landMarker.contactInfo = com.ContactInformation;
+      const landMarker = new CommunityCircle(
+        [com.Latitude, com.Longitude],
+        featureStyles.territory,
+        com
+      );
       landMarker.bindTooltip(circleTooltip(com));
       const hasImage = com.MapFile !== null;
       const imgHtml = hasImage
