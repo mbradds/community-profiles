@@ -1,22 +1,24 @@
 import pointInPolygon from "point-in-polygon";
 import haversine from "haversine";
 import territoryPolygons from "../company_data/community_profiles/indigenousTerritoriesCa.min.json";
-import { findUser, addCustomControl, plural, addHtmlLink } from "./util";
-import { IamcMap, CommunityLayer, CommunityCircle } from "./interfaces";
+import { CommunityFeature } from "./mapClasses/CommunityFeature";
+import { findUser, plural, addHtmlLink } from "./util";
+import { HtmlControl } from "./mapClasses/MapControl";
+import { IamcMap, CommunityCircle } from "./interfaces";
 
 interface WithinList {
-  name: string;
-  _leaflet_id: number;
+  name: string | undefined;
+  _leaflet_id: number | undefined;
   distance: number;
 }
 
 function findNearbyCommunities(
   map: IamcMap,
-  communityLayer: CommunityLayer,
+  communityLayer: CommunityFeature,
   withinDistance: number
 ): WithinList[] {
   const withinList: WithinList[] = [];
-  communityLayer.eachLayer((circle: CommunityCircle) => {
+  communityLayer.featureGroup.eachLayer((circle: CommunityCircle) => {
     const circleLocation = circle.getLatLng();
     const distance = haversine(
       { latitude: map.user.lat, longitude: map.user.lng },
@@ -71,7 +73,7 @@ function findNearbyTerritories(map: IamcMap) {
  * TODO: extend this function to find communities near the user.
  * @param map leaflet map object
  */
-function nearbyStuff(map: IamcMap, communityLayer: CommunityLayer) {
+function nearbyStuff(map: IamcMap, communityLayer: CommunityFeature) {
   map.panTo(map.user);
 
   // find communities and territories near the user
@@ -113,7 +115,7 @@ function nearbyStuff(map: IamcMap, communityLayer: CommunityLayer) {
     `${nearbyTable} ${findNearbyTerritories(map)}`,
     "Move the blue marker to a new area and click <i>Find Me</i> again to view other locations."
   );
-  map.youAreOn.fixScroll("ur-on");
+  HtmlControl.fixScroll("ur-on");
   map.youAreOn.closeBtnListener("close-you-are-on");
 
   const findButtons = document.querySelectorAll(".find-near-community");
@@ -131,31 +133,34 @@ function nearbyStuff(map: IamcMap, communityLayer: CommunityLayer) {
  * Evaluates the users location against traditional territory's
  * @param map leaflet map object
  */
-export function proximity(map: IamcMap, communityLayer: CommunityLayer) {
-  map.youAreOn = addCustomControl("bottomright", map);
-  document.getElementById("find-me").addEventListener("click", () => {
-    communityLayer.contactControl.updateHtml("");
-    if (!map.user) {
-      findUser(map)
-        .then(() => {
-          // check polygons for user
-          nearbyStuff(map, communityLayer);
-        })
-        .catch((err) => {
-          if (
-            {}.propertyIsEnumerable.call(err, "type") &&
-            err.type === "locationerror"
-          ) {
-            map.youAreOn.updateHtml(
-              `<div class="alert alert-danger"><h3 style="margin-bottom:0;">Cant access your location. Try enabling location services and refresh the page.</h3></div>`
-            );
-          } else {
-            throw err;
-          }
-        });
-    } else {
-      // check polygons for user
-      nearbyStuff(map, communityLayer);
-    }
-  });
+export function proximity(map: IamcMap, communityLayer: CommunityFeature) {
+  map.youAreOn = new HtmlControl("bottomright", map);
+  const findMeBtn = document.getElementById("find-me");
+  if (findMeBtn) {
+    findMeBtn.addEventListener("click", () => {
+      communityLayer.contactControl.updateHtml("");
+      if (!map.user) {
+        findUser(map)
+          .then(() => {
+            // check polygons for user
+            nearbyStuff(map, communityLayer);
+          })
+          .catch((err) => {
+            if (
+              {}.propertyIsEnumerable.call(err, "type") &&
+              err.type === "locationerror"
+            ) {
+              map.youAreOn.updateHtml(
+                `<div class="alert alert-danger"><h3 style="margin-bottom:0;">Cant access your location. Try enabling location services and refresh the page.</h3></div>`
+              );
+            } else {
+              throw err;
+            }
+          });
+      } else {
+        // check polygons for user
+        nearbyStuff(map, communityLayer);
+      }
+    });
+  }
 }

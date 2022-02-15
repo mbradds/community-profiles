@@ -1,14 +1,7 @@
-export interface MapControl extends L.Control {
-  _div?: HTMLElement;
-}
-
-export interface MapWarning extends MapControl {
-  addWarning?: Function;
-  removeWarning?: Function;
-}
+import { HtmlControl } from "./mapClasses/MapControl";
 
 export interface IamcMap extends L.Map {
-  warningMsg?: MapWarning;
+  warningMsg?: HtmlControl;
   legend?: any;
   youAreOn?: any;
   user?: L.LatLng;
@@ -41,24 +34,6 @@ export interface CommunityAttr {
   createdAt: string | null;
   publishedAt: string | null;
   updatedAt: string | null;
-}
-
-export interface CommunityLayer extends L.FeatureGroup {
-  contactControl?: any;
-  resetSlider?: Function;
-  resetStyle?: Function;
-  getNames?: Function;
-  zoomToId?: Function;
-  electionRangeListener?: Function;
-  filterElections?: Function;
-  resetSpreads?: Function;
-  spreadContactPopUp?: Function;
-  findSpreads?: Function;
-  searchCommunities?: Function;
-  searchError?: Function;
-  resetSearchError?: Function;
-  resetSearch?: Function;
-  reset?: Function;
 }
 
 export interface CommunityCircle extends L.CircleMarker {

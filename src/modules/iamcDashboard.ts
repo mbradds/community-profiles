@@ -14,7 +14,8 @@ import { tmAssets } from "./tmAssets";
 import { getCommunityData } from "./getCommunityData";
 import { oldBrowserError } from "./oldBrowserError";
 import { proximity } from "./proximity";
-import { IamcMap, MapWarning, MapControl } from "./interfaces";
+import { HtmlControl } from "./mapClasses/MapControl";
+import { IamcMap } from "./interfaces";
 import "leaflet/dist/leaflet.css";
 import "../css/main.css";
 
@@ -85,13 +86,11 @@ function dashboardTotals(
  * @param map leaflet map object
  */
 function addResetBtn(map: IamcMap) {
-  const info: MapControl = new L.Control({ position: "bottomleft" });
-  info.onAdd = function () {
-    this._div = L.DomUtil.create("div");
-    this._div.innerHTML = `<button type="button" id="find-me" class="btn btn-primary btn-block btn-lg">Find Me</button><button type="button" id="reset-map" class="btn btn-primary btn-block btn-lg">Reset Map</button>`;
-    return this._div;
-  };
-  info.addTo(map);
+  return new HtmlControl(
+    "bottomleft",
+    map,
+    `<button type="button" id="find-me" class="btn btn-primary btn-block btn-lg">Find Me</button><button type="button" id="reset-map" class="btn btn-primary btn-block btn-lg">Reset Map</button>`
+  );
 }
 
 /**
@@ -99,21 +98,7 @@ function addResetBtn(map: IamcMap) {
  * @param map leaflet map object
  */
 function mapWarning(map: IamcMap) {
-  const info: MapWarning = new L.Control({ position: "bottomright" });
-  info.setPosition("bottomright");
-  info.onAdd = function onAdd() {
-    this._div = L.DomUtil.create("div");
-    this._div.innerHTML = ``;
-    return this._div;
-  };
-  info.addWarning = function addWarning(text: string) {
-    this._div.innerHTML = `<div class="alert alert-danger"><span class="h3 mrgn-bttm-0">${text}</span></div>`;
-  };
-  info.removeWarning = function removeWarning() {
-    this._div.innerHTML = "";
-  };
-  info.addTo(map);
-  map.warningMsg = info;
+  map.warningMsg = new HtmlControl("bottomright", map);
 }
 
 /**
@@ -183,7 +168,7 @@ async function loadMap(
 
   addLayerControl(
     [
-      { layer: communityLayer, display: "Communities" },
+      { layer: communityLayer.featureGroup, display: "Communities" },
       { layer: tmSpreadLayer, display: "TMX" },
       { layer: mainlineLayer, display: "Existing Mainline" },
       { layer: reserveLayer, display: "First Nations Reserves" },
@@ -227,7 +212,8 @@ export function iamcDashboard(
   function main() {
     oldBrowserError();
     async function buildPage() {
-      const mapHeight = document.getElementById("map").clientHeight;
+      const mapDiv = document.getElementById("map");
+      const mapHeight = mapDiv ? mapDiv.clientHeight : 700;
       const user = loadNonMap(landFeature, incidentFeature, meta);
       const map = await loadMap(
         mapHeight,
