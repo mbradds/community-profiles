@@ -14,11 +14,13 @@ body,
 
 .map-row {
   display: flex;
+  height: 100%;
 }
 
 .map-col {
   width: 100%;
   display: flex;
+  padding: 0px;
 }
 
 #map-panel {

@@ -4,25 +4,9 @@
     {{> head title="Community Profiles Prototype"}}
   </head>
   <body>
-    <div class="container-fluid mrgn-bttm-sm">
-      {{> h1 h1Text="Community Profiles Prototype" updated="Updated February 2022"}}
-      <div class="row tablet-hide" id="summary-row">
-        <div class="col-md-4 col-sm-12 summary-point">
-          <div class="alert alert-warning">
-            <p id="overlap-meta-point"></p>
-          </div>
-        </div>
-        <div
-          class="col-md-4 col-sm-12 summary-point"
-          id="incident-meta-point-on"
-        ></div>
-        <div
-          class="col-md-4 col-sm-12 summary-point"
-          id="incident-meta-point-off"
-        ></div>
-      </div>
+    <div class="container-fluid mrgn-bttm-sm" id="error-container">
       <div class="row map-row">
-        <div class="col-md-12 col-sm-12 map-col" id="error-container">
+        <div class="col-md-12 col-sm-12 map-col">
           <section class="panel panel-default" id="map-panel">
             <header
               class="panel-heading"
@@ -32,15 +16,7 @@
               <div class="map-row">
                 <button
                   type="button"
-                  id="full-screen-btn"
-                  class="btn btn-primary btn-xs header-btn tablet-hide"
-                  onclick="openFullscreen();"
-                >
-                  Enter Fullscreen
-                </button>
-                <button
-                  type="button"
-                  class="btn btn-primary btn-xs header-btn tablet-show"
+                  class="btn btn-primary btn-xs header-btn"
                   onclick=" window.open('/tutorial.html', '_blank'); return false;"
                 >
                   Open Tutorial
@@ -71,33 +47,6 @@
               />
               <div id="election-days-display"></div>
             </footer>
-          </section>
-        </div>
-      </div>
-      <div class="row mrgn-tp-lg wb-eqht tablet-hide">
-        <div class="col-md-4">
-          <section class="alert alert-info hght-inhrt">
-            <h3>Tutorial</h3>
-            <a
-              href="/tutorial.html"
-              target="_blank"
-              rel="noopener noreferrer"
-              >Open map tutorial in new tab.</a
-            >
-          </section>
-        </div>
-        <div class="col-md-4">
-          {{> submitIssues}}
-        </div>
-        <div class="col-md-4">
-          <section class="alert alert-info hght-inhrt">
-            <h3>Active Construction</h3>
-            <a
-              href="https://www.transmountain.com/all-communities?b=47.781%2C-128.966%2C54.646%2C-107.323"
-              target="_blank"
-              rel="noopener noreferrer"
-              >Trans Mountain Website</a
-            >
           </section>
         </div>
       </div>

@@ -25,63 +25,6 @@ interface MetaData {
 }
 
 /**
- * Sets the summary statistics above the map
- * @param landFeature First Nations Reserve geojson
- * @param incidentFeature Corresponding incident info for each reserve
- * @param meta Company name and total reserve overlap length
- */
-function dashboardTotals(
-  landFeature: any,
-  incidentFeature: any,
-  meta: MetaData
-) {
-  const addStyle = (val: number | string) => `<strong>${val}</strong>`;
-  const flagClass = (val: number) =>
-    val > 0 ? "alert alert-danger" : "alert alert-success";
-
-  const lengthInfo = lengthUnits(meta.totalLength);
-  const htmlLiOver = `Approximately ${addStyle(lengthInfo[0])} ${
-    lengthInfo[1]
-  } of regulated pipeline passes directly through ${addStyle(
-    landFeature.features.length
-  )} First Nations ${plural(landFeature.features.length, "reserve", true)}.`;
-
-  const incidentMeta = incidentFeature.meta;
-  const htmlLiIncOn = `<div class="${flagClass(
-    incidentMeta.on
-  )}"><p>There has been ${addStyle(incidentMeta.on)} reported system ${plural(
-    incidentMeta.on,
-    "incident",
-    false
-  )} directly on First Nations Reserves.</p></div>`;
-
-  const htmlLiIncOff = `<div class="${flagClass(
-    incidentMeta["15km"]
-  )}"><p>There has been ${addStyle(
-    incidentMeta["15km"]
-  )} reported system ${plural(
-    incidentMeta["15km"],
-    "incident",
-    false
-  )} within 15 km of First Nations Reserves.</p></div>`;
-
-  const overlapElement = document.getElementById("overlap-meta-point");
-  const incidentsOnElement = document.getElementById("incident-meta-point-on");
-  const incidentsNearElement = document.getElementById(
-    "incident-meta-point-off"
-  );
-  if (overlapElement) {
-    overlapElement.innerHTML = htmlLiOver;
-  }
-  if (incidentsOnElement) {
-    incidentsOnElement.innerHTML = htmlLiIncOn;
-  }
-  if (incidentsNearElement) {
-    incidentsNearElement.innerHTML = htmlLiIncOff;
-  }
-}
-
-/**
  * Adds a leaflet control object for the "Reset Map" button
  * @param map leaflet map object
  */
@@ -190,8 +133,7 @@ async function loadMap(
  * @param meta
  * @returns
  */
-function loadNonMap(landFeature: any, incidentFeature: any, meta: MetaData) {
-  dashboardTotals(landFeature, incidentFeature, meta);
+function loadNonMap() {
   const user = setUpHeight();
   return user;
 }
@@ -214,7 +156,7 @@ export function iamcDashboard(
     async function buildPage() {
       const mapDiv = document.getElementById("map");
       const mapHeight = mapDiv ? mapDiv.clientHeight : 700;
-      const user = loadNonMap(landFeature, incidentFeature, meta);
+      const user = loadNonMap();
       const map = await loadMap(
         mapHeight,
         user,
