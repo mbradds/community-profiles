@@ -7,7 +7,7 @@
     "npm": "8.x"
   },
   "description": "",
-  "main": "index.js",
+  "main": "./src/entry_points/trans_mountain.ts",
   "type": "module",
   "scripts": {
     "start": "node --loader ts-node/esm server.ts",
@@ -22,7 +22,6 @@
     "get-tm-data": "conda run -n community-profiles python src/data_management/get_cer_files.py",
     "gis": "conda run -n community-profiles python src/data_management/cer_gis.py",
     "community-update": "npm run images && conda run -n community-profiles python src/data_management/process_communities.py",
-    "traditional-territory-update": "conda run -n community-profiles python src/data_management/digital_territory.py",
     "prettier-check": "npx prettier --check .",
     "prettier": "npx prettier --write .",
     "lint": "npx eslint . --ext .ts"
@@ -44,7 +43,7 @@
     "css-minimizer-webpack-plugin": "^3.4.1",
     "eslint": "^8.9.0",
     "eslint-config-airbnb-base": "^15.0.0",
-    "eslint-config-prettier": "^8.3.0",
+    "eslint-config-prettier": "^8.4.0",
     "eslint-plugin-import": "^2.25.4",
     "file-loader": "^6.2.0",
     "handlebars": "^4.7.7",

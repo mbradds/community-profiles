@@ -1,12 +1,10 @@
 import * as L from "leaflet";
 import {
   leafletBaseMap,
-  lengthUnits,
   setUpHeight,
   mapLegend,
   resetZoom,
   resetListener,
-  plural,
 } from "./util";
 import { addCommunityLayer } from "./addCommunityLayer";
 import { addReserveLayer } from "./addReserveLayer";

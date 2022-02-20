@@ -155,9 +155,9 @@ export default {
 
   optimization: {
     usedExports: true,
-    runtimeChunk: {
-      name: "shared/runtime.js",
-    },
+    // runtimeChunk: {
+    //   name: "shared/runtime.js",
+    // },
     splitChunks: {
       chunks: "all",
       cacheGroups: {

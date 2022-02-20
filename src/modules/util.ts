@@ -2,12 +2,6 @@ import * as L from "leaflet";
 import { CommunityFeature } from "./mapClasses/CommunityFeature";
 import { IamcMap } from "./interfaces";
 
-declare global {
-  interface Window {
-    openFullscreen: any;
-  }
-}
-
 interface MapLegendControl extends L.Control {
   _div?: HTMLDivElement;
   addItem?: Function;
@@ -31,23 +25,6 @@ export const cerPalette = {
   hcPurple: "#8085e9",
   hcLightBlue: "#91e8e1",
 };
-
-function openFullscreen() {
-  const elem: any = document.getElementById("map-panel");
-  elem.style.width = "100%";
-  elem.style.height = "100%";
-  if (elem.requestFullscreen) {
-    elem.requestFullscreen();
-  } else if (elem.webkitRequestFullscreen) {
-    /* Safari */
-    elem.webkitRequestFullscreen();
-  } else if (elem.msRequestFullscreen) {
-    /* IE11 */
-    elem.msRequestFullscreen();
-  }
-}
-
-window.openFullscreen = openFullscreen;
 
 /**
  *

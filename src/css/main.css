@@ -1,10 +1,14 @@
-@import url("cer.css");
 @import url("sizing.css");
 @import url("loader.css");
 @import url("bottomRightControl.css");
 @import url("panelHeaderAndFooter.css");
 @import url("mapPopup.css");
 @import url("responsive.css");
+
+body {
+  font-size: 20px;
+  line-height: 1.65em;
+}
 
 .center-vert {
   margin: 0;
