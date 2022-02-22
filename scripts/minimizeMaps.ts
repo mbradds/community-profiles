@@ -21,7 +21,6 @@ const pathToLand = path.resolve(
   "company_data",
   "TransMountainPipelineULC"
 );
-
 const landSimplify = 50;
 const landPrecision = 0.0001;
 
@@ -32,7 +31,6 @@ const pathToTerr = path.resolve(
   "company_data",
   "community_profiles"
 );
-
 const terrSimplify = 60;
 const terrPrecision = 0.01;
 

@@ -11,35 +11,29 @@ const tutorialText = require("./src/components/tutorialText.json");
 const __dirname = path.resolve();
 
 const webpackOutputs = (function webpackOutputs() {
-  const filenames = ["trans_mountain"];
-
   function entryJs() {
     const paths = {};
-    filenames.forEach((name) => {
-      paths[`js/iamc/${name}`] = `./src/entry_points/${name}.ts`;
-      paths[`js/iamc/tutorial`] = `./src/entry_points/tutorial.ts`;
-    });
+    paths["js/iamc/index"] = "./src/entry_points/index.ts";
+    paths["js/iamc/tutorial"] = "./src/entry_points/tutorial.ts";
     return paths;
   }
 
   function outputHtml() {
     const html = [];
-    filenames.forEach((name) => {
-      html.push(
-        new HtmlWebpackPlugin({
-          filename: `index.html`,
-          template: "src/components/iamc.hbs",
-          chunks: [`js/iamc/${name}`],
-          minify: { collapseWhitespace: true },
-        })
-      );
-    });
+    html.push(
+      new HtmlWebpackPlugin({
+        filename: "index.html",
+        template: "src/components/iamc.hbs",
+        chunks: ["js/iamc/index"],
+        minify: { collapseWhitespace: true },
+      })
+    );
     html.push(
       new HtmlWebpackPlugin({
         page: JSON.parse(JSON.stringify(tutorialText)),
-        filename: `tutorial.html`,
+        filename: "tutorial.html",
         template: "src/components/tutorial.hbs",
-        chunks: [`js/iamc/tutorial`],
+        chunks: ["js/iamc/tutorial"],
         minify: true,
       })
     );
