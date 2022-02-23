@@ -83,7 +83,7 @@ function popUpTable(
     ["Project Spreads", landInfo.ProjectSpreads],
     ["Concerns - Issues", landInfo.ConcernsOrIssues],
     ["About Us", landInfo.History],
-  ].forEach((row: any) => {
+  ].forEach((row: (string | undefined)[]) => {
     table += htmlTableRow(row[0], `${row[1] ? row[1] : "Not available"}`);
   });
   table += `</tbody></table>`;

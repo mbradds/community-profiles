@@ -79,7 +79,7 @@ async function loadMap(
     div: "map",
     zoomDelta: 0.25,
     initZoomLevel: 4,
-    initZoomTo: [55, -119],
+    initZoomTo: L.latLng([55, -119]),
   });
 
   mapWarning(map);
@@ -146,8 +146,7 @@ function loadNonMap() {
 export function iamcDashboard(
   landFeature: any,
   landInfo: any,
-  incidentFeature: any,
-  meta: MetaData
+  incidentFeature: any
 ) {
   function main() {
     oldBrowserError();

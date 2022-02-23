@@ -1,9 +1,15 @@
 import { HtmlControl } from "./mapClasses/MapControl";
 
+export interface MapLegendControl extends L.Control {
+  _div?: HTMLDivElement;
+  addItem?: Function;
+  removeItem?: Function;
+}
+
 export interface IamcMap extends L.Map {
   warningMsg?: HtmlControl;
-  legend?: any;
-  youAreOn?: any;
+  legend?: MapLegendControl;
+  youAreOn?: HtmlControl;
   user?: L.LatLng;
 }
 
@@ -34,4 +40,17 @@ export interface CommunityAttr {
   createdAt: string | null;
   publishedAt: string | null;
   updatedAt: string | null;
+}
+
+export interface IncidentInfo {
+  distance: number;
+  id: string;
+  landId: string;
+  loc: number[];
+  status: string;
+  sub: string;
+  type: string;
+  vol: number | null;
+  what: string;
+  why: string;
 }

@@ -10,6 +10,12 @@ body {
   line-height: 1.65em;
 }
 
+@media (hover: none) {
+  .leaflet-tooltip-pane {
+    display: none;
+  }
+}
+
 .center-vert {
   margin: 0;
   top: 50%;

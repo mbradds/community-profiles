@@ -1,12 +1,6 @@
 import * as L from "leaflet";
 import { CommunityFeature } from "./mapClasses/CommunityFeature";
-import { IamcMap } from "./interfaces";
-
-interface MapLegendControl extends L.Control {
-  _div?: HTMLDivElement;
-  addItem?: Function;
-  removeItem?: Function;
-}
+import { IamcMap, MapLegendControl } from "./interfaces";
 
 export const cerPalette = {
   "Night Sky": "#054169",
@@ -120,7 +114,7 @@ export const featureStyles = {
 export function leafletBaseMap(config: {
   div: string;
   zoomDelta: number;
-  initZoomTo: any;
+  initZoomTo: L.LatLng;
   initZoomLevel: number;
 }): IamcMap {
   const map: IamcMap = L.map(config.div, {
@@ -141,8 +135,7 @@ export function leafletBaseMap(config: {
  * @param val The length number in meters
  * @returns
  */
-export function lengthUnits(val: any): [string, string] {
-  // TODO: fix this any
+export function lengthUnits(val: number): [string, string] {
   if (val >= 1000) {
     return [(val / 1000).toFixed(1), "km"];
   }
@@ -159,7 +152,7 @@ export function setUpHeight(): number {
 
 /**
  * Clears incident circles from the map and resets the map legend
- * @param {Object} map leaflet map object
+ * @param map leaflet map object
  */
 export function removeIncidents(map: IamcMap) {
   map.legend.removeItem();
@@ -233,8 +226,8 @@ export function mapLegend(
   };
   info.addItem = function addItem(
     entry = "incidents",
-    spread: any = undefined,
-    color: any = undefined
+    spread: string | undefined = undefined,
+    color: string | undefined = undefined
   ) {
     if (entry === "incidents" && this._div) {
       this._div.innerHTML += `<h4 class="legend-temp" style='color:${featureStyles.incident.fillColor};'>&#11044; Incident</h4>`;
@@ -244,7 +237,7 @@ export function mapLegend(
   };
   info.removeItem = function removeItem() {
     Array.from(this._div.getElementsByClassName("legend-temp")).forEach(
-      (toHide: any) => {
+      (toHide) => {
         toHide.parentNode.removeChild(toHide);
       }
     );
