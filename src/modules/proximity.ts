@@ -2,10 +2,10 @@ import pointInPolygon from "point-in-polygon";
 import haversine from "haversine";
 import territoryPolygons from "../company_data/community_profiles/indigenousTerritoriesCa.min.json";
 import { CommunityFeature } from "./mapClasses/CommunityFeature";
-import { findUser, plural, addHtmlLink } from "./util";
+import { plural, addHtmlLink } from "./util";
 import { HtmlControl } from "./mapClasses/MapControl";
 import { CommunityCircle } from "./mapClasses/CommunityCircle";
-import { IamcMap } from "./interfaces";
+import { BaseMap } from "./mapClasses/BaseMap";
 
 interface WithinList {
   name: string | undefined;
@@ -14,7 +14,7 @@ interface WithinList {
 }
 
 function findNearbyCommunities(
-  map: IamcMap,
+  map: BaseMap,
   communityLayer: CommunityFeature,
   withinDistance: number
 ): WithinList[] {
@@ -38,7 +38,7 @@ function findNearbyCommunities(
   return withinList.sort((a, b) => a.distance - b.distance);
 }
 
-function findNearbyTerritories(map: IamcMap) {
+function findNearbyTerritories(map: BaseMap) {
   try {
     const onTerritories: {
       Name: string;
@@ -75,7 +75,7 @@ function findNearbyTerritories(map: IamcMap) {
  * TODO: extend this function to find communities near the user.
  * @param map leaflet map object
  */
-function nearbyStuff(map: IamcMap, communityLayer: CommunityFeature) {
+function nearbyStuff(map: BaseMap, communityLayer: CommunityFeature) {
   map.panTo(map.user);
 
   // find communities and territories near the user
@@ -135,14 +135,14 @@ function nearbyStuff(map: IamcMap, communityLayer: CommunityFeature) {
  * Evaluates the users location against traditional territory's
  * @param map leaflet map object
  */
-export function proximity(map: IamcMap, communityLayer: CommunityFeature) {
-  map.youAreOn = new HtmlControl("bottomright", map);
+export function proximity(map: BaseMap, communityLayer: CommunityFeature) {
   const findMeBtn = document.getElementById("find-me");
   if (findMeBtn) {
     findMeBtn.addEventListener("click", () => {
       communityLayer.contactControl.updateHtml("");
       if (!map.user) {
-        findUser(map)
+        map
+          .findUser()
           .then(() => {
             // check polygons for user
             nearbyStuff(map, communityLayer);

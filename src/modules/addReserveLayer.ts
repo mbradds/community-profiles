@@ -8,7 +8,9 @@ import {
   removeIncidents,
 } from "./util";
 
-import { IamcMap, IncidentInfo } from "./interfaces";
+import { BaseMap } from "./mapClasses/BaseMap";
+
+import { IncidentInfo } from "./interfaces";
 
 /**
  * TODO: maybe split this method between iamc and profiles. IAMC might need more event info vs profiles.
@@ -48,7 +50,7 @@ function eventTooltip(event: IncidentInfo): string {
   return toolText;
 }
 
-function addIncidents(map: IamcMap, name: string, incidentFeature: any) {
+function addIncidents(map: BaseMap, name: string, incidentFeature: any) {
   removeIncidents(map);
   const incidents: IncidentInfo[] = incidentFeature[name];
   const addCircle = (x: number, y: number, eventInfo: IncidentInfo) =>
@@ -145,7 +147,7 @@ function reservePopUp(reserve: any, landInfo: any, incidentFeature: any) {
 }
 
 export function addReserveLayer(
-  map: IamcMap,
+  map: BaseMap,
   landFeature: any,
   landInfo: any,
   incidentFeature: any

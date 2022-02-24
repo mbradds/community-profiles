@@ -4,14 +4,14 @@ import { cerPalette, featureStyles, toolTipHtml } from "./util";
 import tmxSpreads from "../company_data/trans_mountain_files/pipeline-spread-geometries.min.json";
 import mainline from "../company_data/trans_mountain_files/existing-pipeline.min.json";
 import { CommunityFeature } from "./mapClasses/CommunityFeature";
-import { IamcMap } from "./interfaces";
+import { BaseMap } from "./mapClasses/BaseMap";
 
 interface ToolTipLayer extends L.Layer {
   feature?: { id: number };
   options?: { color: boolean };
 }
 
-export function tmAssets(map: IamcMap, communityLayer: CommunityFeature) {
+export function tmAssets(map: BaseMap, communityLayer: CommunityFeature) {
   const mainlineLayer = L.geoJSON(mainline as GeoJsonObject, {
     style: featureStyles.mainline,
   }).addTo(map);

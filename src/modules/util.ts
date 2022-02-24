@@ -1,6 +1,6 @@
 import * as L from "leaflet";
 import { CommunityFeature } from "./mapClasses/CommunityFeature";
-import { IamcMap, MapLegendControl } from "./interfaces";
+import { BaseMap } from "./mapClasses/BaseMap";
 
 export const cerPalette = {
   "Night Sky": "#054169",
@@ -26,7 +26,10 @@ export const cerPalette = {
  * @param value The row value
  * @returns HTML table row
  */
-export function htmlTableRow(text: string, value: string | number): string {
+export function htmlTableRow(
+  text: string | null,
+  value: string | number | null
+): string {
   return `<tr><td>${text}</td><td><b>${value}</b></td></tr>`;
 }
 
@@ -103,34 +106,6 @@ export const featureStyles = {
 };
 
 /**
- * Creates an empty leaflet map object
- * @param config Set up options for the leaflet map object
- * @param config.div HTML div where the map will be rendered
- * @param config.zoomDelta Zoom increment for the map
- * @param config.initZoomTo [lat, -long] initial map center
- * @param config.initZoomLevel Initial zoom level for the map
- * @returns leaflet map
- */
-export function leafletBaseMap(config: {
-  div: string;
-  zoomDelta: number;
-  initZoomTo: L.LatLng;
-  initZoomLevel: number;
-}): IamcMap {
-  const map: IamcMap = L.map(config.div, {
-    zoomDelta: config.zoomDelta,
-    maxZoom: 17,
-    minZoom: 4,
-    zoomSnap: 0.5,
-  }).setView(config.initZoomTo, config.initZoomLevel);
-  L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
-    attribution:
-      '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
-  }).addTo(map);
-  return map;
-}
-
-/**
  * Converts a length number in meters to kilometers if val is over 1km
  * @param val The length number in meters
  * @returns
@@ -154,7 +129,7 @@ export function setUpHeight(): number {
  * Clears incident circles from the map and resets the map legend
  * @param map leaflet map object
  */
-export function removeIncidents(map: IamcMap) {
+export function removeIncidents(map: BaseMap) {
   map.legend.removeItem();
   map.eachLayer((layer: any) => {
     if (Object.prototype.hasOwnProperty.call(layer.options, "type")) {
@@ -200,53 +175,6 @@ export function plural(val: number, type: string, cap = false): string {
 }
 
 /**
- *
- * @param map leaflet map object
- * @param communityLayer leaflet featureGroup for communities
- * @returns leaflet control object for map legend
- */
-export function mapLegend(
-  map: IamcMap,
-  communityLayer: CommunityFeature
-): MapLegendControl {
-  let legend = `<h4><span class="region-click-text" 
-  style="height: 10px; background-color: ${featureStyles.reserveOverlap.fillColor}">
-  &nbsp;&nbsp;&nbsp;</span>&nbsp;&nbsp;First Nations Reserve</h4>`;
-
-  if (communityLayer) {
-    legend += `<h4 style='color:${featureStyles.mainline.color};'>&#9473;&#9473; Existing Mainline</h4>`;
-    legend += `<h4 style='color:${featureStyles.territory.fillColor};'>&#11044; Community</h4>`;
-  }
-  const info: MapLegendControl = new L.Control({ position: "topright" });
-  info.onAdd = function onAdd() {
-    this._div = L.DomUtil.create("div", "legend");
-    this._div.innerHTML = legend;
-    map.legend = this;
-    return this._div;
-  };
-  info.addItem = function addItem(
-    entry = "incidents",
-    spread: string | undefined = undefined,
-    color: string | undefined = undefined
-  ) {
-    if (entry === "incidents" && this._div) {
-      this._div.innerHTML += `<h4 class="legend-temp" style='color:${featureStyles.incident.fillColor};'>&#11044; Incident</h4>`;
-    } else if (entry === "spread" && this._div) {
-      this._div.innerHTML += `<h4 class="legend-temp" style='color:${color};'>&#11044; Spread ${spread} communities</h4>`;
-    }
-  };
-  info.removeItem = function removeItem() {
-    Array.from(this._div.getElementsByClassName("legend-temp")).forEach(
-      (toHide) => {
-        toHide.parentNode.removeChild(toHide);
-      }
-    );
-  };
-  info.addTo(map);
-  return info;
-}
-
-/**
  * Resets the map zoom to default showing all communities and First Nations Reserves
  * @param map leaflet map object
  * @param geoLayer First Nations Reserves leaflet geojson layer
@@ -254,7 +182,7 @@ export function mapLegend(
  * @param fly
  */
 export function resetZoom(
-  map: IamcMap,
+  map: BaseMap,
   geoLayer: any,
   communityLayer: CommunityFeature,
   fly = false
@@ -288,7 +216,7 @@ export function resetZoom(
  * @param communityLayer leaflet featureGroup for communities
  */
 export function resetListener(
-  map: IamcMap,
+  map: BaseMap,
   geoLayer: any,
   communityLayer: CommunityFeature
 ) {
@@ -302,35 +230,6 @@ export function resetListener(
       communityLayer.reset();
     });
   }
-}
-
-/**
- * Finds the user's location, adds a market, and saves location info in map object
- * @param map leaflet map object
- */
-export async function findUser(map: IamcMap) {
-  return new Promise((resolve, reject) => {
-    map
-      .locate({
-        watch: false,
-      })
-      .on("locationfound", (e: any) => {
-        const marker: L.Marker = L.marker([e.latitude, e.longitude], {
-          draggable: true,
-        }).bindPopup("Click and drag to move locations");
-        marker.on("drag", (d) => {
-          map.user = d.target.getLatLng();
-        });
-        // marker.id = "userLocation";
-        map.addLayer(marker);
-        map.user = marker.getLatLng();
-        resolve(marker);
-      })
-      .on("locationerror", (err: any) => {
-        map.user = undefined;
-        reject(err);
-      });
-  });
 }
 
 /**

@@ -1,62 +1,14 @@
 import * as L from "leaflet";
-import {
-  leafletBaseMap,
-  setUpHeight,
-  mapLegend,
-  resetZoom,
-  resetListener,
-} from "./util";
+import { setUpHeight, resetZoom, resetListener } from "./util";
 import { addCommunityLayer } from "./addCommunityLayer";
 import { addReserveLayer } from "./addReserveLayer";
 import { tmAssets } from "./tmAssets";
 import { getCommunityData } from "./getCommunityData";
 import { oldBrowserError } from "./oldBrowserError";
 import { proximity } from "./proximity";
-import { HtmlControl } from "./mapClasses/MapControl";
-import { IamcMap } from "./interfaces";
+import { BaseMap } from "./mapClasses/BaseMap";
 import "leaflet/dist/leaflet.css";
 import "../css/main.css";
-
-interface MetaData {
-  company: string;
-  totalLength: number;
-}
-
-/**
- * Adds a leaflet control object for the "Reset Map" button
- * @param map leaflet map object
- */
-function addResetBtn(map: IamcMap) {
-  return new HtmlControl(
-    "bottomleft",
-    map,
-    `<button type="button" id="find-me" class="btn btn-primary btn-block btn-lg">Find Me</button><button type="button" id="reset-map" class="btn btn-primary btn-block btn-lg">Reset Map</button>`
-  );
-}
-
-/**
- * Adds a leaflet map control to the bottom right corner
- * @param map leaflet map object
- */
-function mapWarning(map: IamcMap) {
-  map.warningMsg = new HtmlControl("bottomright", map);
-}
-
-/**
- * Adds a layer control filter to the map
- * @param layers list of all the map layers to be added to the filter
- * @param map leaflet map object
- */
-function addLayerControl(
-  layers: { display: string; layer: L.Layer }[],
-  map: IamcMap
-) {
-  const layerControl: { [key: string]: L.Layer } = {};
-  layers.forEach((layer) => {
-    layerControl[layer.display] = layer.layer;
-  });
-  L.control.layers(undefined, layerControl, { position: "topleft" }).addTo(map);
-}
 
 /**
  * Loads the basemap and all the map layers
@@ -75,15 +27,13 @@ async function loadMap(
   incidentFeature: any
 ) {
   const communityData = await getCommunityData();
-  const map = leafletBaseMap({
-    div: "map",
+  const map = new BaseMap("map", {
     zoomDelta: 0.25,
     initZoomLevel: 4,
     initZoomTo: L.latLng([55, -119]),
   });
 
-  mapWarning(map);
-  addResetBtn(map);
+  map.addResetBtn();
 
   let popWidth = Math.floor(mapHeight * 0.9);
   const popHeight = Math.floor(popWidth * 0.9);
@@ -107,18 +57,15 @@ async function loadMap(
     incidentFeature
   );
 
-  addLayerControl(
-    [
-      { layer: communityLayer.featureGroup, display: "Communities" },
-      { layer: tmSpreadLayer, display: "TMX" },
-      { layer: mainlineLayer, display: "Existing Mainline" },
-      { layer: reserveLayer, display: "First Nations Reserves" },
-    ],
-    map
-  );
+  map.addLayerControl([
+    { layer: communityLayer.featureGroup, display: "Communities" },
+    { layer: tmSpreadLayer, display: "TMX" },
+    { layer: mainlineLayer, display: "Existing Mainline" },
+    { layer: reserveLayer, display: "First Nations Reserves" },
+  ]);
 
   proximity(map, communityLayer);
-  mapLegend(map, communityLayer);
+  map.mapLegend(communityLayer);
   resetZoom(map, reserveLayer, communityLayer);
   resetListener(map, reserveLayer, communityLayer);
   return map;

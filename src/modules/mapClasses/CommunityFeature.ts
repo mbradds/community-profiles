@@ -1,6 +1,6 @@
 import * as L from "leaflet";
 import { featureStyles, calculateDaysUntil } from "../util";
-import { IamcMap } from "../interfaces";
+import { BaseMap } from "./BaseMap";
 import { CommunityCircle } from "./CommunityCircle";
 import { HtmlControl } from "./MapControl";
 
@@ -23,9 +23,9 @@ export class CommunityFeature {
 
   featureGroup: L.FeatureGroup;
 
-  map: IamcMap;
+  map: BaseMap;
 
-  constructor(circles: CommunityCircle[], map: IamcMap) {
+  constructor(circles: CommunityCircle[], map: BaseMap) {
     this.map = map;
     this.featureGroup = L.featureGroup(circles);
     this.contactControl = new HtmlControl("bottomright", map);

@@ -8,7 +8,8 @@ import {
 
 import { CommunityFeature } from "./mapClasses/CommunityFeature";
 import { CommunityCircle } from "./mapClasses/CommunityCircle";
-import { IamcMap, CommunityAttr } from "./interfaces";
+import { BaseMap } from "./mapClasses/BaseMap";
+import { CommunityAttr } from "./interfaces";
 
 /**
  * Generates an HTML partial for the community pop-up information
@@ -83,7 +84,7 @@ function popUpTable(
     ["Project Spreads", landInfo.ProjectSpreads],
     ["Concerns - Issues", landInfo.ConcernsOrIssues],
     ["About Us", landInfo.History],
-  ].forEach((row: (string | undefined)[]) => {
+  ].forEach((row: (string | null)[]) => {
     table += htmlTableRow(row[0], `${row[1] ? row[1] : "Not available"}`);
   });
   table += `</tbody></table>`;
@@ -114,7 +115,7 @@ function popUpTable(
  * @returns leaflet featureLayer for the communities
  */
 export function addCommunityLayer(
-  map: IamcMap,
+  map: BaseMap,
   popHeight: number,
   popWidth: number,
   communityData: { id: number; attributes: CommunityAttr }[]

@@ -1,18 +1,3 @@
-import { HtmlControl } from "./mapClasses/MapControl";
-
-export interface MapLegendControl extends L.Control {
-  _div?: HTMLDivElement;
-  addItem?: Function;
-  removeItem?: Function;
-}
-
-export interface IamcMap extends L.Map {
-  warningMsg?: HtmlControl;
-  legend?: MapLegendControl;
-  youAreOn?: HtmlControl;
-  user?: L.LatLng;
-}
-
 export interface CommunityAttr {
   Address: string | null;
   ConcernsOrIssues: string | null;

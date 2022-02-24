@@ -1,5 +1,5 @@
 import * as L from "leaflet";
-import { IamcMap } from "../interfaces";
+import { BaseMap } from "./BaseMap";
 
 interface MapControl extends L.Control {
   _div: HTMLElement;
@@ -8,7 +8,7 @@ interface MapControl extends L.Control {
 export class HtmlControl {
   info: MapControl;
 
-  constructor(position: L.ControlPosition, map: IamcMap, initialHtml = "") {
+  constructor(position: L.ControlPosition, map: BaseMap, initialHtml = "") {
     this.info = new L.Control({ position }) as MapControl;
     this.info._div = L.DomUtil.create("div");
     this.info.onAdd = function () {
