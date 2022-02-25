@@ -5,8 +5,8 @@ import { featureStyles } from "../util";
 
 export interface MapLegendControl extends L.Control {
   _div: HTMLDivElement;
-  addItem?: Function;
-  removeItem?: Function;
+  addItem: Function;
+  removeItem: Function;
 }
 
 export class BaseMap extends L.Map {

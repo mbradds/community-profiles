@@ -76,21 +76,21 @@ function findNearbyTerritories(map: BaseMap) {
  * @param map leaflet map object
  */
 function nearbyStuff(map: BaseMap, communityLayer: CommunityFeature) {
-  map.panTo(map.user);
+  if (map.user) {
+    map.panTo(map.user);
+    // find communities and territories near the user
+    const nearbyCommunities: WithinList[] = findNearbyCommunities(
+      map,
+      communityLayer,
+      50
+    );
 
-  // find communities and territories near the user
-  const nearbyCommunities: WithinList[] = findNearbyCommunities(
-    map,
-    communityLayer,
-    50
-  );
-
-  // build the pop-up section
-  const addFindButton = (community: WithinList) =>
-    `<button type="button" value="${community._leaflet_id}" class="btn btn-primary btn-xs find-near-community">Find</button>`;
-  let nearbyTable = "";
-  if (nearbyCommunities.length >= 1) {
-    nearbyTable += `<table class="table" id="near-communities-table"><thead>
+    // build the pop-up section
+    const addFindButton = (community: WithinList) =>
+      `<button type="button" value="${community._leaflet_id}" class="btn btn-primary btn-xs find-near-community">Find</button>`;
+    let nearbyTable = "";
+    if (nearbyCommunities.length >= 1) {
+      nearbyTable += `<table class="table" id="near-communities-table"><thead>
     <tr>
       <th scope="col">Community</th>
       <th scope="col">Est. Distance</th>
@@ -98,25 +98,27 @@ function nearbyStuff(map: BaseMap, communityLayer: CommunityFeature) {
     </tr>
   </thead><tbody>`;
 
-    nearbyCommunities.forEach((community) => {
-      nearbyTable += `<tr><td>${community.name}</td><td>${Math.round(
-        community.distance
-      )}km</td><td>${addFindButton(community)}</td></tr>`;
-    });
-    nearbyTable += `</tbody></table>`;
+      nearbyCommunities.forEach((community) => {
+        nearbyTable += `<tr><td>${community.name}</td><td>${Math.round(
+          community.distance
+        )}km</td><td>${addFindButton(community)}</td></tr>`;
+      });
+      nearbyTable += `</tbody></table>`;
+    }
+
+    map.youAreOn.addSection(
+      "ur-on",
+      "close-you-are-on",
+      `You are within 50km of ${nearbyCommunities.length} ${plural(
+        nearbyCommunities.length,
+        "community",
+        false
+      )}`,
+      `${nearbyTable} ${findNearbyTerritories(map)}`,
+      "Move the blue marker to a new area and click <i>Find Me</i> again to view other locations."
+    );
   }
 
-  map.youAreOn.addSection(
-    "ur-on",
-    "close-you-are-on",
-    `You are within 50km of ${nearbyCommunities.length} ${plural(
-      nearbyCommunities.length,
-      "community",
-      false
-    )}`,
-    `${nearbyTable} ${findNearbyTerritories(map)}`,
-    "Move the blue marker to a new area and click <i>Find Me</i> again to view other locations."
-  );
   HtmlControl.fixScroll("ur-on");
   map.youAreOn.closeBtnListener("close-you-are-on");
 

@@ -187,25 +187,18 @@ export function resetZoom(
   communityLayer: CommunityFeature,
   fly = false
 ) {
-  let padd = new L.Point(25, 25);
   let fullBounds = geoLayer.getBounds();
   if (communityLayer) {
     fullBounds = fullBounds.extend(communityLayer.featureGroup.getBounds());
   }
 
-  if (Object.keys(geoLayer._layers).length === 1) {
-    padd = new L.Point(270, 270);
-  }
   if (fly) {
     map.flyToBounds(fullBounds, {
       duration: 0.25,
       easeLinearity: 1,
-      padding: padd,
     });
   } else {
-    map.fitBounds(fullBounds, {
-      padding: padd,
-    });
+    map.fitBounds(fullBounds);
   }
 }
 
@@ -223,11 +216,11 @@ export function resetListener(
   const resetMapElement = document.getElementById("reset-map");
   if (resetMapElement) {
     resetMapElement.addEventListener("click", () => {
-      resetZoom(map, geoLayer, communityLayer, true);
       removeIncidents(map);
       map.closePopup();
       map.youAreOn.removeHtml();
       communityLayer.reset();
+      resetZoom(map, geoLayer, communityLayer, true);
     });
   }
 }

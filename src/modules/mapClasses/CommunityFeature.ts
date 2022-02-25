@@ -251,7 +251,7 @@ export class CommunityFeature {
    */
   searchCommunities() {
     let options = "";
-    this.getNames().forEach((name: { id: number; name: string }) => {
+    this.getNames().forEach((name: CommunityName) => {
       options += `<option data-id=${name.id} label="" value="${name.name}"></option>`;
     });
     const findCommunitiesElement = document.getElementById(
@@ -279,7 +279,10 @@ export class CommunityFeature {
         let foundId;
         Array.from(listItems.options).forEach((item) => {
           if (item.value === listObj.value) {
-            foundId = parseInt(item.getAttribute("data-id"));
+            const btnId = item.getAttribute("data-id");
+            if (btnId) {
+              foundId = parseInt(btnId);
+            }
           }
         });
         if (foundId) {
