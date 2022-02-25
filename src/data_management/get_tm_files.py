@@ -16,8 +16,6 @@ def get_tm_files(url):
         print("Cant reach Trans Mountain")
 
 
-
 if __name__ == "__main__":
     get_tm_files("https://www.transmountain.com/map-data/pipeline-spread-geometries.geojson")
     get_tm_files("https://www.transmountain.com/map-data/existing-pipeline.geojson")
-    

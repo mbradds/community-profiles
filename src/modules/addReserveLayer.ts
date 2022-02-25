@@ -5,11 +5,8 @@ import {
   htmlTableRow,
   plural,
   featureStyles,
-  removeIncidents,
 } from "./util";
-
 import { BaseMap } from "./mapClasses/BaseMap";
-
 import { IncidentInfo } from "./interfaces";
 
 /**
@@ -51,7 +48,7 @@ function eventTooltip(event: IncidentInfo): string {
 }
 
 function addIncidents(map: BaseMap, name: string, incidentFeature: any) {
-  removeIncidents(map);
+  map.removeIncidents();
   const incidents: IncidentInfo[] = incidentFeature[name];
   const addCircle = (x: number, y: number, eventInfo: IncidentInfo) =>
     L.circle([x, y], {
@@ -73,7 +70,7 @@ function addIncidents(map: BaseMap, name: string, incidentFeature: any) {
       }
       return addCircle(p.loc[0], p.loc[1], p);
     });
-    L.featureGroup(points).addTo(map);
+    map.incidentLayer = L.featureGroup(points).addTo(map);
   }
   return proximityCount;
 }

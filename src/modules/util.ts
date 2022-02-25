@@ -1,7 +1,3 @@
-import * as L from "leaflet";
-import { CommunityFeature } from "./mapClasses/CommunityFeature";
-import { BaseMap } from "./mapClasses/BaseMap";
-
 export const cerPalette = {
   "Night Sky": "#054169",
   Sun: "#FFBE4B",
@@ -126,19 +122,6 @@ export function setUpHeight(): number {
 }
 
 /**
- * Clears incident circles from the map and resets the map legend
- * @param map leaflet map object
- */
-export function removeIncidents(map: BaseMap) {
-  map.legend.removeItem();
-  map.eachLayer((layer: any) => {
-    if (Object.prototype.hasOwnProperty.call(layer.options, "type")) {
-      layer.remove();
-    }
-  });
-}
-
-/**
  * Intermediate function used in array.reduce
  * @param total
  * @param num
@@ -172,57 +155,6 @@ export function plural(val: number, type: string, cap = false): string {
     return capitalize(val > 1 || val === 0 ? "communities" : "community", cap);
   }
   return type;
-}
-
-/**
- * Resets the map zoom to default showing all communities and First Nations Reserves
- * @param map leaflet map object
- * @param geoLayer First Nations Reserves leaflet geojson layer
- * @param communityLayer leaflet featureGroup for communities
- * @param fly
- */
-export function resetZoom(
-  map: BaseMap,
-  geoLayer: any,
-  communityLayer: CommunityFeature,
-  fly = false
-) {
-  let fullBounds = geoLayer.getBounds();
-  if (communityLayer) {
-    fullBounds = fullBounds.extend(communityLayer.featureGroup.getBounds());
-  }
-
-  if (fly) {
-    map.flyToBounds(fullBounds, {
-      duration: 0.25,
-      easeLinearity: 1,
-    });
-  } else {
-    map.fitBounds(fullBounds);
-  }
-}
-
-/**
- * Binds an event listener to the "Reset Map" button for re-setting zoom and other map elements
- * @param map leaflet map object
- * @param geoLayer First Nations Reserves leaflet geojson layer
- * @param communityLayer leaflet featureGroup for communities
- */
-export function resetListener(
-  map: BaseMap,
-  geoLayer: any,
-  communityLayer: CommunityFeature
-) {
-  const resetMapElement = document.getElementById("reset-map");
-  if (resetMapElement) {
-    resetMapElement.addEventListener("click", () => {
-      removeIncidents(map);
-      map.closePopup();
-      map.youAreOn.removeHtml();
-      communityLayer.reset();
-      resetZoom(map, geoLayer, communityLayer, true);
-    });
-  }
 }
 
 /**

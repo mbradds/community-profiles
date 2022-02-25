@@ -46,4 +46,4 @@ def getCanadaTerritories():
 
 
 if __name__ == "__main__":
-    df = getCanadaTerritories()
+    df_ = getCanadaTerritories()

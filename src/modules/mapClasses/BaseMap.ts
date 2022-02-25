@@ -18,6 +18,8 @@ export class BaseMap extends L.Map {
 
   youAreOn: HtmlControl;
 
+  incidentLayer: undefined | L.FeatureGroup;
+
   constructor(
     div: string,
     config: {
@@ -38,6 +40,7 @@ export class BaseMap extends L.Map {
     this.warningMsg = new HtmlControl("bottomright", this);
     this.legend = new L.Control({ position: "topright" }) as MapLegendControl;
     this.legend._div = L.DomUtil.create("div", "legend");
+    this.incidentLayer = undefined;
   }
 
   addResetBtn() {
@@ -46,6 +49,33 @@ export class BaseMap extends L.Map {
       this,
       `<button type="button" id="find-me" class="btn btn-primary btn-block btn-lg">Find Me</button><button type="button" id="reset-map" class="btn btn-primary btn-block btn-lg">Reset Map</button>`
     );
+  }
+
+  resetZoom(communityLayer: CommunityFeature) {
+    this.flyToBounds(communityLayer.featureGroup.getBounds(), {
+      duration: 0.25,
+      easeLinearity: 1,
+    });
+  }
+
+  removeIncidents() {
+    this.legend.removeItem();
+    if (this.incidentLayer) {
+      this.incidentLayer.clearLayers();
+    }
+  }
+
+  resetListener(communityLayer: CommunityFeature) {
+    const resetMapElement = document.getElementById("reset-map");
+    if (resetMapElement) {
+      resetMapElement.addEventListener("click", () => {
+        this.removeIncidents();
+        this.closePopup();
+        this.youAreOn.removeHtml();
+        communityLayer.reset();
+        this.resetZoom(communityLayer);
+      });
+    }
   }
 
   addLayerControl(layers: { display: string; layer: L.Layer }[]) {

@@ -15,7 +15,6 @@ export class HtmlControl {
       if (initialHtml !== "") {
         this._div.innerHTML = initialHtml;
       }
-
       return this._div;
     };
     if (map) {

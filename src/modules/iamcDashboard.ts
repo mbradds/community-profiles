@@ -1,5 +1,5 @@
 import * as L from "leaflet";
-import { setUpHeight, resetZoom, resetListener } from "./util";
+import { setUpHeight } from "./util";
 import { addCommunityLayer } from "./addCommunityLayer";
 import { addReserveLayer } from "./addReserveLayer";
 import { tmAssets } from "./tmAssets";
@@ -66,8 +66,8 @@ async function loadMap(
 
   proximity(map, communityLayer);
   map.mapLegend(communityLayer);
-  resetZoom(map, reserveLayer, communityLayer);
-  resetListener(map, reserveLayer, communityLayer);
+  map.resetZoom(communityLayer);
+  map.resetListener(communityLayer);
   return map;
 }
 

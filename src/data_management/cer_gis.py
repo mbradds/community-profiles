@@ -4,7 +4,6 @@ import pandas as pd
 import numpy as np
 import json
 import time
-import multiprocessing as mp
 from util import set_cwd_to_script
 set_cwd_to_script()
 crs_proj = 'EPSG:2960'
@@ -129,22 +128,18 @@ def import_geodata(path, d_type, crs_target):
 
 
 def import_files(crs_target):
-    data_paths = {'poly1': './raw_data/AL_TA_CA_SHP_eng/AL_TA_CA_2_129_eng.shp',
+    data_paths = {'poly1': './raw_data/AL_TA_CA_SHP_eng/AL_TA_CA_2_140_eng.shp',
                   'pipe': '',
-                  'poly2': './raw_data/Traite_Pre_1975_Treaty_SHP/Traite_Pre_1975_Treaty_SHP.shp',
-                  'incidents': './raw_data/cer_data/incident-data.csv',
-                  'traditionalTerritory': './raw_data/traditional_territory/indigenousTerritories.json'}
+                  'incidents': './raw_data/cer_data/incident-data.csv'}
 
     out = {}
     for d_type, path in data_paths.items():
         out[d_type] = import_geodata(path, d_type, crs_target)
-    return out['poly1'], out['pipe'], out['poly2'], out['incidents'], out['traditionalTerritory']
+    return out['poly1'], out['pipe'], out['incidents']
 
 
 def line_clip(pipe,
               land,
-              crs_proj,
-              crs_geo,
               polygon_id,
               forceclip=True,
               landCol="NAME1",
@@ -210,7 +205,6 @@ def line_clip(pipe,
 
 
 def to_metres(gdf, crs_target, length=True):
-
     gdf = gdf.set_geometry('geometry')
     if gdf.crs != crs_target:
         print('wrong crs for length!')
@@ -229,8 +223,6 @@ def output_poly1(pipe, overlap, company):
     if not os.path.exists("../company_data/"+folder_name):
         os.mkdir("../company_data/"+folder_name)
 
-    meta = {"company": company}
-
     if not overlap.empty:
         del pipe['geometry']
         del pipe['valid']
@@ -248,13 +240,12 @@ def output_poly1(pipe, overlap, company):
                         "operator": list(p1["OPERATOR"])[0],
                         "bandName": list(p1["BAND_NAME"])[0]}
             currentLand = []
-            for plname, status, altype, length in zip(p1['PLNAME'],
-                                                      p1['STATUS'],
-                                                      p1['ALTYPE'],
-                                                      p1['length_gpd']):
+            for plname, status, length in zip(p1['PLNAME'],
+                                              p1['STATUS'],
+                                              p1['length_gpd']):
+
                 currentLand.append({"plname": plname,
                                     "status": status,
-                                    # "altype": altype,
                                     "length": round(length, 1)})
 
                 totalLength = totalLength + length
@@ -263,22 +254,17 @@ def output_poly1(pipe, overlap, company):
             with open('../company_data/'+folder_name+'/landInfo.json', 'w') as fp:
                 json.dump(landInfo, fp)
 
-        meta["totalLength"] = round(totalLength, 1)
         overlap = overlap.to_crs(crs_geo)
         overlap.crs = crs_geo
         overlap.to_file("../company_data/"+folder_name+"/poly1.json", driver="GeoJSON")
 
     else:
-        meta["totalLength"] = 0
         overlap = {'company': company, "overlaps": 0}
         with open('../company_data/'+folder_name+'/poly1.json', 'w') as f:
             json.dump(overlap, f)
 
         with open('../company_data/'+folder_name+'/landInfo.json', 'w') as fp:
             json.dump({}, fp)
-
-    with open('../company_data/'+folder_name+'/meta.json', 'w') as fp:
-        json.dump(meta, fp)
 
     return overlap
 
@@ -311,7 +297,6 @@ def eventProximity(gdf, poly1, company):
     poly1.crs = crs_proj
 
     folder_name = get_folder_name(company)
-    # gdf = gdf.where(gdf.notnull(), None)
     pnt = gdf[gdf['Company'] == company].copy().reset_index(drop=True)
     poly_company = poly1[poly1['OPERATOR'] == company].copy().reset_index(drop=True)
     if not pnt.empty:
@@ -367,64 +352,27 @@ def eventProximity(gdf, poly1, company):
     return close
 
 
-def output_terr(pipe, terr, company):
-    folder_name = get_folder_name(company)
-    terr = terr[["Name", "description"]].copy()
-    terr = terr.sort_values(by="Name")
-    terr.to_json("../company_data/"+folder_name+"/terr.json", orient='records')
-
-
-def worker(company, pipe, poly1, poly2, incidents, traditionalTerritory):
+def worker(company, pipe, poly1, incidents):
     pipec = pipe[pipe["OPERATOR"] == company].copy().reset_index(drop=True)
-    pipec2 = pipec.copy()
     poly1c = poly1.copy()
-    poly2c = poly2.copy()
-    terr = traditionalTerritory.copy()
     pipe_on_poly1, poly1_on_pipe = line_clip(pipec,
                                              poly1c,
-                                             crs_proj=crs_proj,
-                                             crs_geo=crs_geo,
                                              polygon_id="NAME1",
                                              forceclip=True,
                                              landCol="NAME1")
 
-    pipe_on_poly2, poly2_on_pipe = line_clip(pipec2,
-                                             poly2c,
-                                             crs_proj=crs_proj,
-                                             crs_geo=crs_geo,
-                                             polygon_id="TAG_ID",
-                                             forceclip=True,
-                                             landCol="ENAME")
-
-    pipe_on_terr, terr_on_pipe = line_clip(pipec,
-                                           terr,
-                                           crs_proj=crs_proj,
-                                           crs_geo=crs_geo,
-                                           polygon_id="Slug",
-                                           forceclip=True,
-                                           landCol="Name")
-
     output_poly1(pipe_on_poly1, poly1_on_pipe, company)
     eventProximity(incidents, poly1_on_pipe, company)
-    output_poly2(pipe_on_poly2, company)
-    output_terr(pipe_on_terr, terr_on_pipe, company)
     print('Done:' + company)
-    return
 
 
 if __name__ == "__main__":
 
     start = time.time()
     jobs = []
-    poly1, pipe, poly2, incidents, traditionalTerritory = import_files(crs_target=crs_proj)
-    for company in companies.values():
-        # worker(company, pipe, poly1, poly2, incidents, traditionalTerritory) # single thread
-        p = mp.Process(target=worker, args=(company, pipe, poly1, poly2, incidents, traditionalTerritory ))
-        jobs.append(p)
-        p.start()
-
-    for proc in jobs:
-        proc.join()
+    poly1_, pipe_, incidents_ = import_files(crs_target=crs_proj)
+    for company_ in companies.values():
+        worker(company_, pipe_, poly1_, incidents_)
 
     elapsed = (time.time() - start)
     print("GIS process time:", round(elapsed, 0), ' seconds')
