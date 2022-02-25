@@ -14,7 +14,7 @@ interface WithinList {
 }
 
 function findNearbyCommunities(
-  map: BaseMap,
+  user: L.LatLng,
   communityLayer: CommunityFeature,
   withinDistance: number
 ): WithinList[] {
@@ -23,7 +23,7 @@ function findNearbyCommunities(
     const circle = communityCircle as CommunityCircle;
     const circleLocation = circle.getLatLng();
     const distance = haversine(
-      { latitude: map.user.lat, longitude: map.user.lng },
+      { latitude: user.lat, longitude: user.lng },
       { latitude: circleLocation.lat, longitude: circleLocation.lng },
       { unit: "km" }
     );
@@ -38,7 +38,7 @@ function findNearbyCommunities(
   return withinList.sort((a, b) => a.distance - b.distance);
 }
 
-function findNearbyTerritories(map: BaseMap) {
+function findNearbyTerritories(user: L.LatLng) {
   try {
     const onTerritories: {
       Name: string;
@@ -48,7 +48,7 @@ function findNearbyTerritories(map: BaseMap) {
     }[] = [];
     territoryPolygons.features.forEach((polygon) => {
       const inside = pointInPolygon(
-        [map.user.lng, map.user.lat],
+        [user.lng, user.lat],
         polygon.geometry.coordinates[0]
       );
       if (inside) {
@@ -80,7 +80,7 @@ function nearbyStuff(map: BaseMap, communityLayer: CommunityFeature) {
     map.panTo(map.user);
     // find communities and territories near the user
     const nearbyCommunities: WithinList[] = findNearbyCommunities(
-      map,
+      map.user,
       communityLayer,
       50
     );
@@ -114,7 +114,7 @@ function nearbyStuff(map: BaseMap, communityLayer: CommunityFeature) {
         "community",
         false
       )}`,
-      `${nearbyTable} ${findNearbyTerritories(map)}`,
+      `${nearbyTable} ${findNearbyTerritories(map.user)}`,
       "Move the blue marker to a new area and click <i>Find Me</i> again to view other locations."
     );
   }

@@ -6,17 +6,12 @@ import mainline from "../company_data/trans_mountain_files/existing-pipeline.min
 import { CommunityFeature } from "./mapClasses/CommunityFeature";
 import { BaseMap } from "./mapClasses/BaseMap";
 
-interface ToolTipLayer extends L.Layer {
-  feature?: { id: number };
-  options?: { color: boolean };
-}
-
 export function tmAssets(map: BaseMap, communityLayer: CommunityFeature) {
   const mainlineLayer = L.geoJSON(mainline as GeoJsonObject, {
     style: featureStyles.mainline,
   }).addTo(map);
   const tmSpreadLayer = L.geoJSON(tmxSpreads as GeoJsonObject, {
-    style(feature) {
+    style(feature: any) {
       switch (feature.id) {
         case "spread-1":
           return { color: cerPalette.Flame, spreads: [1] };
@@ -38,7 +33,7 @@ export function tmAssets(map: BaseMap, communityLayer: CommunityFeature) {
     },
   })
     .bindTooltip(
-      (layer: ToolTipLayer) =>
+      (layer: any) =>
         toolTipHtml(
           layer.feature.id,
           false,
