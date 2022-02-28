@@ -3,16 +3,10 @@ import { CommunityFeature } from "./CommunityFeature";
 import { HtmlControl } from "./MapControl";
 import { featureStyles } from "../util";
 
-export interface MapLegendControl extends L.Control {
-  _div: HTMLDivElement;
-  addItem: Function;
-  removeItem: Function;
-}
-
 export class BaseMap extends L.Map {
   warningMsg: HtmlControl;
 
-  legend: MapLegendControl;
+  legend: HtmlControl;
 
   user: undefined | L.LatLng;
 
@@ -29,7 +23,6 @@ export class BaseMap extends L.Map {
     }
   ) {
     super(div, config);
-
     this.setView(config.initZoomTo, config.initZoomLevel);
     L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
       attribution:
@@ -38,8 +31,7 @@ export class BaseMap extends L.Map {
     this.user = undefined;
     this.youAreOn = new HtmlControl("bottomright", this);
     this.warningMsg = new HtmlControl("bottomright", this);
-    this.legend = new L.Control({ position: "topright" }) as MapLegendControl;
-    this.legend._div = L.DomUtil.create("div", "legend");
+    this.legend = new HtmlControl("topright", this, "", "legend");
     this.incidentLayer = undefined;
   }
 
@@ -59,7 +51,7 @@ export class BaseMap extends L.Map {
   }
 
   removeIncidents() {
-    this.legend.removeItem();
+    this.legend.removeHtmlItem("legend-temp");
     if (this.incidentLayer) {
       this.incidentLayer.clearLayers();
     }
@@ -88,7 +80,7 @@ export class BaseMap extends L.Map {
       .addTo(this);
   }
 
-  mapLegend(communityLayer: CommunityFeature): MapLegendControl {
+  addMapLegend(communityLayer: CommunityFeature): HtmlControl {
     let legend = `<h4><span class="region-click-text" 
     style="height: 10px; background-color: ${featureStyles.reserveOverlap.fillColor}">
     &nbsp;&nbsp;&nbsp;</span>&nbsp;&nbsp;First Nations Reserve</h4>`;
@@ -97,31 +89,7 @@ export class BaseMap extends L.Map {
       legend += `<h4 style='color:${featureStyles.mainline.color};'>&#9473;&#9473; Existing Mainline</h4>`;
       legend += `<h4 style='color:${featureStyles.territory.fillColor};'>&#11044; Community</h4>`;
     }
-    this.legend.onAdd = function onAdd() {
-      this._div.innerHTML = legend;
-      return this._div;
-    };
-    this.legend.addItem = function addItem(
-      entry = "incidents",
-      spread: string | undefined = undefined,
-      color: string | undefined = undefined
-    ) {
-      if (entry === "incidents" && this._div) {
-        this._div.innerHTML += `<h4 class="legend-temp" style='color:${featureStyles.incident.fillColor};'>&#11044; Incident</h4>`;
-      } else if (entry === "spread" && this._div) {
-        this._div.innerHTML += `<h4 class="legend-temp" style='color:${color};'>&#11044; Spread ${spread} communities</h4>`;
-      }
-    };
-    this.legend.removeItem = function removeItem() {
-      Array.from(this._div.getElementsByClassName("legend-temp")).forEach(
-        (toHide) => {
-          if (toHide.parentNode) {
-            toHide.parentNode.removeChild(toHide);
-          }
-        }
-      );
-    };
-    this.legend.addTo(this);
+    this.legend.updateHtml(legend);
     return this.legend;
   }
 

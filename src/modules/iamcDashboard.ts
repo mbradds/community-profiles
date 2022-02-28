@@ -65,7 +65,7 @@ async function loadMap(
   ]);
 
   proximity(map, communityLayer);
-  map.mapLegend(communityLayer);
+  map.addMapLegend(communityLayer);
   map.resetZoom(communityLayer);
   map.resetListener(communityLayer);
   return map;

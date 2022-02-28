@@ -106,7 +106,7 @@ export class CommunityFeature {
    * @param dayRange Number between 0 and 365 or "All"
    */
   filterElections(dayRange: string) {
-    this.map.legend.removeItem();
+    this.map.legend.removeHtmlItem("legend-temp");
     if (dayRange !== "All") {
       this.featureGroup.eachLayer((communityCircle) => {
         const circle = communityCircle as CommunityCircle;
@@ -190,7 +190,7 @@ export class CommunityFeature {
    */
   findSpreads(selectedSpreads: number[], color: string, sprdName: string) {
     this.resetSlider();
-    this.map.legend.removeItem();
+    this.map.legend.removeHtmlItem("legend-temp");
     this.map.warningMsg.removeHtml();
     const zoomToLayer: CommunityCircle[] = [];
     const contactInfo: ContactInfo[] = [];
@@ -218,7 +218,9 @@ export class CommunityFeature {
 
     if (zoomToLayer.length > 0) {
       this.map.fitBounds(L.featureGroup(zoomToLayer).getBounds());
-      this.map.legend.addItem("spread", selectedSpreads, color);
+      this.map.legend.addToHtml(
+        `<h4 class="legend-temp" style='color:${color};'>&#11044; Spread ${selectedSpreads} communities</h4>`
+      );
       this.spreadContactPopUp(contactInfo, sprdName);
     } else {
       noCommunities();

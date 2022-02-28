@@ -8,9 +8,18 @@ interface MapControl extends L.Control {
 export class HtmlControl {
   info: MapControl;
 
-  constructor(position: L.ControlPosition, map: BaseMap, initialHtml = "") {
+  constructor(
+    position: L.ControlPosition,
+    map: BaseMap,
+    initialHtml = "",
+    className = ""
+  ) {
     this.info = new L.Control({ position }) as MapControl;
-    this.info._div = L.DomUtil.create("div");
+    if (className !== "") {
+      this.info._div = L.DomUtil.create("div", className);
+    } else {
+      this.info._div = L.DomUtil.create("div");
+    }
     this.info.onAdd = function () {
       if (initialHtml !== "") {
         this._div.innerHTML = initialHtml;
@@ -32,6 +41,20 @@ export class HtmlControl {
 
   updateHtml(html: string) {
     this.info._div.innerHTML = html;
+  }
+
+  addToHtml(html: string) {
+    this.info._div.innerHTML += html;
+  }
+
+  removeHtmlItem(className: string) {
+    Array.from(this.info._div.getElementsByClassName(className)).forEach(
+      (toHide) => {
+        if (toHide.parentNode) {
+          toHide.parentNode.removeChild(toHide);
+        }
+      }
+    );
   }
 
   closeBtnListener(closeId: string) {

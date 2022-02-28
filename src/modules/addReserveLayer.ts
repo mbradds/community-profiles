@@ -10,7 +10,6 @@ import { BaseMap } from "./mapClasses/BaseMap";
 import { IncidentInfo } from "./interfaces";
 
 /**
- * TODO: maybe split this method between iamc and profiles. IAMC might need more event info vs profiles.
  * @param event
  */
 function eventTooltip(event: IncidentInfo): string {
@@ -61,7 +60,9 @@ function addIncidents(map: BaseMap, name: string, incidentFeature: any) {
 
   const proximityCount = { on: 0, close: 0 };
   if (incidents) {
-    map.legend.addItem();
+    map.legend.addToHtml(
+      `<h4 class="legend-temp" style='color:${featureStyles.incident.fillColor};'>&#11044; Incident</h4>`
+    );
     const points = incidents.map((p: IncidentInfo) => {
       if (p.distance === 0) {
         proximityCount.on += 1;

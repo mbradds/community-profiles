@@ -25,7 +25,7 @@ export const cerPalette = {
 export function htmlTableRow(
   text: string | null,
   value: string | number | null
-): string {
+) {
   return `<tr><td>${text}</td><td><b>${value}</b></td></tr>`;
 }
 
@@ -42,7 +42,7 @@ export function toolTipHtml(
   midText: string | number | boolean,
   footText: string | number,
   color = false
-): string {
+) {
   let style = "margin-bottom: 5px";
   if (color) {
     style += `; color:${color}`;
@@ -117,7 +117,7 @@ export function lengthUnits(val: number): [string, string] {
  * Gets client screen width for sizing the community popup and traditional territory image
  * @returns Pixel width of ther users window
  */
-export function setUpHeight(): number {
+export function setUpHeight() {
   return window.screen.width;
 }
 
@@ -127,7 +127,7 @@ export function setUpHeight(): number {
  * @param num
  * @returns
  */
-export function getSum(total: number, num: { length: number }): number {
+export function getSum(total: number, num: { length: number }) {
   return total + num.length;
 }
 
@@ -138,7 +138,7 @@ export function getSum(total: number, num: { length: number }): number {
  * @param cap Whether the returned word should be capitalized
  * @returns The input type with the proper singular/plural case
  */
-export function plural(val: number, type: string, cap = false): string {
+export function plural(val: number, type: string, cap = false) {
   function capitalize(s: string, c: boolean) {
     if (c) {
       return s[0].toUpperCase() + s.slice(1);
