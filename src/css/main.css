@@ -3,6 +3,7 @@
 @import url("bottomRightControl.css");
 @import url("panelHeaderAndFooter.css");
 @import url("mapPopup.css");
+@import url("tooltips.css");
 @import url("responsive.css");
 
 body {

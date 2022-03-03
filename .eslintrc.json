@@ -19,7 +19,7 @@
   "rules": {
     "import/prefer-default-export": "off",
     "no-nested-ternary": "off",
-    "no-underscore-dangle": "warn",
+    "no-underscore-dangle": "off",
     "new-cap": "warn",
     "no-param-reassign": ["error", { "props": false }],
     "radix": ["error", "as-needed"],

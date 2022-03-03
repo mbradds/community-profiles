@@ -56,7 +56,7 @@ function addIncidents(map: BaseMap, name: string, incidentFeature: any) {
       fillOpacity: featureStyles.incident.fillOpacity,
       radius: featureStyles.incident.radius,
       weight: featureStyles.incident.weight,
-    }).bindTooltip(eventTooltip(eventInfo));
+    }).bindTooltip(eventTooltip(eventInfo), { className: "incident-tooltip" });
 
   const proximityCount = { on: 0, close: 0 };
   if (incidents) {
@@ -153,8 +153,9 @@ export function addReserveLayer(
   const landGeoJson = L.geoJSON(landFeature, {
     style: featureStyles.reserveOverlap,
   })
-    .bindTooltip((layer: any) =>
-      reserveTooltip(layer.feature.properties, landInfo)
+    .bindTooltip(
+      (layer: any) => reserveTooltip(layer.feature.properties, landInfo),
+      { className: "reserve-tooltip" }
     )
     .bindPopup((layer) => reservePopUp(layer, landInfo, incidentFeature))
     .addTo(map);

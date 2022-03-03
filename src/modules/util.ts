@@ -30,7 +30,7 @@ export function htmlTableRow(
 }
 
 /**
- *
+ * Generates a HTML tooltip for hover action
  * @param headText Centered <h3> sized tooltip title
  * @param midText Optional <p> in between headText and footText
  * @param footText Centered <i> text at the bottom of the tooltip

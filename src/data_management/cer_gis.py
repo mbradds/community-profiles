@@ -6,10 +6,9 @@ import json
 import time
 from util import set_cwd_to_script
 set_cwd_to_script()
-crs_proj = 'EPSG:2960'
+# crs_proj = 'EPSG:2960'
+crs_proj = 'ESRI:102002'
 crs_geo = 'EPSG:4269'
-
-
 companies = {"TRANS MOUNTAIN PIPELINE ULC (T260)": "Trans Mountain Pipeline ULC"}
 
 
@@ -269,27 +268,6 @@ def output_poly1(pipe, overlap, company):
     return overlap
 
 
-def output_poly2(pipe, company):
-    folder_name = get_folder_name(company)
-    if not pipe.empty:
-        for delete in ['PLNAME', 'geometry', 'valid', 'FNAME', 'SBTP_ENAME', 'SBTP_FNAME']:
-            if delete in pipe:
-                del pipe[delete]
-        pipe = pipe.groupby(['OPERATOR', 'ENAME', 'STATUS']).sum().reset_index()
-        pipe = pipe[pipe['STATUS'] == "Operating"]
-        pipe['ENAME'] = [x.split("(")[0].strip() for x in pipe['ENAME']]
-        df_c = pipe[pipe['OPERATOR'] == company].copy()
-        del df_c['OPERATOR']
-        df_c = df_c.sort_values(by='length_gpd', ascending=False)
-        df_c['length_gpd'] = [int(x) for x in df_c['length_gpd']]
-        df_c.to_json("../company_data/"+folder_name+"/poly2.json", orient='records')
-    else:
-        df_c = []
-        with open("../company_data/"+folder_name+"/poly2.json", 'w') as f:
-            json.dump(df_c, f)
-    return pipe
-
-
 def eventProximity(gdf, poly1, company):
     poly1 = poly1[['NAME1', 'geometry', 'OPERATOR']].copy()
     poly1 = poly1.drop_duplicates(subset=['NAME1', 'OPERATOR'])
@@ -348,8 +326,32 @@ def eventProximity(gdf, poly1, company):
         close = {"meta": {"on": 0, "15km": 0}}
         with open('../company_data/'+folder_name+'/events.json', 'w') as f:
             json.dump(close, f)
-
     return close
+
+
+def overlap_percentage(pipe_overlap, pipe, company):
+    pipe_overlap = pipe_overlap.to_crs(crs_proj)
+    pipe_overlap.crs = crs_proj
+    
+    pipe = pipe.to_crs(crs_proj)
+    pipe.crs = crs_proj
+    
+    pipe_overlap = pipe_overlap[pipe_overlap["PLNAME"] == "TMX"].copy().reset_index(drop=True)
+    pipe = pipe[pipe["PLNAME"] == "TMX"].copy().reset_index(drop=True)
+    pipe = to_metres(pipe, crs_target=crs_proj)
+    
+    tmx_length = pipe["length_gpd"].sum()
+    tmx_overlap_length = pipe_overlap["length_gpd"].sum()
+    overlap_info = {"tmx_length": round(tmx_length, 0),
+                    "tmx_reserve_overlap_length": round(tmx_overlap_length, 0),
+                    "overlap_percentage": round((tmx_overlap_length/tmx_length)*100, 5),
+                    "unit": "metre"}
+    
+    folder_name = get_folder_name(company)
+    with open('../company_data/'+folder_name+'/overlap_percentage.json', 'w') as f:
+            json.dump(overlap_info, f)
+    
+    return overlap_info
 
 
 def worker(company, pipe, poly1, incidents):
@@ -360,7 +362,8 @@ def worker(company, pipe, poly1, incidents):
                                              polygon_id="NAME1",
                                              forceclip=True,
                                              landCol="NAME1")
-
+    
+    overlap_percentage(pipe_on_poly1, pipe, company)
     output_poly1(pipe_on_poly1, poly1_on_pipe, company)
     eventProximity(incidents, poly1_on_pipe, company)
     print('Done:' + company)

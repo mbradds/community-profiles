@@ -141,7 +141,9 @@ export function addCommunityLayer(
         featureStyles.territory,
         com
       );
-      landMarker.bindTooltip(circleTooltip(com));
+      landMarker.bindTooltip(circleTooltip(com), {
+        className: "community-tooltip",
+      });
       const hasImage = com.MapFile !== null;
       const imgHtml = hasImage
         ? `<img src="../images/territories/${com.MapFile}.1.png" height="${popHeight}px" width="${popWidth}px" max-width="${popWidth}px"/>`

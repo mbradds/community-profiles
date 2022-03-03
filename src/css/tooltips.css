@@ -1,0 +1,11 @@
+.reserve-tooltip {
+  box-shadow: 0 0 5px 3px #ffbe4b !important;
+}
+
+.community-tooltip {
+  box-shadow: 0 0 5px 3px #8c8c96 !important;
+}
+
+.incident-tooltip {
+  box-shadow: 0 0 5px 3px #f45b5b !important;
+}
