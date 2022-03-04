@@ -28,7 +28,8 @@ async function loadMap(
 ) {
   const communityData = await getCommunityData();
   const map = new BaseMap("map", {
-    zoomDelta: 0.25,
+    zoomDelta: 1,
+    zoomSnap: 0.5,
     initZoomLevel: 4,
     initZoomTo: L.latLng([55, -119]),
   });

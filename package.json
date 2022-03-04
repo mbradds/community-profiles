@@ -39,7 +39,7 @@
     "@typescript-eslint/parser": "^5.13.0",
     "clean-webpack-plugin": "^4.0.0",
     "copy-webpack-plugin": "^10.2.4",
-    "css-loader": "^6.6.0",
+    "css-loader": "^6.7.0",
     "css-minimizer-webpack-plugin": "^3.4.1",
     "eslint": "^8.10.0",
     "eslint-config-airbnb-base": "^15.0.0",
@@ -73,7 +73,7 @@
     "imagemin": "^8.0.1",
     "imagemin-pngquant": "^9.0.2",
     "leaflet": "^1.7.1",
-    "mapshaper": "^0.5.91",
+    "mapshaper": "^0.5.92",
     "pdf2pic": "^2.1.4",
     "point-in-polygon": "^1.1.0"
   }

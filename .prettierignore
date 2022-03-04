@@ -3,4 +3,5 @@ GCWeb
 *.json
 !tsconfig.json
 dist
+src/data_management/raw_data
 .github

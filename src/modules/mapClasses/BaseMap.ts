@@ -18,6 +18,7 @@ export class BaseMap extends L.Map {
     div: string,
     config: {
       zoomDelta: number;
+      zoomSnap: number;
       initZoomTo: L.LatLng;
       initZoomLevel: number;
     }
