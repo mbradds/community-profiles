@@ -21,6 +21,7 @@ export class BaseMap extends L.Map {
       zoomSnap: number;
       initZoomTo: L.LatLng;
       initZoomLevel: number;
+      attributionControl: boolean;
     }
   ) {
     super(div, config);

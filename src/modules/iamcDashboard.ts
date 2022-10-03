@@ -32,6 +32,7 @@ async function loadMap(
     zoomSnap: 0.5,
     initZoomLevel: 4,
     initZoomTo: L.latLng([55, -119]),
+    attributionControl: false
   });
 
   map.addResetBtn();

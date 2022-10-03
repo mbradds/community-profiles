@@ -22,6 +22,10 @@
   word-break: break-all;
 }
 
+.leaflet-container {
+  font-size: 12px !important;
+}
+
 #near-communities-table td {
   min-width: 95px;
 }
