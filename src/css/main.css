@@ -6,10 +6,10 @@
 @import url("tooltips.css");
 @import url("responsive.css");
 
-body {
+/* body {
   font-size: 20px;
   line-height: 1.65em;
-}
+} */
 
 @media (hover: none) {
   .leaflet-tooltip-pane {

@@ -17,6 +17,8 @@ type ContactInfo = {
 export class CommunityFeature {
   contactControl: HtmlControl;
 
+  // errorControl: HtmlControl;
+
   electionRangeSliderDiv: HTMLElement | null;
 
   comSearchErrElement: HTMLElement | null;
@@ -29,6 +31,7 @@ export class CommunityFeature {
     this.map = map;
     this.featureGroup = L.featureGroup(circles);
     this.contactControl = new HtmlControl("bottomright", map);
+    // this.errorControl = new HtmlControl("topleft", map);
     this.electionRangeSliderDiv = document.getElementById(
       "election-range-slider"
     );
@@ -256,25 +259,14 @@ export class CommunityFeature {
     this.getNames().forEach((name: CommunityName) => {
       options += `<option data-id=${name.id} label="" value="${name.name}"></option>`;
     });
-    const findCommunitiesElement = document.getElementById(
-      "find-communities-container"
-    );
-    if (findCommunitiesElement) {
-      findCommunitiesElement.innerHTML = `
-          <input type="text" id="community-search" name="community-search" list="suggestions" />
-          <button class="btn btn-primary btn-xs header-btn" id="find-communities-btn">Find Community</button>
-          <datalist id="suggestions">
-          ${options}
-          </datalist>
-          <div id="community-search-error"></div>`;
+    const listItems = <HTMLSelectElement>document.getElementById("suggestions");
+    if (listItems) {
+      listItems.innerHTML = `${options}`;
     }
 
     const findComBtnElement = document.getElementById("find-communities-btn");
     if (findComBtnElement) {
       findComBtnElement.addEventListener("click", () => {
-        const listItems = <HTMLSelectElement>(
-          document.getElementById("suggestions")
-        );
         const listObj = <HTMLInputElement>(
           document.getElementById("community-search")
         );

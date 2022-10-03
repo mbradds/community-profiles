@@ -8,11 +8,23 @@
       <div class="row map-row">
         <div class="col-md-12 col-sm-12 map-col">
           <section class="panel panel-default" id="map-panel">
-            <header
-              class="panel-heading"
-              id="map-panel-heading"
-            >
-              <div id="find-communities-container"></div>
+            <header class="panel-heading" id="map-panel-heading">
+              <div id="find-communities-container">
+                <input
+                  type="text"
+                  id="community-search"
+                  name="community-search"
+                  list="suggestions"
+                />
+                <button
+                  class="btn btn-primary btn-xs header-btn"
+                  id="find-communities-btn"
+                >
+                  Find Community
+                </button>
+                <datalist id="suggestions"> </datalist>
+                <div id="community-search-error"></div>
+              </div>
               <div class="map-row">
                 <button
                   type="button"
@@ -28,10 +40,7 @@
                 <div class="loader"></div>
               </div>
             </div>
-            <footer
-              class="panel-footer"
-              id="map-panel-footing"
-            >
+            <footer class="panel-footer" id="map-panel-footing">
               <h5 class="panel-title header-text" id="election-header">
                 Election Filter
               </h5>
