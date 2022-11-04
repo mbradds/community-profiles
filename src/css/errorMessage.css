@@ -4,10 +4,21 @@
 
 .user-warning-msg {
   position: absolute !important;
-  z-index: 9000 !important;
+  z-index: 999 !important;
   margin: 0;
-  position: absolute;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
+}
+
+.user-warning-msg .alert {
+  margin-bottom: 0px;
+}
+
+.rid-error {
+  color: gray;
+}
+
+.user-warning-text {
+  margin-right: 25px;
 }
