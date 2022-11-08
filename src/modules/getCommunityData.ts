@@ -4,7 +4,7 @@ export async function getCommunityData() {
   try {
     const url =
       process.env.NODE_ENV === "development"
-        ? "https://cp-admin.azurewebsites.net/api/communities"
+        ? "http://localhost:1337/api/communities"
         : "https://cp-admin.azurewebsites.net/api/communities";
 
     const response = await fetch(url);

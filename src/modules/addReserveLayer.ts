@@ -78,13 +78,15 @@ function addIncidents(map: BaseMap, name: string, incidentFeature: any) {
 
 function reserveTooltip(layer: { NAME1: string }, landInfo: any) {
   const layerInfo = landInfo[layer.NAME1];
-  let table = `<table class="map-tooltip"><caption><b>${layer.NAME1}</b></caption>`;
-  table += htmlTableRow("Land Type:&nbsp", layerInfo.meta.altype);
+  let table = `<table class="map-tooltip"><caption><b>${layer.NAME1} - ${layerInfo.meta.altype}</b></caption>`;
   if (layerInfo.meta.bandName) {
     table += htmlTableRow("Band name:&nbsp", layerInfo.meta.bandName);
   }
   const length = lengthUnits(layerInfo.overlaps.reduce(getSum, 0));
-  table += htmlTableRow("Total overlap:&nbsp", `${length[0]} ${length[1]}`);
+  table += htmlTableRow(
+    "Total pipeline overlap:&nbsp",
+    `${length[0]} ${length[1]}`
+  );
   table += `</table><i class="center-footer">Click to view details</i>`;
   return table;
 }
