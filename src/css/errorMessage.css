@@ -13,6 +13,7 @@
 
 .user-warning-msg .alert {
   margin-bottom: 0px;
+  box-shadow: 0 0 5px 1px red !important;
 }
 
 .rid-error {
