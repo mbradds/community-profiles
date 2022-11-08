@@ -154,8 +154,8 @@ export function proximity(map: BaseMap, communityLayer: CommunityFeature) {
               {}.propertyIsEnumerable.call(err, "type") &&
               err.type === "locationerror"
             ) {
-              map.youAreOn.updateHtml(
-                `<div class="alert alert-danger"><h3 style="margin-bottom:0;">Cant access your location. Try enabling location services and refresh the page.</h3></div>`
+              map.warningMsg.addWarning(
+                "Cant access your location. Try enabling location services and refresh the page."
               );
             } else {
               throw err;

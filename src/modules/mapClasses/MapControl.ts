@@ -32,7 +32,7 @@ export class HtmlControl {
   }
 
   addWarning(text: string) {
-    this.info._div.innerHTML = `<div class="alert alert-danger"><span class="h3 mrgn-bttm-0">${text}</span></div>`;
+    this.info._div.innerHTML = `<div class="alert alert-danger"><span class="h3 mrgn-bttm-0 user-warning-text">${text}</span><button title="Dismiss" class="mfp-close content-dismiss rid-error" type="button">×<span class="wb-inv"> Dismiss</span></button></div>`;
   }
 
   removeHtml() {

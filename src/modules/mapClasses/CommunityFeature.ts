@@ -17,11 +17,7 @@ type ContactInfo = {
 export class CommunityFeature {
   contactControl: HtmlControl;
 
-  // errorControl: HtmlControl;
-
   electionRangeSliderDiv: HTMLElement | null;
-
-  comSearchErrElement: HTMLElement | null;
 
   featureGroup: L.FeatureGroup;
 
@@ -34,9 +30,6 @@ export class CommunityFeature {
     // this.errorControl = new HtmlControl("topleft", map);
     this.electionRangeSliderDiv = document.getElementById(
       "election-range-slider"
-    );
-    this.comSearchErrElement = document.getElementById(
-      "community-search-error"
     );
     this.featureGroup.addTo(this.map);
   }
@@ -230,25 +223,9 @@ export class CommunityFeature {
     }
   }
 
-  /**
-   * Binds an error warning next to the search function when the user input community cant be found
-   * @param message
-   */
-  searchError(message: string) {
-    if (this.comSearchErrElement) {
-      this.comSearchErrElement.innerHTML = `<div class="alert alert-danger"><span>${message}</span></div>`;
-    }
-  }
-
-  resetSearchError() {
-    if (this.comSearchErrElement) {
-      this.comSearchErrElement.innerHTML = "";
-    }
-  }
-
   resetSearch() {
     (<HTMLInputElement>document.getElementById("community-search")).value = "";
-    this.resetSearchError();
+    this.map.warningMsg.removeHtml();
   }
 
   /**
@@ -280,10 +257,12 @@ export class CommunityFeature {
           }
         });
         if (foundId) {
-          this.resetSearchError();
+          this.map.warningMsg.removeHtml();
           this.zoomToId(foundId);
         } else if (listObj.value !== "") {
-          this.searchError("Cant find community");
+          this.map.warningMsg.addWarning(
+            "Cant find community. Try using the drop down list to select a community and then click the Find Community button."
+          );
         }
       });
     }

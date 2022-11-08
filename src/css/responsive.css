@@ -40,4 +40,13 @@ responsive style options
   .leaflet-control .panel {
     margin-bottom: 0px;
   }
+  .user-warning-msg {
+    width: 100% !important;
+    transform: none !important;
+    top: 0px !important;
+    left: 0px !important;
+  }
+  .leaflet-top.leaflet-right {
+    width: 100% !important;
+  }
 }

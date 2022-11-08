@@ -32,7 +32,7 @@ export class BaseMap extends L.Map {
     }).addTo(this);
     this.user = undefined;
     this.youAreOn = new HtmlControl("bottomright", this);
-    this.warningMsg = new HtmlControl("bottomright", this);
+    this.warningMsg = new HtmlControl("topright", this, "", "user-warning-msg");
     this.legend = new HtmlControl("topright", this, "", "legend");
     this.incidentLayer = undefined;
   }
