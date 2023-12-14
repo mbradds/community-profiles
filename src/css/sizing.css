@@ -27,7 +27,7 @@ body,
   display: flex;
   flex-direction: column;
   margin-bottom: 0px;
-  min-height: 700px;
+  min-height: 300px;
   width: 100%;
 }
 
